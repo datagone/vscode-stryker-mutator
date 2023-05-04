@@ -128,3 +128,9 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+
+# Other exclusions while creating VSCode extensions
+*.vsix
+.stryker-tmp
+reports
