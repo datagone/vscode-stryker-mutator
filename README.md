@@ -1,6 +1,20 @@
-# VSCode ![logo VSCode extension Stryker Mutator](https://github.com/datagone/vscode-stryker-mutator/blob/main/assets/images/logo.png) tryker Mutator
+# VSCode ![logo VSCode extension Stryker Mutator](https://raw.githubusercontent.com/datagone/vscode-stryker-mutator/main/assets/images/logo.png) tryker Mutator
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPL_v3-blue.svg)](./LICENSE)
+
+## 🤔 What is `Stryker Mutator` for VSCode
+
+Stryker Mutator VSCode extension is a plugin for Visual Studio Code that enables developers to use the [Stryker Mutator](https://stryker-mutator.io/) mutation testing framework directly within their code editor. Mutation testing is a technique used to improve the quality of software by introducing faults (or "mutations") into the codebase and checking if the tests catch them. The Stryker Mutator framework automates this process by generating many variations of the code (with different mutations) and running the tests against each variation to see which mutations are caught and which ones slip through undetected.
+
+This extension provides an easy-to-use interface for configuring and running the Stryker Mutator framework within your project. It allows you to customize the mutation testing process by specifying which selection, file, folder to launch the mutants against. It provides feedback on the progress and results of the mutation testing run. With the `Stryker Mutator`, you can easily improve the test coverage and overall quality of your codebase.
+
+> 📜 Note 📜
+>
+> It's an unofficial extension for `Stryker Mutator`
+>
+> It only supports `.NET (C#)` for Now.
+>
+> If you are using `JavaScript/TypeScript` for your project, we suggest the use of [pixabelle.stryker-runner](https://marketplace.visualstudio.com/items?itemName=pixabelle.stryker-runner)
 
 ## ❔ Why use `Stryker Mutator`
 
@@ -23,9 +37,55 @@ Overall, `Stryker Mutator` is a powerful tool for any developer looking to impro
 
 ## 🧱 Prerequisites
 
-- [.NET SDK](https://dotnet.microsoft.com/en-us/download) is require
-
+- [.NET SDK](https://dotnet.microsoft.com/en-us/download) is require, [ _at least we tested it with .NET 7.0_ ]
 - [VS Code](https://code.visualstudio.com) 🤯 Obviously!!!
+
+## ⚙️ Usage
+
+If you didn't have Stryker.Net installed and a configuration file, you should start with these steps while using the command pallette:
+
+1. `Install the Stryker.NET tool`. It may take time to install.
+2. `Create [a basic] Stryker configuration file`
+
+Afterward, right-click on a file, on a folder or over a selection of your best (or worst 😬) code and choose the `Mutate` action that you want to perform.
+
+## 🚀 Features
+
+Here is the list of all available (✔️) and upcoming (❌) features that will help you hunt mutants hiding in place sight:
+
+- `Stryker.NET: Mutate this file`: Will run Stryker to mutate one specific file. Available in the:
+  - Context Menu (✔️)
+  - Command Pallette (✔️)
+- `Stryker.NET: Mutate the selection`: will run Stryker to mutate a selected block of code within the editor. Available in the:
+  - Context Menu (✔️)
+  - Command Pallette (✔️)
+- `Stryker.NET: Mutate this folder`: Will run Stryker to mutate files under one specific folder. Available from the:
+  - Context Menu (✔️)
+  - Command Pallette (✔️)
+- `Stryker.NET: Mutate the workspace`: Will run Stryker to mutate all files. Available, with a disclaimer (❌), from the:
+  - Context Menu (✔️)
+  - Command Pallette (✔️)
+- `Stryker.NET: Create Stryker configuration file`: Will create a default stryker configuration file based on the `.sln`. Available from the:
+  - Command Pallette (✔️)
+- `Stryker.NET: Install Stryker.NET Tool`: Will install the stryker dotnet tool. It will use the settings to determine the Global or Local Installation (❌). Available from the:
+  - Command Pallette (✔️)
+- `Stryker.NET: Uninstall Stryker.NET Tool`: Will uninstall the stryker dotnet tool. It will use the settings to determine the Global or Local Installation (❌). Available from the:
+  - Command Pallette (✔️)
+- `Stryker.NET: Show the Report`: Will display the latest generated mutation report. Available from the:
+  - Command Pallette (❌ _Alternatively, you could use `--open-report:html` in the optionalParameters setting_)
+
+## 🛠️ Configuration
+
+Even though the extension Stryker Mutator will work without any specific settings, there are some settings that you could take advantage of:
+
+| ✔️Available<br/>❌Upcoming | Settings                                         | Description                                                                                                                                                                                              |
+| -------------------------- | ------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ✔️                         | stryker-mutator-net.dotnet.commandPath           | The command/path to invoke `dotnet`, if different than the default path/exe (default:`dotnet`)                                                                                                           |
+| ✔️                         | stryker-mutator-net.stryker.configFile           | Path to a stryker config file, if elsewhere than the workspace path                                                                                                                                      |
+| ✔️                         | stryker-mutator-net.stryker.optionalParameters   | Optional parameters to add with the command line. See the [Configuration](https://stryker-mutator.io/docs/stryker-net/configuration/) for more details (e.g. `--verbosity info`, `--concurrency 2`, ...) |
+| ❌                         | stryker-mutator-net.show-report                  | Enable/Disable the browser opening the report. It requires the reporter `html` (default: `false`/disable). _Alternatively, you could use `--open-report:html` in the optionalParameters setting_         |
+| ❌                         | stryker-mutator-net.experimental                 | Enable/Disable the experimental features which "may" activate new features (default: `false`/disable)                                                                                                    |
+| ❌                         | stryker-mutator-net.dotnet.tools.installGlobally | Enable/Disable the global installation of the stryker tool (default: `true`/enable)                                                                                                                      |
 
 ## 🙋 Support & Assistance
 
@@ -42,6 +102,7 @@ Overall, `Stryker Mutator` is a powerful tool for any developer looking to impro
 
 Thanks you to:
 
+- the hard work done by [slcp](https://github.com/slcp) behind his VSCode extension [pixabelle.stryker-runner](https://marketplace.visualstudio.com/items?itemName=pixabelle.stryker-runner) and it's repo GitHub [stryker-runner](https://github.com/slcp/stryker-runner) which integrates the Stryker-JS. This extension, [**`vscode-stryker-mutator`**](./), was build upon his work and would not have been available so soon without it.
 - [Manuel Sagra](https://www.flickr.com/photos/manuelsagra/) for the image of [TMNT](https://www.flickr.com/photos/manuelsagra/383825655/) on Flickr that inspired the logo mixed with the [Stryker Mutator](https://stryker-mutator.io/) logo.
 - @[lrstanley](https://github.com/lrstanley/lrstanley), for his repository documentation templates which I use nearly as is.
 - @[Bibz87](https://github.com/Bibz87/kubernetes-example), whom inspired my ReadMe

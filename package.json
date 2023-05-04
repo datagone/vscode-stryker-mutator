@@ -125,17 +125,17 @@
       "title": "Stryker .Net Runner",
       "type": "object",
       "properties": {
-        "strykerDotNetRunner.dotnet.commandPath": {
+        "stryker-mutator-net.dotnet.commandPath": {
           "type": "string",
           "default": null,
           "markdownDescription": "The command/path to invoke `dotnet`, if different than the default path/exe (default:`dotnet`)"
         },
-        "strykerDotNetRunner.stryker.configFile": {
+        "stryker-mutator-net.stryker.configFile": {
           "type": "string",
           "default": null,
           "markdownDescription": "Path to a stryker config file, if elsewhere than at the workspace root path"
         },
-        "strykerDotNetRunner.stryker.optionalParameters": {
+        "stryker-mutator-net.stryker.optionalParameters": {
           "type": "string",
           "default": null,
           "markdownDescription": "Optional parameters to add with the command line. See the [Configuration](https://stryker-mutator.io/docs/stryker-net/configuration/) for more details (e.g. `--verbosity info`, `--concurrency 2`, ...)"

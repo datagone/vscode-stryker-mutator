@@ -26,7 +26,6 @@
   "spellright.language": [
     "en"
   ],
-  "coddx.taskBoard.fileList": "TODO.md",
   "coverage-gutters.showGutterCoverage": false,
   "coverage-gutters.showLineCoverage": true,
   "coverage-gutters.showRulerCoverage": true,
