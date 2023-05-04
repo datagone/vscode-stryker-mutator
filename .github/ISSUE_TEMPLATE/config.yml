@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: '🙋‍♂️ Ask the community a question!'
+    about: Have a question, that might not be a bug? Wondering how to solve a problem? Ask away!
+    url: 'https://github.com/datagone/vscode-stryker-mutator/discussions/new?category=q-a'
+  - name: '🎉 Show us how many mutants were killed/survived 🧟'
+    about: You have used vscode-stryker-mutator and want to show others? Post here!
+    url: 'https://github.com/datagone/vscode-stryker-mutator/discussions/new?category=show-and-tell'
+  - name: '✋ Additional support information'
+    about: Looking for something else? Check here.
+    url: 'https://github.com/datagone/vscode-stryker-mutator/blob/master/.github/SUPPORT.md'
