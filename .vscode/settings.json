@@ -1,0 +1,178 @@
+// Place your settings in this file to overwrite default and user settings.
+{
+  "files.exclude": {
+    "out": false, // set this to true to hide the "out" folder with the compiled JS files
+    "dist": false // set this to true to hide the "dist" folder with the compiled JS files
+  },
+  "search.exclude": {
+    "out": true, // set this to false to include "out" folder in search results
+    "dist": true // set this to false to include "dist" folder in search results
+  },
+  // Turn off tsc task auto detection since we have the necessary tasks as npm scripts
+  "typescript.tsc.autoDetect": "off",
+  "vsicons.dontShowNewVersionMessage": true,
+  "workbench.iconTheme": "vscode-icons",
+  "diffEditor.ignoreTrimWhitespace": false,
+  "editor.inlineSuggest.enabled": true,
+  "editor.guides.bracketPairs": true,
+  "editor.insertSpaces": true,
+  "editor.tabSize": 4,
+  "javascript.updateImportsOnFileMove.enabled": "prompt",
+  "[typescript][javascript][json][jsonc][md]": {
+    "editor.tabSize": 2,
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "pasteImage.path": "${currentFileDir}/images",
+  "spellright.language": [
+    "en"
+  ],
+  "coverage-gutters.showGutterCoverage": false,
+  "coverage-gutters.showLineCoverage": true,
+  "coverage-gutters.showRulerCoverage": true,
+  "coverage-gutters.coverageFileNames": [
+    "lcov.info",
+    "cov.xml",
+    "coverage.xml",
+    "coverage*.xml",
+    "jacoco.xml",
+    "coverage.cobertura.xml"
+  ],
+  "coverage-gutters.coverageReportFileName": "reports/coverage/lcov-report/index.html",
+  "redhat.telemetry.enabled": false,
+  "todo-tree.filtering.ignoreGitSubmodules": true,
+  "todo-tree.general.statusBar": "tags",
+  "todo-tree.general.statusBarClickBehaviour": "reveal",
+  "todo-tree.general.showActivityBarBadge": true,
+  "todo-tree.general.showIconsInsteadOfTagsInStatusBar": true,
+  "todo-tree.general.tags": [
+    "BUG",
+    "HACK",
+    "FIXME",
+    "TODO",
+    "XXX",
+    "[ ]",
+    "[x]",
+    "HOTFIX",
+    "FIX",
+    "FIXIT",
+    "BAD",
+    "TRASH"
+  ],
+  "todo-tree.general.tagGroups": {
+    "FIXME": [
+      "FIXME",
+      "FIXIT",
+      "FIX"
+    ],
+    "XXX": [
+      "XXX",
+      "BAD",
+      "TRASH"
+    ]
+  },
+  "todo-tree.regex.regex": "(//|#|<!--|;|/\\*|^|^[ \\t]*(-|\\d+.))\\s*($TAGS)",
+  "todo-tree.regex.regexCaseSensitive": false,
+  "todo-tree.tree.hideIconsWhenGroupedByTag": false,
+  "todo-tree.tree.hideTreeWhenEmpty": false,
+  "todo-tree.tree.groupedByTag": false,
+  "todo-tree.tree.expanded": true,
+  "todo-tree.tree.flat": false,
+  "todo-tree.tree.showCountsInTree": true,
+  "todo-tree.tree.tagsOnly": false,
+  "todo-tree.highlights.useColourScheme": true,
+  "todo-tree.highlights.backgroundColourScheme": [
+    "white"
+  ],
+  "todo-tree.highlights.foregroundColourScheme": [
+    "black"
+  ],
+  "todo-tree.highlights.defaultHighlight": {
+    "icon": "alert",
+    "type": "line",
+    "foreground": "red",
+    "background": "white",
+    "opacity": 50,
+    "iconColour": "blue",
+    "gutterIcon": false
+  },
+  "todo-tree.highlights.customHighlight": {
+    "BUG": {
+      "icon": "bug",
+      "iconColour": "firebrick",
+      "background": "firebrick"
+    },
+    "HACK": {
+      "icon": "rocket",
+      "iconColour": "deeppink",
+      "background": "deeppink"
+    },
+    "FIXME": {
+      "icon": "tools",
+      "iconColour": "green",
+      "background": "green"
+    },
+    "HOTFIX": {
+      "icon": "flame",
+      "iconColour": "orange",
+      "background": "orange"
+    },
+    "TODO": {
+      "icon": "checklist",
+      "iconColour": "deepskyblue",
+      "background": "deepskyblue"
+    },
+    "XXX": {
+      "icon": "trash",
+      "iconColour": "olive",
+      "background": "olive"
+    },
+    "[ ]": {
+      "icon": "check",
+      "iconColour": "lightpink",
+      "background": "lightpink",
+      "foreground": "red",
+      "type": "tag"
+    },
+    "[x]": {
+      "icon": "check-circle",
+      "iconColour": "palegreen",
+      "background": "palegreen",
+      "foreground": "green",
+      "type": "tag",
+      "hideFromStatusBar": true,
+      "hideFromTree": true,
+      "gutterIcon": true
+    }
+  },
+  // Peacock configuration -- Start
+  "peacock.color": "#2e5b6d",
+  "peacock.remoteColor": "#25e446",
+  "peacock.showColorInStatusBar": false,
+  // Peacock configuration -- Surroundings
+  "peacock.affectTitleBar": true,
+  "peacock.affectStatusBar": true,
+  "peacock.affectDebuggingStatusBar": false,
+  "peacock.affectActivityBar": false,
+  // Peacock configuration -- Borders
+  "peacock.affectTabActiveBorder": true,
+  "peacock.affectSideBarBorder": true,
+  "peacock.affectPanelBorder": true,
+  "peacock.affectStatusAndTitleBorders": false,
+  "workbench.colorCustomizations": {
+    "commandCenter.border": "#e7e7e799",
+    "panel.border": "#3d7991",
+    "sash.hoverBorder": "#3d7991",
+    "sideBar.border": "#3d7991",
+    "statusBar.background": "#2e5b6d",
+    "statusBar.foreground": "#e7e7e7",
+    "statusBarItem.hoverBackground": "#3d7991",
+    "statusBarItem.remoteBackground": "#2e5b6d",
+    "statusBarItem.remoteForeground": "#e7e7e7",
+    "tab.activeBorder": "#3d7991",
+    "titleBar.activeBackground": "#2e5b6d",
+    "titleBar.activeForeground": "#e7e7e7",
+    "titleBar.inactiveBackground": "#2e5b6d99",
+    "titleBar.inactiveForeground": "#e7e7e799"
+  }
+  // Peacock configuration -- End
+}
