@@ -177,7 +177,7 @@
     "@types/glob": "8.1.0",
     "@types/jest": "29.5.0",
     "@types/jest-when": "3.5.2",
-    "@types/node": "16.x",
+    "@types/node": "20.x",
     "@types/shell-escape": "0.2.1",
     "@types/vscode": "1.77.0",
     "@typescript-eslint/eslint-plugin": "5.58.0",
