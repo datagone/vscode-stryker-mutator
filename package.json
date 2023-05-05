@@ -15,7 +15,7 @@
     "url": "https://data-g.one"
   },
   "license": "GPL-3.0",
-  "version": "0.0.2-alpha.1",
+  "version": "0.0.1",
   "preview": true,
   "engines": {
     "vscode": "^1.77.0"
@@ -74,13 +74,13 @@
       },
       {
         "command": "vscode-stryker-mutator.mutate-folder",
-        "title": "Mutate this folder",
+        "title": "Mutate the folder",
         "category": "Stryker.NET",
         "enablement": "true"
       },
       {
         "command": "vscode-stryker-mutator.mutate-file",
-        "title": "Mutate this file",
+        "title": "Mutate the file",
         "category": "Stryker.NET",
         "enablement": "true"
       },
@@ -122,20 +122,20 @@
       ]
     },
     "configuration": {
-      "title": "Stryker .Net Runner",
+      "title": "Stryker Mutator",
       "type": "object",
       "properties": {
-        "stryker-mutator-net.dotnet.commandPath": {
+        "strykerMutatorNet.dotnet.commandPath": {
           "type": "string",
           "default": null,
           "markdownDescription": "The command/path to invoke `dotnet`, if different than the default path/exe (default:`dotnet`)"
         },
-        "stryker-mutator-net.stryker.configFile": {
+        "strykerMutatorNet.stryker.configFile": {
           "type": "string",
           "default": null,
           "markdownDescription": "Path to a stryker config file, if elsewhere than at the workspace root path"
         },
-        "stryker-mutator-net.stryker.optionalParameters": {
+        "strykerMutatorNet.stryker.optionalParameters": {
           "type": "string",
           "default": null,
           "markdownDescription": "Optional parameters to add with the command line. See the [Configuration](https://stryker-mutator.io/docs/stryker-net/configuration/) for more details (e.g. `--verbosity info`, `--concurrency 2`, ...)"

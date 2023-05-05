@@ -16,7 +16,7 @@ describe('Config', () => {
     afterEach(() => {
       // Assert (THEN)
       expect(workspace.getConfiguration).toHaveBeenCalledWith();
-      expect(mockGet).toHaveBeenCalledWith('stryker-mutator-net.stryker.configFile');
+      expect(mockGet).toHaveBeenCalledWith('strykerMutatorNet.stryker.configFile');
     });
 
     it('should return an undefined object when nothing is present in config', () => {
@@ -27,7 +27,7 @@ describe('Config', () => {
     });
     it('should return value from config when configFile is set', () => {
       // Arrange (GIVEN)
-      mockConfig('stryker-mutator-net.stryker.configFile', 'custom config');
+      mockConfig('strykerMutatorNet.stryker.configFile', 'custom config');
       // ACT (WHEN)
       const res = strykerConfigFilePath();
       // Assert (THEN)
@@ -43,7 +43,7 @@ describe('Config', () => {
     afterEach(() => {
       // Assert (THEN)
       expect(workspace.getConfiguration).toHaveBeenCalledWith();
-      expect(mockGet).toHaveBeenCalledWith('stryker-mutator-net.dotnet.commandPath');
+      expect(mockGet).toHaveBeenCalledWith('strykerMutatorNet.dotnet.commandPath');
     });
 
     it('should return node command when nothing is present in config', () => {
@@ -55,7 +55,7 @@ describe('Config', () => {
     });
     it('should return value from config when command is set', () => {
       const customCommand = 'custom-command';
-      mockConfig('stryker-mutator-net.dotnet.commandPath', customCommand);
+      mockConfig('strykerMutatorNet.dotnet.commandPath', customCommand);
 
       // Act (WHEN)
       const res = strykerCommand();
@@ -66,7 +66,7 @@ describe('Config', () => {
   });
 
   describe('WHEN obtaining the stryker optional parameters', () => {
-    const STRYKER_OPTIONAL_PARAM_CONFIG_VARIABLE_NAME = 'stryker-mutator-net.stryker.optionalParameters';
+    const STRYKER_OPTIONAL_PARAM_CONFIG_VARIABLE_NAME = 'strykerMutatorNet.stryker.optionalParameters';
 
     afterEach(() => {
       // Assert (THEN)
@@ -103,7 +103,7 @@ describe('Config', () => {
 
   describe('WHEN obtaining the Dotnet command', () => {
     // Arrange (GIVEN)
-    const DOTNET_CONFIG_VARIABLE_NAME = 'stryker-mutator-net.dotnet.commandPath';
+    const DOTNET_CONFIG_VARIABLE_NAME = 'strykerMutatorNet.dotnet.commandPath';
 
     afterEach(() => {
       // Assert (THEN)

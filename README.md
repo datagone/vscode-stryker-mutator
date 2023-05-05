@@ -53,13 +53,13 @@ Afterward, right-click on a file, on a folder or over a selection of your best (
 
 Here is the list of all available (✔️) and upcoming (❌) features that will help you hunt mutants hiding in place sight:
 
-- `Stryker.NET: Mutate this file`: Will run Stryker to mutate one specific file. Available in the:
+- `Stryker.NET: Mutate the file`: Will run Stryker to mutate one specific file. Available in the:
   - Context Menu (✔️)
   - Command Pallette (✔️)
 - `Stryker.NET: Mutate the selection`: will run Stryker to mutate a selected block of code within the editor. Available in the:
   - Context Menu (✔️)
   - Command Pallette (✔️)
-- `Stryker.NET: Mutate this folder`: Will run Stryker to mutate files under one specific folder. Available from the:
+- `Stryker.NET: Mutate the folder`: Will run Stryker to mutate files under one specific folder. Available from the:
   - Context Menu (✔️)
   - Command Pallette (✔️)
 - `Stryker.NET: Mutate the workspace`: Will run Stryker to mutate all files. Available, with a disclaimer (❌), from the:
@@ -78,14 +78,14 @@ Here is the list of all available (✔️) and upcoming (❌) features that will
 
 Even though the extension Stryker Mutator will work without any specific settings, there are some settings that you could take advantage of:
 
-| ✔️Available<br/>❌Upcoming | Settings                                         | Description                                                                                                                                                                                              |
-| -------------------------- | ------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| ✔️                         | stryker-mutator-net.dotnet.commandPath           | The command/path to invoke `dotnet`, if different than the default path/exe (default:`dotnet`)                                                                                                           |
-| ✔️                         | stryker-mutator-net.stryker.configFile           | Path to a stryker config file, if elsewhere than the workspace path                                                                                                                                      |
-| ✔️                         | stryker-mutator-net.stryker.optionalParameters   | Optional parameters to add with the command line. See the [Configuration](https://stryker-mutator.io/docs/stryker-net/configuration/) for more details (e.g. `--verbosity info`, `--concurrency 2`, ...) |
-| ❌                         | stryker-mutator-net.show-report                  | Enable/Disable the browser opening the report. It requires the reporter `html` (default: `false`/disable). _Alternatively, you could use `--open-report:html` in the optionalParameters setting_         |
-| ❌                         | stryker-mutator-net.experimental                 | Enable/Disable the experimental features which "may" activate new features (default: `false`/disable)                                                                                                    |
-| ❌                         | stryker-mutator-net.dotnet.tools.installGlobally | Enable/Disable the global installation of the stryker tool (default: `true`/enable)                                                                                                                      |
+| ✔️Available<br/>❌Upcoming | Settings                                       | Description                                                                                                                                                                                              |
+| -------------------------- | ---------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ✔️                         | strykerMutatorNet.dotnet.commandPath           | The command/path to invoke `dotnet`, if different than the default path/exe (default:`dotnet`)                                                                                                           |
+| ✔️                         | strykerMutatorNet.stryker.configFile           | Path to a stryker config file, if elsewhere than the workspace path                                                                                                                                      |
+| ✔️                         | strykerMutatorNet.stryker.optionalParameters   | Optional parameters to add with the command line. See the [Configuration](https://stryker-mutator.io/docs/stryker-net/configuration/) for more details (e.g. `--verbosity info`, `--concurrency 2`, ...) |
+| ❌                         | strykerMutatorNet.show-report                  | Enable/Disable the browser opening the report. It requires the reporter `html` (default: `false`/disable). _Alternatively, you could use `--open-report:html` in the optionalParameters setting_         |
+| ❌                         | strykerMutatorNet.experimental                 | Enable/Disable the experimental features which "may" activate new features (default: `false`/disable)                                                                                                    |
+| ❌                         | strykerMutatorNet.dotnet.tools.installGlobally | Enable/Disable the global installation of the stryker tool (default: `true`/enable)                                                                                                                      |
 
 ## 🙋 Support & Assistance
 

@@ -180,7 +180,7 @@ export const uninstallStrykerDotnetToolCommand = (dotnet: DotnetType) => async (
 
 // const isDotnetExists = (exec: DotnetExecuteCommand): Promise<boolean> => {
 
-//   const missingDotnetMessage = `If it is installed, please provide the full path in the settings file under 'stryker-mutator-net.dotnet.command'.`;
+//   const missingDotnetMessage = `If it is installed, please provide the full path in the settings file under 'strykerMutatorNet.dotnet.command'.`;
 //   const msgMissingDotnet = `dotnet is NOT installed or configured properly.\r\n${missingDotnetMessage}`;
 
 //   return exec(["--version"], "^(\\d+\\.)*\\d+$")
