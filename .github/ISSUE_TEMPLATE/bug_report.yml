@@ -37,7 +37,7 @@ body:
       placeholder: >-
         Example: "1. Click on '....' | 2. Run command with flags --foo --bar, etc. | 3. See error"
   - type: input
-    id: version
+    id: extensionversion
     attributes:
       label: '💠 Version: Extension `vscode-stryker-mutator`'
       description: What version of vscode-stryker-mutator is being used?
@@ -45,7 +45,7 @@ body:
     validations:
       required: true
   - type: input
-    id: version
+    id: vscodeversion
     attributes:
       label: '💠 Version: VSCode'
       description: What version of VSCode is being used?
@@ -53,7 +53,7 @@ body:
     validations:
       required: true
   - type: input
-    id: version
+    id: dotnetsdkversion
     attributes:
       label: '💠 Version: .NET SDK'
       description: What version of the .NET SDK is being used? [You can verify it using `dotnet --version`]
@@ -61,7 +61,7 @@ body:
     validations:
       required: true
   - type: input
-    id: version
+    id: strykernettoolversion
     attributes:
       label: '💠 Version: Stryker.NET Tool'
       description: What version of the Stryker.NET Tool (aka. dotnet-stryker) is being used? [You can verify it using `dotnet tool list`]
@@ -107,5 +107,5 @@ body:
             I believe the problem I'm facing is a bug, and is not intended behavior.
           required: true
         - label: >-
-            I have confirmed that someone else has not [submitted a similar bug report](../labels/bug).
+            I have confirmed that no one else has [submitted a similar bug report](../labels/bug).
           required: true
