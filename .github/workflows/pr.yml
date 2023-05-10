@@ -1,0 +1,120 @@
+name: PR
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+permissions:
+  actions: read
+  checks: read
+  contents: write
+  deployments: read
+  id-token: write
+  issues: read
+  discussions: none
+  packages: read
+  pages: read
+  pull-requests: write
+  repository-projects: none
+  security-events: none
+  statuses: write
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      # - uses: ./.github/workflows/shared/reusable-jobs.yml
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          cache: yarn
+
+      - name: Install packages
+        run: yarn install --frozen-lockfile
+
+      - name: Lint
+        run: yarn lint
+
+      # - name: Prettier
+      #   run: yarn prettier:check
+
+  build:
+    name: Build
+    needs: lint
+    runs-on: ubuntu-latest
+    steps:
+      # - uses: ./.github/workflows/shared/reusable-jobs.yml
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          cache: yarn
+
+      - name: Install packages
+        run: yarn install --frozen-lockfile
+
+      - name: Compile
+        run: yarn compile
+
+  unit-tests:
+    name: Unit tests
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      # - uses: ./.github/workflows/shared/reusable-jobs.yml
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          cache: yarn
+
+      - name: Install packages
+        run: yarn install --frozen-lockfile
+
+      - name: Unit tests
+        run: yarn test:unit
+
+  # FIXME: There is an issue on the pipeline but works fine on windows :/
+  # mutation-tests:
+  #   name: Mutation tests
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v3
+
+  #     - uses: actions/setup-node@v3
+  #       with:
+  #         node-version: 20
+  #         cache: yarn
+
+  #     # - name: Get branch name
+  #     #   id: branch-name
+  #     #   uses: tj-actions/branch-names@v5.5
+
+  #     # - name: Cache Stryker incremental test ouput
+  #     #   id: cache-stryker-incremental-output
+  #     #   uses: actions/cache@v3
+  #     #   env:
+  #     #     cache-name: stryker-incremental-output
+  #     #   with:
+  #     #     path: ${{ github.workspace }}/reports/stryker-incremental.json
+  #     #     key: ${{ env.cache-name }}-${{ steps.branch-name.outputs.current_branch }}-${{ github.run_id }}
+  #     #     restore-keys: |
+  #     #       ${{ env.cache-name }}-${{ steps.branch-name.outputs.current_branch }}-
+
+  #     - name: Install packages
+  #       run: yarn install --frozen-lockfile
+
+  #     # - name: Mutation tests
+  #     #   run: yarn test:mutation
+
+  #     - name: Mutation tests
+  #       run: yarn test:mutation:full --ignoreStatic
