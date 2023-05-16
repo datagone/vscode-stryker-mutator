@@ -1,0 +1,12 @@
+{
+  "stryker-config": {
+    "solution": "./test.sln"
+  },
+  "mutation-level": "Advanced",
+  "reporters": ["html", "json", "dots", "cleartext", "cleartexttree", "progress"],
+  "thresholds": {
+    "high": 100,
+    "low": 100,
+    "break": 100
+  }
+}
