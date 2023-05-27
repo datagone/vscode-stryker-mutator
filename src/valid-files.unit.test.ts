@@ -42,7 +42,7 @@ describe('Valid files', () => {
     it('should show an error message to the user', async () => {
       await showInvalidFileMessage();
 
-      expect(window.showErrorMessage).toHaveBeenCalledWith('Cannot run Stryker to mutate a test files');
+      expect(window.showErrorMessage).toHaveBeenCalledWith('Stryker.NET: Cannot run Stryker to mutate a test files');
     });
   });
 });
