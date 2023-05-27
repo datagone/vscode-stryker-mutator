@@ -50,7 +50,7 @@
     "commands": [
       {
         "command": "vscode-stryker-mutator.create-stryker-config-file",
-        "title": "Create Stryker configuration file",
+        "title": "Create Stryker.NET configuration file",
         "category": "Stryker.NET",
         "enablement": "true"
       },
@@ -68,25 +68,25 @@
       },
       {
         "command": "vscode-stryker-mutator.mutate-workspace",
-        "title": "Mutate the workspace",
+        "title": "Trigger mutation tests on workspace",
         "category": "Stryker.NET",
         "enablement": "true"
       },
       {
         "command": "vscode-stryker-mutator.mutate-folder",
-        "title": "Mutate the folder",
+        "title": "Trigger mutation tests on folder",
         "category": "Stryker.NET",
         "enablement": "true"
       },
       {
         "command": "vscode-stryker-mutator.mutate-file",
-        "title": "Mutate the file",
+        "title": "Trigger mutation tests on file",
         "category": "Stryker.NET",
         "enablement": "true"
       },
       {
         "command": "vscode-stryker-mutator.mutate-selection",
-        "title": "Mutate the selection",
+        "title": "Trigger mutation tests on selection",
         "category": "Stryker.NET",
         "enablement": "true"
       }
