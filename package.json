@@ -111,12 +111,12 @@
       "editor/context": [
         {
           "command": "vscode-stryker-mutator.mutate-selection",
-          "when": "editorHasSelection == true && editorLangId == 'csharp'",
+          "when": "editorHasSelection == true && editorLangId == 'csharp' && !(resourceFilename =~ /tests?[\\w-.\\/]*\\.(cs)$/i)",
           "group": "1_stryker"
         },
         {
           "command": "vscode-stryker-mutator.mutate-file",
-          "when": "editorLangId == 'csharp'",
+          "when": "editorLangId == 'csharp' && !(resourceFilename =~ /tests?[\\w-.\\/]*\\.(cs)$/i)",
           "group": "1_stryker"
         }
       ]
