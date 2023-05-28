@@ -18,7 +18,7 @@
   "version": "0.1.0",
   "preview": true,
   "engines": {
-    "vscode": "^1.77.0"
+    "vscode": "^1.75.0"
   },
   "categories": [
     "Testing"
@@ -50,7 +50,7 @@
     "commands": [
       {
         "command": "vscode-stryker-mutator.create-stryker-config-file",
-        "title": "Create Stryker configuration file",
+        "title": "Create Stryker.NET configuration file",
         "category": "Stryker.NET",
         "enablement": "true"
       },
@@ -68,25 +68,25 @@
       },
       {
         "command": "vscode-stryker-mutator.mutate-workspace",
-        "title": "Mutate the workspace",
+        "title": "Trigger mutation tests on workspace",
         "category": "Stryker.NET",
         "enablement": "true"
       },
       {
         "command": "vscode-stryker-mutator.mutate-folder",
-        "title": "Mutate the folder",
+        "title": "Trigger mutation tests on folder",
         "category": "Stryker.NET",
         "enablement": "true"
       },
       {
         "command": "vscode-stryker-mutator.mutate-file",
-        "title": "Mutate the file",
+        "title": "Trigger mutation tests on file",
         "category": "Stryker.NET",
         "enablement": "true"
       },
       {
         "command": "vscode-stryker-mutator.mutate-selection",
-        "title": "Mutate the selection",
+        "title": "Trigger mutation tests on selection",
         "category": "Stryker.NET",
         "enablement": "true"
       }
@@ -111,12 +111,12 @@
       "editor/context": [
         {
           "command": "vscode-stryker-mutator.mutate-selection",
-          "when": "editorHasSelection == true && editorLangId == 'csharp'",
+          "when": "editorHasSelection == true && editorLangId == 'csharp' && !(resourceFilename =~ /tests?[\\w-.\\/]*\\.(cs)$/i)",
           "group": "1_stryker"
         },
         {
           "command": "vscode-stryker-mutator.mutate-file",
-          "when": "editorLangId == 'csharp'",
+          "when": "editorLangId == 'csharp' && !(resourceFilename =~ /tests?[\\w-.\\/]*\\.(cs)$/i)",
           "group": "1_stryker"
         }
       ]
@@ -145,22 +145,22 @@
   },
   "scripts": {
     "vscode:package": "npx vsce package",
-    "vscode:prepublish": "yarn run package",
+    "vscode:prepublish": "yarn package",
     "compile": "webpack",
     "watch": "webpack --watch",
     "package": "webpack --mode production --devtool hidden-source-map",
     "compile:tests": "tsc -p . --outDir out",
     "watch:tests": "tsc -p . -w --outDir out",
-    "pretest": "yarn run compile-tests && yarn run compile && yarn run lint",
+    "pretest": "compile-tests && yarn compile && yarn lint",
     "prepare": "husky install",
     "prettier:fix": "yarn prettier:check -- --write",
     "prettier:check": "prettier \"./**/*\" --check --no-editorconfig",
     "lint": "eslint src --max-warnings 0 --ext ts",
     "lint:lastcommit": "npx commitlint --from HEAD~1 --to HEAD --verbose",
     "test": "node ./out/test/runTest.js",
-    "test:unit": "yarn jest \"(?<=.unit).test.ts$\" --coverage",
-    "test:mutation": "yarn stryker run --incremental",
-    "test:mutation:full": "yarn stryker run",
+    "test:unit": "jest \"(?<=.unit).test.ts$\" --coverage",
+    "test:mutation": "stryker run --incremental",
+    "test:mutation:full": "stryker run",
     "ci:dryrun": "semantic-release --extends ./release.package.config.js --dry-run",
     "ci": "semantic-release --extends ./release.package.config.js",
     "cd:dryrun": "semantic-release --extends ./release.publish.config.js --dry-run",
@@ -179,7 +179,7 @@
     "@types/jest-when": "3.5.2",
     "@types/node": "20.x",
     "@types/shell-escape": "0.2.1",
-    "@types/vscode": "1.77.0",
+    "@types/vscode": "1.75.0",
     "@typescript-eslint/eslint-plugin": "5.59.7",
     "@typescript-eslint/parser": "5.59.7",
     "@vscode/test-electron": "2.3.2",
