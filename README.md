@@ -1,10 +1,20 @@
 # VSCode ![logo VSCode extension Stryker Mutator](https://raw.githubusercontent.com/datagone/vscode-stryker-mutator/main/assets/images/logo.png) tryker Mutator
 
-[![License: GPL v3](https://img.shields.io/badge/License-GPL_v3-blue.svg)](./LICENSE)
+![GitHub](https://img.shields.io/github/license/datagone/vscode-stryker-mutator)
+![GitHub Workflow Status (with branch)](https://img.shields.io/github/actions/workflow/status/datagone/vscode-stryker-mutator/ci-cd.yml?branch=main&logo=github)
+![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/datagone/vscode-stryker-mutator?include_prereleases&logo=github)
+![GitHub Release Date](https://img.shields.io/github/release-date/datagone/vscode-stryker-mutator?logo=github)
+
+![GitHub all releases](https://img.shields.io/github/downloads/datagone/vscode-stryker-mutator/total?logo=github)
+![GitHub stars](https://img.shields.io/github/stars/datagone/vscode-stryker-mutator.svg?logo=github)
+![Visual Studio Marketplace Downloads](https://img.shields.io/visual-studio-marketplace/d/datagone.vscode-stryker-mutator?logo=visualstudiocode)
+![Visual Studio Marketplace Rating](https://img.shields.io/visual-studio-marketplace/r/datagone.vscode-stryker-mutator?logo=visualstudiocode)
+![Open VSX Downloads](https://img.shields.io/open-vsx/dt/datagone/vscode-stryker-mutator?logo=vscodium&logoColor=white)
+![Open VSX Rating](https://img.shields.io/open-vsx/rating/datagone/vscode-stryker-mutator?logo=vscodium&logoColor=white)
 
 ## 🤔 What is `Stryker Mutator` for VSCode
 
-Stryker Mutator VSCode extension is a plugin for Visual Studio Code that enables developers to use the [Stryker Mutator](https://stryker-mutator.io/) mutation testing framework directly within their code editor. Mutation testing is a technique used to improve the quality of software by introducing faults (or "mutations") into the codebase and checking if the tests catch them. The Stryker Mutator framework automates this process by generating many variations of the code (with different mutations) and running the tests against each variation to see which mutations are caught and which ones slip through undetected.
+Stryker Mutator VSCode extension is a plugin for Visual Studio Code (& friends) that enables developers to use the [Stryker Mutator](https://stryker-mutator.io/) mutation testing framework directly within their code editor. Mutation testing is a technique used to improve the quality of software by introducing faults (or "mutations") into the codebase and checking if the tests catch them. The Stryker Mutator framework automates this process by generating many variations of the code (with different mutations) and running the tests against each variation to see which mutations are caught and which ones slip through undetected.
 
 This extension provides an easy-to-use interface for configuring and running the Stryker Mutator framework within your project. It allows you to customize the mutation testing process by specifying which selection, file, folder to launch the mutants against. It provides feedback on the progress and results of the mutation testing run. With the `Stryker Mutator`, you can easily improve the test coverage and overall quality of your codebase.
 
@@ -53,19 +63,19 @@ Afterward, right-click on a file, on a folder or over a selection of your best (
 
 Here is the list of all available (✔️) and upcoming (❌) features that will help you hunt mutants hiding in place sight:
 
-- `Stryker.NET: Mutate the file`: Will run Stryker to mutate one specific file. Available in the:
+- `Stryker.NET: Trigger mutation tests on file`: Will run Stryker to mutate one specific file. Available in the:
   - Context Menu (✔️)
   - Command Pallette (✔️)
-- `Stryker.NET: Mutate the selection`: will run Stryker to mutate a selected block of code within the editor. Available in the:
+- `Stryker.NET: Trigger mutation tests on selection`: will run Stryker to mutate a selected block of code within the editor. Available in the:
   - Context Menu (✔️)
   - Command Pallette (✔️)
-- `Stryker.NET: Mutate the folder`: Will run Stryker to mutate files under one specific folder. Available from the:
+- `Stryker.NET: Trigger mutation tests on folder`: Will run Stryker to mutate files under one specific folder. Available from the:
   - Context Menu (✔️)
   - Command Pallette (✔️)
-- `Stryker.NET: Mutate the workspace`: Will run Stryker to mutate all files. Available, with a disclaimer (❌), from the:
+- `Stryker.NET: Trigger mutation tests on workspace`: Will run Stryker to mutate all files. Available, with a disclaimer (✔️), from the:
   - Context Menu (✔️)
   - Command Pallette (✔️)
-- `Stryker.NET: Create Stryker configuration file`: Will create a default stryker configuration file based on the `.sln`. Available from the:
+- `Stryker.NET: Create Stryker.NET configuration file`: Will create a default stryker configuration file based on the `.sln`. Available from the:
   - Command Pallette (✔️)
 - `Stryker.NET: Install Stryker.NET Tool`: Will install the stryker dotnet tool. It will use the settings to determine the Global or Local Installation (❌). Available from the:
   - Command Pallette (✔️)
@@ -89,18 +99,24 @@ Even though the extension Stryker Mutator will work without any specific setting
 
 ## 🙋 Support & Assistance
 
+[![GitHub issues](https://img.shields.io/github/issues/datagone/vscode-stryker-mutator?logo=github)](https://github.com/datagone/vscode-stryker-mutator/issues)
+
 - ❤️ Please review the [Code of Conduct](https://github.com/datagone/vscode-stryker-mutator/blob/main/.github/CODE_OF_CONDUCT.md) for guidelines on ensuring everyone has the best experience interacting with the community.
 - 🙏 Take a look at the [support](https://github.com/datagone/vscode-stryker-mutator/blob/main/.github/SUPPORT.md) document on guidelines for tips on how to ask the right questions.
 - 🐞 For all features/bugs/issues/questions/etc., [head over here](https://github.com/datagone/vscode-stryker-mutator/issues/new/choose).
 
 ## 🤝 Contributing
 
+[![GitHub contributors](https://img.shields.io/github/contributors-anon/datagone/vscode-stryker-mutator?logo=github)](https://github.com/datagone/vscode-stryker-mutator)
+![GitHub pull requests](https://img.shields.io/github/issues-pr/datagone/vscode-stryker-mutator?logo=github)
+![GitHub last commit](https://img.shields.io/github/last-commit/datagone/vscode-stryker-mutator/main?logo=github)
+
 - ❤️ Please review the [Code of Conduct](https://github.com/datagone/vscode-stryker-mutator/blob/main/.github/CODE_OF_CONDUCT.md) for guidelines on ensuring everyone has the best experience interacting with the community.
-- 📋 Please review the [Contributing](https://github.com/datagone/vscode-stryker-mutator/blob/main/.github/CONTRIBUTING.md) doc for submitting issues/a guide on submitting pull requests and helping out.
+- 📋 Please review the [Contributing](https://github.com/datagone/vscode-stryker-mutator/blob/main/.github/CONTRIBUTING.md) document for submitting issues/a guide on submitting pull requests and helping out.
 
 ## 👏 Acknowledgements
 
-Thanks you to:
+Thanks to:
 
 - the hard work done by [slcp](https://github.com/slcp) behind his VSCode extension [pixabelle.stryker-runner](https://marketplace.visualstudio.com/items?itemName=pixabelle.stryker-runner) and it's repo GitHub [stryker-runner](https://github.com/slcp/stryker-runner) which integrates the Stryker-JS. This extension, [**`vscode-stryker-mutator`**](./), was build upon his work and would not have been available so soon without it.
 - [Manuel Sagra](https://www.flickr.com/photos/manuelsagra/) for the image of [TMNT](https://www.flickr.com/photos/manuelsagra/383825655/) on Flickr that inspired the logo mixed with the [Stryker Mutator](https://stryker-mutator.io/) logo.
