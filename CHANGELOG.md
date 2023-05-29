@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## [0.1.2](https://github.com/datagone/vscode-stryker-mutator/compare/v0.1.1...v0.1.2) (2023-05-29)
+
+
+### Bug Fixes
+
+* **config:** format the default stryker .NET configuration file to be valid ([8935df3](https://github.com/datagone/vscode-stryker-mutator/commit/8935df3d212c8af3f555ea722bf7a792d2d7bde2))
+
 ## [0.1.1](https://github.com/datagone/vscode-stryker-mutator/compare/v0.1.0...v0.1.1) (2023-05-28)
 
 
