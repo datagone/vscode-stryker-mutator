@@ -57,10 +57,11 @@ export class StrykerConfiguration implements StrykerConfigurationType {
     return {
       'stryker-config': {
         solution: `./${solutionName}`,
+        'mutation-level': 'Complete',
+        reporters: ['html', 'json', 'progress'],
+        'report-file-name': 'mutation-report',
+        thresholds: { high: 100, low: 100, break: 100 },
       },
-      'mutation-level': 'Advanced',
-      reporters: ['html', 'json', 'progress'],
-      thresholds: { high: 100, low: 100, break: 100 },
     };
   }
 
@@ -70,6 +71,7 @@ export class StrykerConfiguration implements StrykerConfigurationType {
     const solutionName: string = path.basename(solutionFile);
     return Promise.resolve(solutionName);
   }
+
   private async buildStrykerConfigBaseFile(solutionName: string): Promise<string> {
     if (!solutionName.endsWith(solutionNameExtension)) {
       return Promise.reject(`Solution file must be a ${solutionNameExtension} file`);
@@ -87,7 +89,7 @@ export class StrykerConfiguration implements StrykerConfigurationType {
 
     await this.isFileExists(filePath);
 
-    const jsonString: string = await this.buildStrykerConfigBaseFile(await this.findDotnetSolutionFile(/*folderUri*/));
+    const jsonString: string = await this.buildStrykerConfigBaseFile(await this.findDotnetSolutionFile());
 
     // Write the JSON string to the file
     fs.writeFile(filePath, jsonString, (err) => {

@@ -60,10 +60,11 @@ describe('WHEN Initializing the configuration file', () => {
         const expectedDefaultJsonStrykerConfigFile: any = {
           'stryker-config': {
             solution: './test.sln',
+            'mutation-level': 'Complete',
+            reporters: ['html', 'json', 'progress'],
+            'report-file-name': 'mutation-report',
+            thresholds: { high: 100, low: 100, break: 100 },
           },
-          'mutation-level': 'Advanced',
-          reporters: ['html', 'json', 'progress'],
-          thresholds: { high: 100, low: 100, break: 100 },
         };
         const expectedJsonStringForTheConfigurationFile = JSON.stringify(expectedDefaultJsonStrykerConfigFile, null, 2);
         mockGetWorkspaceFolder.mockReturnValue({
