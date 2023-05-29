@@ -1,4 +1,4 @@
-# VSCode ![logo VSCode extension Stryker Mutator](https://raw.githubusercontent.com/datagone/vscode-stryker-mutator/main/assets/images/logo.png) tryker Mutator
+# VSCode ![S](https://raw.githubusercontent.com/datagone/vscode-stryker-mutator/main/assets/images/logo.png)tryker Mutator
 
 ![GitHub](https://img.shields.io/github/license/datagone/vscode-stryker-mutator)
 ![GitHub Workflow Status (with branch)](https://img.shields.io/github/actions/workflow/status/datagone/vscode-stryker-mutator/ci-cd.yml?branch=main&logo=github)
