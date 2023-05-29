@@ -97,6 +97,31 @@ Even though the extension Stryker Mutator will work without any specific setting
 | ❌                         | strykerMutatorNet.experimental                 | Enable/Disable the experimental features which "may" activate new features (default: `false`/disable)                                                                                                    |
 | ❌                         | strykerMutatorNet.dotnet.tools.installGlobally | Enable/Disable the global installation of the stryker tool (default: `true`/enable)                                                                                                                      |
 
+## 🤯 Known Issues
+
+### Unable to execute, because command or file cannot be found
+
+#### _Context_
+
+- You are using a mono-repo style
+- And the workspace is not the root of the dotnet project
+- And you have manually installed stryker locally in the project instead of globally
+
+#### _Why does this happen?_
+
+Since we're using a "custom" terminal, named `Stryker`, to run the `dotnet stryker` command from the root workspace, it won't be able to access the dotnet tool manifest in a child folder.
+
+#### _How to make it work_
+
+You can solve this problem using the "custom" terminal, named `Stryker`:
+
+- Go to the root folder of the dotnet project (e.g.: `cd src/dotnet`).
+- Then `Trigger mutation test on...` using the context menu or the Command Palette.
+
+> 🚩 Information 🚩
+>
+> This is a temporary solution, and should be repeated each time you reopen this "custom" terminal.
+
 ## 🙋 Support & Assistance
 
 [![GitHub issues](https://img.shields.io/github/issues/datagone/vscode-stryker-mutator?logo=github)](https://github.com/datagone/vscode-stryker-mutator/issues)
