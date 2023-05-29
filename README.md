@@ -47,8 +47,8 @@ Overall, `Stryker Mutator` is a powerful tool for any developer looking to impro
 
 ## 🧱 Prerequisites
 
-- [.NET SDK](https://dotnet.microsoft.com/en-us/download) is require, [ _at least we tested it with .NET 7.0_ ]
-- [VS Code](https://code.visualstudio.com) 🤯 Obviously!!!
+- [.NET SDK](https://dotnet.microsoft.com/en-us/download) is require, [ _at least we tested it with .NET 6 & 7_ ]
+- [VS Code](https://code.visualstudio.com) 🤯 Obviously!!! & Friends (e.g.: [VSCodium](https://vscodium.com/))
 
 ## ⚙️ Usage
 
