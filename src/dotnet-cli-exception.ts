@@ -13,3 +13,7 @@ export class InvalidArgumentsException extends Error {
     super(message);
   }
 }
+
+export class NotImplementedException extends Error {
+  name = 'NotImplementedException';
+}
