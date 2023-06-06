@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import { DotnetType } from './dotnet';
 import { CommandRunner } from './stryker';
 import { isTestFile, showInvalidFileMessage } from './valid-files';
-import { NotImplementedException } from './dotnet-cli-exception';
+// import { NotImplementedException } from './dotnet-cli-exception';
 
 const tool = 'dotnet-stryker';
 
@@ -50,10 +50,15 @@ export const mutateWorkspaceCommand = (run: CommandRunner) => async () => {
   }
 };
 
-export const mutateSolutionCommand = (/*run: CommandRunner*/) => async () => {
-  vscode.window.showErrorMessage(`Stryker.NET: 'Trigger mutation tests on solution' is NOT implemented... YET!...`);
-  throw new NotImplementedException();
-};
+export const mutateSolutionCommand =
+  (run: CommandRunner) =>
+  async (...args: unknown[]) => {
+    vscode.window.showErrorMessage(`Stryker.NET: 'Trigger mutation tests on solution' is NOT implemented... YET!...`);
+    if (!(args[0] instanceof vscode.Uri)) return;
+    const file = args[0];
+    run({ file: file });
+    // throw new NotImplementedException();
+  };
 
 export const mutateFileCommand =
   (run: CommandRunner) =>

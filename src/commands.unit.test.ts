@@ -15,6 +15,7 @@ import {
   installStrykerDotnetToolCommand,
   uninstallStrykerDotnetToolCommand,
   mutateWorkspaceCommand,
+  mutateSolutionCommand,
 } from './commands';
 import { DotnetType } from './dotnet';
 import { mockConsoleLog } from './test-helpers';
@@ -244,6 +245,7 @@ describe('Commands', () => {
       expect(mockShowErrorMessage).not.toHaveBeenCalled();
     });
   });
+
   describe('Run stryker to mutate a selection', () => {
     it('should return a function', () => {
       expect(mutateSelectionCommand(jest.fn())).toEqual(expect.any(Function));
@@ -326,6 +328,132 @@ describe('Commands', () => {
       });
       expect(isTestFile).toHaveBeenCalledWith(expect.stringContaining(uriPath));
       expect(showInvalidFileMessage).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('Run stryker to mutate a solution', () => {
+    it('should return a function', () => {
+      expect(mutateSolutionCommand(jest.fn())).toEqual(expect.any(Function));
+    });
+    it('should do nothing if no URI is passed as an argument', async () => {
+      const run = jest.fn();
+
+      await mutateSolutionCommand(run)();
+
+      expect(run).not.toHaveBeenCalled();
+      expect(isTestFile).not.toHaveBeenCalled();
+      expect(showInvalidFileMessage).not.toHaveBeenCalled();
+    });
+    it('should run a command if the file is not a test file', async () => {
+      const run = jest.fn();
+      const uriPath: string = 'aSolution.sln';
+      const uriUseToCall: Uri = new Uri({ path: uriPath });
+      const expectedUri: unknown = { path: uriPath };
+      mockAsRelativePath.mockReturnValue(uriPath);
+      mockIsTestFile.mockReturnValue(false);
+
+      await mutateSolutionCommand(run)(uriUseToCall);
+
+      expect(run).toHaveBeenCalledWith({ file: expect.objectContaining(expectedUri) });
+      expect(showInvalidFileMessage).not.toHaveBeenCalledWith();
+    });
+
+    it('should show run a command if the active document is a .sln file', async () => {
+      const run = jest.fn();
+      const uriPath: string = 'aSolution.sln';
+      const mockDocument = { fileName: uriPath, uri: new Uri({ path: uriPath }) };
+      mockAsRelativePath.mockReturnValue(uriPath);
+      mockIsTestFile.mockReturnValue(false);
+      window.activeTextEditor = {
+        document: mockDocument,
+      };
+
+      await mutateSolutionCommand(run)({ path: '' });
+
+      const expectedUri: unknown = { path: uriPath };
+
+      expect(run).toHaveBeenCalledTimes(1);
+      expect(run).toHaveBeenCalledWith({ file: expect.objectContaining(expectedUri) });
+      expect(isTestFile).toHaveBeenCalledWith(expect.stringContaining(uriPath));
+      expect(showInvalidFileMessage).not.toHaveBeenCalledWith();
+      expect(mockShowErrorMessage).not.toHaveBeenCalled();
+    });
+
+    it('should show OpenDialog if the active document is not a .sln file', async () => {
+      const run = jest.fn();
+      const uriPath: string = 'x.md';
+      const mockDocument = { fileName: uriPath, uri: new Uri({ path: uriPath }) };
+      window.activeTextEditor = {
+        document: mockDocument,
+      };
+      const expectChosenFileOrFolderMissing = 'Stryker.NET: You must select a solution file';
+
+      await mutateSolutionCommand(run)({ path: '' });
+
+      expect(mockShowOpenDialog).toHaveBeenCalledTimes(1);
+      expect(mockShowErrorMessage).toHaveBeenCalledWith(expectChosenFileOrFolderMissing);
+      expect(isTestFile).not.toHaveBeenCalledWith();
+      expect(run).not.toHaveBeenCalled();
+    });
+
+    it('should show select missing file message if cancel the opendialog', async () => {
+      const run = jest.fn();
+      mockIsTestFile.mockReturnValue(false);
+      window.activeTextEditor = {
+        document: undefined,
+      };
+      when(mockShowOpenDialog).calledWith(expect.anything()).mockResolvedValue(undefined);
+      const expectChosenFileOrFolderMissing = 'Stryker.NET: You must select a solution file';
+
+      await mutateSolutionCommand(run)({ path: '' });
+
+      expect(run).not.toHaveBeenCalled();
+      expect(mockShowErrorMessage).toHaveBeenCalledWith(expectChosenFileOrFolderMissing);
+      expect(isTestFile).not.toHaveBeenCalledWith();
+    });
+
+    it('should show select missing file message if no sln file is chosen in the opendialog', async () => {
+      const run = jest.fn();
+      mockIsTestFile.mockReturnValue(false);
+      window.activeTextEditor = {
+        document: undefined,
+      };
+      const expectChosenFileOrFolderMissing = 'Stryker.NET: You must select a solution file';
+      when(mockShowOpenDialog).calledWith(expect.anything()).mockResolvedValue([]);
+
+      await mutateFileCommand(run)({ path: '' });
+
+      expect(run).not.toHaveBeenCalled();
+      expect(mockShowErrorMessage).toHaveBeenCalledWith(expectChosenFileOrFolderMissing);
+      expect(isTestFile).not.toHaveBeenCalledWith();
+    });
+
+    it('should show  run a command if a file or folder is chosen in the opendialog', async () => {
+      const run = jest.fn();
+      const fileOrFolderFullPath: Uri = Uri.file('./tempo/tryout/x.cs');
+      const fileOrFolderPath: string = 'x.cs';
+      const expectedUri: unknown = { path: fileOrFolderFullPath.fsPath };
+      window.activeTextEditor = {
+        document: undefined,
+      };
+      mockIsTestFile.mockReturnValue(false);
+      const stubFilters: Record<string, string[]> = {
+        'C# Files': ['cs'],
+        'All Files': ['*'],
+      };
+      const dialogOptions: OpenDialogOptions = {
+        canSelectMany: false,
+        filters: stubFilters,
+      };
+      when(mockShowOpenDialog).calledWith(dialogOptions).mockResolvedValue([fileOrFolderFullPath]);
+
+      await mutateFileCommand(run)({ path: '' });
+
+      expect(run).toHaveBeenCalledTimes(1);
+      expect(run).toHaveBeenCalledWith({ file: expect.objectContaining(expectedUri) });
+      expect(isTestFile).toHaveBeenCalledWith(expect.stringContaining(fileOrFolderPath));
+      expect(showInvalidFileMessage).not.toHaveBeenCalledWith();
+      expect(mockShowErrorMessage).not.toHaveBeenCalled();
     });
   });
 

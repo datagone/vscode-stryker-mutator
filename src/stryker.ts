@@ -7,21 +7,39 @@ export type CommandRunner = (args: { file?: vscode.Uri; range?: string }) => voi
 
 const makeCommand = (file?: vscode.Uri, range?: string) => {
   const strykerBin = strykerCommand();
-  return `${strykerBin}${withMutateParam(file, range)}${withConfigFileParams()}${withOptionalParams()}`;
+  return `${strykerBin}${withSlnPrjFileOrFolder(file, range)}${withConfigFileParams()}${withOptionalParams()}`;
+};
+
+const withSlnPrjFileOrFolder = (file?: vscode.Uri, range?: string): string => {
+  if (file) {
+    let target: string = path.basename(file.fsPath);
+    if (target.endsWith('.sln')) {
+      return ` --solution "${target}"`;
+    }
+    // else if(target.endsWith('.csproj')) {
+    //   return ` --project "${target}"`;
+    // }
+    // else if(target.endsWith('.Tests.csproj')) {
+    //   return ` --test-project "${target}"`;
+    // }
+    else {
+      return withMutateParam(file, range);
+    }
+  }
+  return '';
 };
 
 const withMutateParam = (file?: vscode.Uri, range?: string): string => {
-  if (!file) {
-    return '';
-  }
-
-  let mutantToTarget: string = path.basename(file.fsPath);
+  // if(file) {
+  let mutantToTarget: string = path.basename(file!.fsPath);
   if (!mutantToTarget.endsWith('.cs')) {
     mutantToTarget = `**\\${mutantToTarget}\\*`;
   }
 
   const target = `${mutantToTarget}${range ? `{${range}}` : ''}`;
   return ` --mutate "${target}"`;
+  // }
+  // return '';
 };
 
 const withConfigFileParams = (): string => {

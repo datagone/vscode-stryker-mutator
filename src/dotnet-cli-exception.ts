@@ -14,6 +14,6 @@ export class InvalidArgumentsException extends Error {
   }
 }
 
-export class NotImplementedException extends Error {
-  name = 'NotImplementedException';
-}
+// export class NotImplementedException extends Error {
+//   name = 'NotImplementedException';
+// }

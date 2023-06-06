@@ -78,6 +78,12 @@ describe('Stryker', () => {
         // Assert (THEN)
         expect(mockRunCommandReturn).toHaveBeenCalledWith('a/command --mutate "file.cs"');
       });
+      it('should execute a Stryker command with a solution', () => {
+        // Act (WHEN)
+        commandRunner()({ file: new Uri({ path: '/path/to/aSolution.sln' }) });
+        // Assert (THEN)
+        expect(mockRunCommandReturn).toHaveBeenCalledWith('a/command --solution "aSolution.sln"');
+      });
       it('should execute a Stryker command to mutate a folder for underneath .cs files', () => {
         // Act (WHEN)
         commandRunner()({ file: new Uri({ path: '/path/to/folder' }) });
