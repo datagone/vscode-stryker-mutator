@@ -53,10 +53,25 @@ export const mutateWorkspaceCommand = (run: CommandRunner) => async () => {
 export const mutateSolutionCommand =
   (run: CommandRunner) =>
   async (...args: unknown[]) => {
-    vscode.window.showErrorMessage(`Stryker.NET: 'Trigger mutation tests on solution' is NOT implemented... YET!...`);
-    if (!(args[0] instanceof vscode.Uri)) return;
-    const file = args[0];
-    run({ file: file });
+    let file: vscode.Uri;
+
+    // vscode.window.showErrorMessage(`Stryker.NET: 'Trigger mutation tests on solution' is NOT implemented... YET!...`);
+    if (!(args[0] && args[0] instanceof vscode.Uri)) {
+      const doc = vscode.window.activeTextEditor?.document;
+      if (doc?.fileName?.endsWith('.sln')) {
+        file = doc.uri;
+      } else {
+        try {
+          file = await ChooseAFileToMutate();
+        } catch (err: unknown) {
+          vscode.window.showErrorMessage(`Stryker.NET: ${err}`);
+          return;
+        }
+      }
+    } else {
+      file = args[0] as vscode.Uri;
+    }
+    run({ file });
     // throw new NotImplementedException();
   };
 
@@ -67,25 +82,31 @@ export const mutateFileCommand =
 
     if (!(args[0] && args[0] instanceof vscode.Uri)) {
       const doc = vscode.window.activeTextEditor?.document;
-      if (doc?.fileName.endsWith('.cs')) {
+      if (doc?.fileName!.endsWith('.cs')) {
         file = doc.uri;
       } else {
-        const filters: Record<string, string[]> = {
-          'C# Files': ['cs'],
-          'All Files': ['*'],
-        };
-        const options: vscode.OpenDialogOptions = {
-          canSelectMany: false,
-          filters: filters,
-        };
-
-        const folderUri = await vscode.window.showOpenDialog(options);
-        if (folderUri && folderUri.length === 1) {
-          file = folderUri[0];
-        } else {
-          vscode.window.showErrorMessage('Stryker.NET: You must select a file or folder');
+        try {
+          file = await ChooseAFileToMutate();
+        } catch (err: unknown) {
+          vscode.window.showErrorMessage(`Stryker.NET: ${err}`);
           return;
         }
+        // const filters: Record<string, string[]> = {
+        //   'C# Files': ['cs'],
+        //   'All Files': ['*'],
+        // };
+        // const options: vscode.OpenDialogOptions = {
+        //   canSelectMany: false,
+        //   filters: filters,
+        // };
+
+        // const folderUri = await vscode.window.showOpenDialog(options);
+        // if (folderUri && folderUri.length === 1) {
+        //   file = folderUri[0];
+        // } else {
+        //   vscode.window.showErrorMessage('Stryker.NET: You must select a file or folder');
+        //   return;
+        // }
       }
     } else {
       file = args[0] as vscode.Uri;
@@ -130,3 +151,30 @@ export const mutateSelectionCommand =
 
     run({ file: file, range: characterRange });
   };
+
+const ChooseAFileToMutate = async (): Promise<vscode.Uri> => {
+  let fileToMutate: vscode.Uri;
+
+  const filters: Record<string, string[]> = {
+    'C# Files': ['cs'],
+    '.Net Solution Files': ['sln'],
+    '.Net Project Files': ['csproj'],
+    '.Net TestProject Files': ['Tests.csproj', 'Test.csproj'],
+    'All Files': ['*'],
+  };
+  const options: vscode.OpenDialogOptions = {
+    canSelectMany: false,
+    filters: filters,
+  };
+
+  const folderUri = await vscode.window.showOpenDialog(options);
+  if (folderUri && folderUri.length === 1) {
+    fileToMutate = folderUri[0];
+  } else {
+    const msgError: string = 'You must select a file or folder';
+    // vscode.window.showErrorMessage('Stryker.NET: You must select a file or folder');
+    return Promise.reject(msgError);
+  }
+
+  return fileToMutate;
+};
