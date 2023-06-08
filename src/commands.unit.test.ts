@@ -110,7 +110,7 @@ describe('Commands', () => {
     let stubFilters: Record<string, string[]>;
     let dialogOptions: OpenDialogOptions;
 
-    beforeEach(() => {
+    beforeEach(async () => {
       stubFilters = {
         'C# Files': ['cs'],
         '.Net Solution Files': ['sln'],
@@ -124,7 +124,7 @@ describe('Commands', () => {
       };
     });
 
-    it('should return a function', () => {
+    it('should return a function', async () => {
       expect(mutateFileCommand(jest.fn())).toEqual(expect.any(Function));
     });
     it('should do nothing if no URI is passed as an argument', async () => {
@@ -343,12 +343,12 @@ describe('Commands', () => {
   });
 
   describe('WHEN running stryker to mutate a solution', () => {
-    let run: CommandRunner;
+    let mockCommandRunner = commandRunner as jest.MockedFn<typeof commandRunner>;
     let uriPath: string;
     let stubFilters: Record<string, string[]>;
     let dialogOptions: OpenDialogOptions;
 
-    beforeEach(() => {
+    beforeEach(async () => {
       stubFilters = {
         'C# Files': ['cs'],
         '.Net Solution Files': ['sln'],
@@ -360,10 +360,8 @@ describe('Commands', () => {
         canSelectMany: false,
         filters: stubFilters,
       };
-    });
 
-    beforeEach(() => {
-      run = jest.fn();
+      mockCommandRunner = jest.fn();
       uriPath = 'aSolution.sln';
     });
 
@@ -374,11 +372,11 @@ describe('Commands', () => {
     describe('GIVEN a solution file', () => {
       describe('AND GIVEN no URI is passed as arguments', () => {
         it('THEN should show an error message', async () => {
-          const run = jest.fn();
+          //const run = jest.fn();
 
-          await mutateSolutionCommand(run)();
+          await mutateSolutionCommand(mockCommandRunner)();
 
-          expect(run).not.toHaveBeenCalled();
+          expect(mockCommandRunner).not.toHaveBeenCalledWith();
           expect(mockShowErrorMessage).toHaveBeenCalledTimes(1);
         });
       });
@@ -390,10 +388,10 @@ describe('Commands', () => {
           mockAsRelativePath.mockReturnValue(uriPath);
           mockIsTestFile.mockReturnValue(false);
 
-          await mutateSolutionCommand(run)(uriUseToCall);
+          await mutateSolutionCommand(mockCommandRunner)(uriUseToCall);
 
           expect(showInvalidFileMessage).not.toHaveBeenCalledWith();
-          expect(run).toHaveBeenCalledWith({ file: expect.objectContaining(expectedUri) });
+          expect(mockCommandRunner).toHaveBeenCalledWith({ file: expect.objectContaining(expectedUri) });
         });
       });
 
@@ -410,26 +408,25 @@ describe('Commands', () => {
             mockAsRelativePath.mockReturnValue(uriPath);
             mockIsTestFile.mockReturnValue(false);
 
-            await mutateSolutionCommand(run)({ path: '' });
+            await mutateSolutionCommand(mockCommandRunner)({ path: '' });
 
-            expect(run).toHaveBeenCalledTimes(1);
-            expect(run).toHaveBeenCalledWith({ file: expect.objectContaining(expectedUri) });
+            expect(mockCommandRunner).toHaveBeenCalledTimes(1);
+            expect(mockCommandRunner).toHaveBeenCalledWith({ file: expect.objectContaining(expectedUri) });
             expect(mockShowErrorMessage).not.toHaveBeenCalled();
           });
         });
 
         describe('AND GIVEN the active document is not a .sln file', () => {
           it('THEN should show OpenDialog', async () => {
-            const run = jest.fn();
             const uriPath: string = 'x.md';
             const mockDocument = { fileName: uriPath, uri: new Uri({ path: uriPath }) };
             window.activeTextEditor = {
               document: mockDocument,
             };
 
-            await mutateSolutionCommand(run)({ path: '' });
+            await mutateSolutionCommand(mockCommandRunner)({ path: '' });
 
-            expect(run).not.toHaveBeenCalled();
+            expect(mockCommandRunner).not.toHaveBeenCalled();
             expect(mockShowOpenDialog).toHaveBeenCalledTimes(1);
             expect(mockShowErrorMessage).toHaveBeenCalledWith(expectChosenFileOrFolderMissing);
           });
@@ -437,37 +434,34 @@ describe('Commands', () => {
 
         describe('AND GIVEN canceling the OpenDialog', () => {
           it('THEN should display an error message that no valid selection was made', async () => {
-            const run = jest.fn();
             window.activeTextEditor = {
               document: undefined,
             };
             when(mockShowOpenDialog).calledWith(expect.anything()).mockResolvedValue(undefined);
 
-            await mutateSolutionCommand(run)({ path: '' });
+            await mutateSolutionCommand(mockCommandRunner)({ path: '' });
 
-            expect(run).not.toHaveBeenCalled();
+            expect(mockCommandRunner).not.toHaveBeenCalled();
             expect(mockShowErrorMessage).toHaveBeenCalledWith(expectChosenFileOrFolderMissing);
           });
         });
 
         describe('AND GIVEN something has been chosen in OpenDialog', () => {
           it('THEN should display an error message that no valid selection was made', async () => {
-            const run = jest.fn();
             window.activeTextEditor = {
               document: undefined,
             };
             when(mockShowOpenDialog).calledWith(expect.anything()).mockResolvedValue([]);
 
-            await mutateFileCommand(run)({ path: '' });
+            await mutateFileCommand(mockCommandRunner)({ path: '' });
 
-            expect(run).not.toHaveBeenCalled();
+            expect(mockCommandRunner).not.toHaveBeenCalled();
             expect(mockShowErrorMessage).toHaveBeenCalledWith(expectChosenFileOrFolderMissing);
           });
         });
 
         describe('AND GIVEN a sln file is chosen in the OpenDialog', () => {
           it('THEN should run a command', async () => {
-            const run = jest.fn();
             const aSlnFullPath: Uri = Uri.file('./tempo/tryout.sln');
             const expectedUri: unknown = { path: aSlnFullPath.fsPath };
             window.activeTextEditor = {
@@ -475,10 +469,10 @@ describe('Commands', () => {
             };
             when(mockShowOpenDialog).calledWith(dialogOptions).mockResolvedValue([aSlnFullPath]);
 
-            await mutateFileCommand(run)({ path: '' });
+            await mutateFileCommand(mockCommandRunner)({ path: '' });
 
-            expect(run).toHaveBeenCalledTimes(1);
-            expect(run).toHaveBeenCalledWith({ file: expect.objectContaining(expectedUri) });
+            expect(mockCommandRunner).toHaveBeenCalledTimes(1);
+            expect(mockCommandRunner).toHaveBeenCalledWith({ file: expect.objectContaining(expectedUri) });
             expect(mockShowErrorMessage).not.toHaveBeenCalled();
           });
         });
