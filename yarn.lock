@@ -7007,10 +7007,10 @@ semantic-release-stop-before-publish@1.0.0:
   resolved "https://registry.yarnpkg.com/semantic-release-stop-before-publish/-/semantic-release-stop-before-publish-1.0.0.tgz#1562c2560cf1e37fd2b6fb10d0d802d524583c2c"
   integrity sha512-LylAHHLcKxLGb0/cADeeS7EhNa35XK0L5Qar3ayNdtutjm4MQcdGV3pxKR0nlDdPpKFn7RZGFIvzDO+hRHj2kA==
 
-semantic-release-vsce@5.5.9:
-  version "5.5.9"
-  resolved "https://registry.yarnpkg.com/semantic-release-vsce/-/semantic-release-vsce-5.5.9.tgz#99e4fd31ecd583bc7356f285c48d6cbb8b4cdaa3"
-  integrity sha512-CsteNwBfkGWCQ8EPoLYH/+S0mJeZML409ZJOP3Nghk9jeZsPziMnhMr7W6Fla5jYfgDNZiIscvB9ESYhVMsGCA==
+semantic-release-vsce@5.5.10:
+  version "5.5.10"
+  resolved "https://registry.yarnpkg.com/semantic-release-vsce/-/semantic-release-vsce-5.5.10.tgz#1c771486ef41d79928d6bc6be34c9eed8ef187f0"
+  integrity sha512-XfINC8gnHJd5Qh9CLUccpZSapAN7e8klNXyTHY8ppSoQJTUtJLlT+0Shyl75kr7qv1h0q/5BTHF9dXTdyBjn1w==
   dependencies:
     "@semantic-release/error" "^3.0.0"
     "@vscode/vsce" "^2.15.0"
