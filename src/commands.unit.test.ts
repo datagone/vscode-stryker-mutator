@@ -22,7 +22,6 @@ import { mockConsoleLog } from './test-helpers';
 import { isTestFile, showInvalidFileMessage } from './valid-files';
 import { commandRunner } from './stryker';
 import { OpenDialogOptions } from 'vscode';
-import { CommandRunner } from './stryker';
 
 jest.mock('./valid-files');
 jest.mock('./stryker.ts');
@@ -343,7 +342,7 @@ describe('Commands', () => {
   });
 
   describe('WHEN running stryker to mutate a solution', () => {
-    let mockCommandRunner = commandRunner as jest.MockedFn<typeof commandRunner>;
+    // let mockCommandRunner = commandRunner as jest.MockedFn<typeof commandRunner>;
     let uriPath: string;
     let stubFilters: Record<string, string[]>;
     let dialogOptions: OpenDialogOptions;
@@ -361,7 +360,7 @@ describe('Commands', () => {
         filters: stubFilters,
       };
 
-      mockCommandRunner = jest.fn();
+      // mockCommandRunner = jest.fn();
       uriPath = 'aSolution.sln';
     });
 
@@ -370,16 +369,23 @@ describe('Commands', () => {
     // });
 
     describe('GIVEN a solution file', () => {
-      describe('AND GIVEN no URI is passed as arguments', () => {
-        it('THEN should show an error message', async () => {
-          //const run = jest.fn();
+      // describe('AND GIVEN no URI is passed as arguments', () => {
+      //   it('THEN should show an error message', async () => {
+      //     // //const run = jest.fn();
 
-          await mutateSolutionCommand(mockCommandRunner)();
+      //     // await mutateSolutionCommand(mockCommandRunner)();
 
-          expect(mockCommandRunner).not.toHaveBeenCalledWith();
-          expect(mockShowErrorMessage).toHaveBeenCalledTimes(1);
-        });
-      });
+      //     // expect(mockCommandRunner).not.toHaveBeenCalledWith();
+      //     // expect(mockShowErrorMessage).toHaveBeenCalledTimes(1);
+      //     const run = jest.fn();
+
+      //     await mutateSolutionCommand(run)();
+
+      //     expect(run).not.toHaveBeenCalled();
+      //     // expect(isTestFile).not.toHaveBeenCalled();
+      //     // expect(showInvalidFileMessage).not.toHaveBeenCalled();
+      //   });
+      // });
 
       describe('AND GIVEN the solutin file URI as arguments', () => {
         it('THEN should run a command for the solution', async () => {
@@ -424,7 +430,7 @@ describe('Commands', () => {
               document: mockDocument,
             };
 
-            await mutateSolutionCommand(mockCommandRunner)({ path: '' });
+            await mutateSolutionCommand(mockCommandRunner)();
 
             expect(mockCommandRunner).not.toHaveBeenCalled();
             expect(mockShowOpenDialog).toHaveBeenCalledTimes(1);

@@ -53,26 +53,32 @@ export const mutateWorkspaceCommand = (run: CommandRunner) => async () => {
 export const mutateSolutionCommand =
   (run: CommandRunner) =>
   async (...args: unknown[]) => {
-    let file: vscode.Uri;
+    await mutateFileCommand(run)(...args);
+    // let file: vscode.Uri = args[0] as vscode.Uri;
 
-    // vscode.window.showErrorMessage(`Stryker.NET: 'Trigger mutation tests on solution' is NOT implemented... YET!...`);
-    if (!(args[0] && args[0] instanceof vscode.Uri)) {
-      const doc = vscode.window.activeTextEditor?.document;
-      if (doc?.fileName?.endsWith('.sln')) {
-        file = doc.uri;
-      } else {
-        try {
-          file = await ChooseAFileToMutate();
-        } catch (err: unknown) {
-          vscode.window.showErrorMessage(`Stryker.NET: ${err}`);
-          return;
-        }
-      }
-    } else {
-      file = args[0] as vscode.Uri;
-    }
-    run({ file });
-    // throw new NotImplementedException();
+    // // vscode.window.showErrorMessage(`Stryker.NET: 'Trigger mutation tests on solution' is NOT implemented... YET!...`);
+    // if (!(args[0] && args[0] instanceof vscode.Uri)) {
+    //   const doc = vscode.window.activeTextEditor?.document;
+    //   if (doc?.fileName?.endsWith('.sln')) {
+    //     file = doc.uri;
+    //   } else {
+    //     try {
+    //       file = await ChooseAFileToMutate();
+    //     } catch (err: unknown) {
+    //       vscode.window.showErrorMessage(`Stryker.NET: ${err}`);
+    //       return file;
+    //     }
+    //   }
+    // }
+    // // else {
+    // //   file = args[0] as vscode.Uri;
+    // // }
+
+    // if(file !== undefined) {
+
+    //   run({ file });
+    // }
+    // // throw new NotImplementedException();
   };
 
 export const mutateFileCommand =
@@ -82,7 +88,7 @@ export const mutateFileCommand =
 
     if (!(args[0] && args[0] instanceof vscode.Uri)) {
       const doc = vscode.window.activeTextEditor?.document;
-      if (doc?.fileName!.endsWith('.cs')) {
+      if (doc?.fileName!.endsWith('.cs') || doc?.fileName?.endsWith('.sln')) {
         file = doc.uri;
       } else {
         try {
