@@ -49,6 +49,11 @@ export const mutateWorkspaceCommand = (run: CommandRunner) => async () => {
   }
 };
 
+export const mutateSolutionCommand = (/*run: CommandRunner*/) => async () => {
+  vscode.window.showErrorMessage(`Stryker.NET: 'Trigger mutation tests on solution' is NOT implemented... YET!...`);
+  throw new Error('NotImplementedException');
+};
+
 export const mutateFileCommand =
   (run: CommandRunner) =>
   async (...args: unknown[]) => {

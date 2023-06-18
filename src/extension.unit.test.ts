@@ -6,6 +6,7 @@ import {
   installStrykerDotnetToolCommand,
   uninstallStrykerDotnetToolCommand,
   mutateWorkspaceCommand,
+  mutateSolutionCommand,
 } from './commands';
 import { activate, deactivate } from './extension';
 import { commandRunner } from './stryker';
@@ -30,6 +31,7 @@ const mockMutateWorkspaceCommand = mutateWorkspaceCommand as jest.MockedFn<typeo
 const mockmutateFolderCommand = mutateFileCommand as jest.MockedFn<typeof mutateFileCommand>;
 const mockmutateFileCommand = mutateFileCommand as jest.MockedFn<typeof mutateFileCommand>;
 const mockmutateSelectionCommand = mutateSelectionCommand as jest.MockedFn<typeof mutateSelectionCommand>;
+const mockmutateSolutionCommand = mutateSolutionCommand as jest.MockedFn<typeof mutateSolutionCommand>;
 
 describe('Extension', () => {
   beforeEach(() => {
@@ -45,9 +47,13 @@ describe('Extension', () => {
       mockmutateFolderCommand.mockReturnValueOnce('mutate a folder' as any);
       mockmutateFileCommand.mockReturnValueOnce('mutate a file' as any);
       mockmutateSelectionCommand.mockReturnValueOnce('mutate a selection' as any);
+      mockmutateSolutionCommand.mockReturnValueOnce('mutate a solution' as any);
+
       mockRegisterCommand.mockReturnValueOnce('on folder command registered' as any);
       mockRegisterCommand.mockReturnValueOnce('on file command registered' as any);
       mockRegisterCommand.mockReturnValueOnce('on selection command registered' as any);
+      mockRegisterCommand.mockReturnValueOnce('on solution command registered' as any);
+
       const context = {
         subscriptions: {
           push: jest.fn(),
@@ -72,7 +78,11 @@ describe('Extension', () => {
 
       expect(mutateSelectionCommand).toHaveBeenCalledTimes(1);
       expect(mutateSelectionCommand).toHaveBeenCalledWith('command runner');
-      expect(commands.registerCommand).toHaveBeenCalledTimes(7);
+
+      expect(mutateSolutionCommand).toHaveBeenCalledTimes(1);
+      expect(mutateSolutionCommand).toHaveBeenCalledWith('command runner');
+
+      expect(commands.registerCommand).toHaveBeenCalledTimes(8);
 
       expect(commands.registerCommand).toHaveBeenCalledWith(
         'vscode-stryker-mutator.create-stryker-config-file',
@@ -103,10 +113,16 @@ describe('Extension', () => {
         'mutate a selection'
       );
 
-      expect(context.subscriptions.push).toHaveBeenCalledTimes(7);
+      expect(commands.registerCommand).toHaveBeenCalledWith(
+        'vscode-stryker-mutator.mutate-solution',
+        'mutate a solution'
+      );
+
+      expect(context.subscriptions.push).toHaveBeenCalledTimes(8);
       expect(context.subscriptions.push).toHaveBeenCalledWith('on folder command registered');
       expect(context.subscriptions.push).toHaveBeenCalledWith('on file command registered');
       expect(context.subscriptions.push).toHaveBeenCalledWith('on selection command registered');
+      expect(context.subscriptions.push).toHaveBeenCalledWith('on solution command registered');
     });
   });
 
