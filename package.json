@@ -170,6 +170,7 @@
     "lint:lastcommit": "npx commitlint --from HEAD~1 --to HEAD --verbose",
     "test": "node ./out/test/runTest.js",
     "test:unit": "jest \"(?<=.unit).test.ts$\" --coverage",
+    "test:unit:file": "jest --coverage --testPathPattern",
     "test:mutation": "stryker run --incremental",
     "test:mutation:full": "stryker run",
     "ci:dryrun": "semantic-release --extends ./release.package.config.js --dry-run",

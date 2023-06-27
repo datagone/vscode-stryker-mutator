@@ -1,7 +1,10 @@
 import * as vscode from 'vscode';
 import { DotnetType } from './dotnet';
 import { CommandRunner } from './stryker';
-import { isTestFile, showInvalidFileMessage } from './valid-files';
+import { fileCanBeMutated, isTestFile, showInvalidFileMessage } from './valid-files';
+import IPathToMutate from './pathToMutate.interface';
+import PathToMutate from './pathToMutate';
+import { selectAFileToMutateFrom } from './fileSelector';
 
 const tool = 'dotnet-stryker';
 
@@ -49,9 +52,71 @@ export const mutateWorkspaceCommand = (run: CommandRunner) => async () => {
   }
 };
 
-export const mutateSolutionCommand = (/*run: CommandRunner*/) => async () => {
-  vscode.window.showErrorMessage(`Stryker.NET: 'Trigger mutation tests on solution' is NOT implemented... YET!...`);
-  throw new Error('NotImplementedException');
+export const mutateSolutionCommand =
+  (run: CommandRunner) =>
+  async (...args: unknown[]) => {
+    let filePath: vscode.Uri | undefined;
+    // if (args[0] && args[0] instanceof vscode.Uri && fileCanBeMutated(args[0].fsPath)) {
+    //   filePath = args[0] as vscode.Uri;
+    // }
+    // else {
+    //   const doc = vscode.window.activeTextEditor?.document;
+    //   //if (doc && doc?.uri instanceof vscode.Uri) {
+    //   if(doc && doc?.uri instanceof vscode.Uri && fileCanBeMutated(doc!.fileName)) {
+    //     filePath = doc!.uri;
+    //   }
+    //   else {
+    //     try {
+    //       filePath = await chooseAFileToMutate();
+    //     }
+    //     catch (error) {
+    //       const errMessage: string = `Stryker.NET: ${error}`;
+    //       vscode.window.showErrorMessage(errMessage);
+    //       //throw new Error(errMessage);
+    //     }
+    //   }
+    // }
+    try {
+      filePath = await selectAFileToMutateFrom(args[0] as vscode.Uri);
+    } catch (error) {
+      const errMessage: string = `Stryker.NET: ${error}`;
+      vscode.window.showErrorMessage(errMessage);
+      //throw new Error(errMessage);
+    }
+
+    if (filePath !== undefined) {
+      const fileToMutate: IPathToMutate = new PathToMutate(filePath);
+      fileToMutate.addPathToMutate(filePath);
+
+      launchCommandWithFile(run, fileToMutate);
+    }
+  };
+
+// const chooseAFileToMutate = async (): Promise<vscode.Uri> => {
+//   let file: vscode.Uri;
+
+//   const filters: Record<string, string[]> = {
+//     '.Net Files': ['cs'],
+//     '.Net Solution Files': ['sln'],
+//     '.Net Project Files': ['csproj'],
+//   };
+//   const options: vscode.OpenDialogOptions = {
+//     canSelectMany: false,
+//     filters: filters,
+//   };
+
+//   const folderUri = await vscode.window.showOpenDialog(options);
+
+//   if (folderUri && folderUri.length === 1) {
+//     file = folderUri[0];
+//   } else {
+//     return Promise.reject('You must select a file or folder');
+//   }
+//   return file;
+// };
+
+const launchCommandWithFile = async (run: CommandRunner, fileToMutate: IPathToMutate) => {
+  run({ file: fileToMutate });
 };
 
 export const mutateFileCommand =

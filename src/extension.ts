@@ -42,7 +42,7 @@ export function activate(context: vscode.ExtensionContext) {
 
   let mutateSolution = vscode.commands.registerCommand(
     'vscode-stryker-mutator.mutate-solution',
-    mutateSolutionCommand(/*run*/)
+    mutateSolutionCommand(run)
   );
 
   let mutateFolder = vscode.commands.registerCommand('vscode-stryker-mutator.mutate-folder', mutateFileCommand(run));
