@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 
-const IS_TEST_FILE_REGEX = new RegExp(/tests?[\w-.\\/]*\.(cs)$/, 'i');
-const FILE_CAN_BE_MUTATED_REGEX = new RegExp(/[\w-.\\/]*\.(cs|sln|csproj)$/, 'i');
+const IS_TEST_FILE_REGEX = new RegExp(/tests?[\w\-\.\\\/\s\[\]\(\)]*\.(cs)$/, 'i');
+const FILE_CAN_BE_MUTATED_REGEX = new RegExp(/[\w\s\-\[\]\(\)]\.(cs|sln|csproj)$/, 'i');
 
 // const IS_A_SOLUTION_FILE_REGEX = new RegExp(/[\w-.\\/]*\.sln$/, 'i');
 // const IS_A_PROJECT_FILE_REGEX = new RegExp(/([\w-.\\/]*\.csproj)$/, 'i');
