@@ -192,7 +192,7 @@
     "prettier": "3.0.0",
     "semantic-release": "21.0.7",
     "semantic-release-stop-before-publish": "1.0.0",
-    "semantic-release-vsce": "5.5.10",
+    "semantic-release-vsce": "5.6.0",
     "shell-escape": "0.2.0",
     "ts-jest": "29.1.1",
     "ts-loader": "9.4.4",
