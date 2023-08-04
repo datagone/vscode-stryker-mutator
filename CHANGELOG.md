@@ -1,5 +1,19 @@
 # CHANGELOG
 
+# [0.2.0](https://github.com/datagone/vscode-stryker-mutator/compare/v0.1.2...v0.2.0) (2023-08-04)
+
+
+### Bug Fixes
+
+* **commands:** mutate workspace is deprecated. mutate workspace/folder are removed from context menu ([e4c69d5](https://github.com/datagone/vscode-stryker-mutator/commit/e4c69d5d351a7b77a6cc7fea96e76496d4e45e7a))
+* **context menu:** enforce that file mutation won't be trigger by a folder name endind with an ext ([1b743b4](https://github.com/datagone/vscode-stryker-mutator/commit/1b743b4f783e3a6a242c7abf00cb4d9974d7cd82))
+
+
+### Features
+
+* **commands:** add mutation for solution and project ([35ba53a](https://github.com/datagone/vscode-stryker-mutator/commit/35ba53ac4ef732c4b5fc8c3b75b0510b742f99c9))
+* **commands:** add mutation on folder ([e430c6b](https://github.com/datagone/vscode-stryker-mutator/commit/e430c6bdedd9c3e969b4308e85dba1039b0af8d0))
+
 ## [0.1.2](https://github.com/datagone/vscode-stryker-mutator/compare/v0.1.1...v0.1.2) (2023-05-29)
 
 

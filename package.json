@@ -15,7 +15,7 @@
     "url": "https://data-g.one"
   },
   "license": "GPL-3.0",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "preview": true,
   "engines": {
     "vscode": "^1.75.0"
