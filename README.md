@@ -76,11 +76,9 @@ Here is the list of all available (✔️) and upcoming (❌) features that will
   - Context Menu (✔️)
   - Command Pallette (✔️)
 - `Stryker.NET: Trigger mutation tests on folder`: Will run Stryker to mutate files under one specific folder. Available, with a disclaimer (❌), in the:
-  - Context Menu (✔️)
   - Command Pallette (✔️)
-- `Stryker.NET: Trigger mutation tests on workspace`: Will run Stryker to mutate all files. Available, with a disclaimer (✔️), from the:
-  - Context Menu (✔️)
-  - Command Pallette (✔️)
+- [♻️ Deprecated, please use `Stryker.NET: Trigger mutation tests on solution` instead]<br><del>`Stryker.NET: Trigger mutation tests on workspace`: Will run Stryker to mutate all files. Available, with a disclaimer (✔️), from the:
+  - Command Pallette (✔️)</del>
 - `Stryker.NET: Create Stryker.NET configuration file`: Will create a default stryker configuration file based on the `.sln`. Available from the:
   - Command Pallette (✔️)
 - `Stryker.NET: Install Stryker.NET Tool`: Will install the latest version of stryker dotnet tool. It will use the settings to determine the Global or Local Installation (❌). Available from the:

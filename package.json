@@ -68,7 +68,7 @@
       },
       {
         "command": "vscode-stryker-mutator.mutate-workspace",
-        "title": "Trigger mutation tests on workspace",
+        "title": "Trigger mutation tests on workspace [♻️ Deprecated - use 'on Solution']",
         "category": "Stryker.NET",
         "enablement": "true"
       },
@@ -111,11 +111,6 @@
           "group": "7_stryker"
         },
         {
-          "command": "vscode-stryker-mutator.mutate-folder",
-          "when": "explorerResourceIsFolder && !(resourceFilename =~ /tests?[\\w-.\\/]*$/i)",
-          "group": "7_stryker"
-        },
-        {
           "command": "vscode-stryker-mutator.mutate-project",
           "when": "resourceFilename =~ /[\\w-.\\/]*\\.(csproj)$/i",
           "group": "7_stryker"
@@ -123,10 +118,6 @@
         {
           "command": "vscode-stryker-mutator.mutate-solution",
           "when": "resourceFilename =~ /[\\w-.\\/]*\\.(sln)$/i",
-          "group": "7_stryker"
-        },
-        {
-          "command": "vscode-stryker-mutator.mutate-workspace",
           "group": "7_stryker"
         }
       ],
