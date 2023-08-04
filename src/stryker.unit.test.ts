@@ -54,7 +54,7 @@ describe('Stryker', () => {
         commandRunner()(commandFileParameter);
         // Assert (THEN)
         expect(mockRunCommandReturn).toHaveBeenCalledWith(
-          'a/command --mutate "file.cs" --config-file a/config/file/path.json'
+          'a/command --mutate "file.cs" --config-file a/config/file/path.json',
         );
       });
       it('should execute a Stryker command with optional parameters', () => {
@@ -83,6 +83,30 @@ describe('Stryker', () => {
         commandRunner()({ file: new Uri({ path: '/path/to/folder' }) });
         // Assert (THEN)
         expect(mockRunCommandReturn).toHaveBeenCalledWith('a/command --mutate "**\\folder\\*"');
+      });
+      it('should execute a Stryker command with the solution parameter', () => {
+        // Act (WHEN)
+        commandRunner()({ file: new Uri({ path: '/path/to/solutionFile.sln' }) });
+        // Assert (THEN)
+        expect(mockRunCommandReturn).toHaveBeenCalledWith('a/command --solution "solutionFile.sln"');
+      });
+      it('should execute a Stryker command with the project parameter', () => {
+        // Act (WHEN)
+        commandRunner()({ file: new Uri({ path: '/path/to/projectFile.csproj' }) });
+        // Assert (THEN)
+        expect(mockRunCommandReturn).toHaveBeenCalledWith('a/command --project "projectFile.csproj"');
+      });
+      it('should execute a Stryker command with the tests project parameter', () => {
+        // Act (WHEN)
+        commandRunner()({ file: new Uri({ path: '/path/to/projectFile.Tests.csproj' }) });
+        // Assert (THEN)
+        expect(mockRunCommandReturn).toHaveBeenCalledWith('a/command --test-project "projectFile.Tests.csproj"');
+      });
+      it('should execute a Stryker command with the test project parameter', () => {
+        // Act (WHEN)
+        commandRunner()({ file: new Uri({ path: '/path/to/projectFile.Test.csproj' }) });
+        // Assert (THEN)
+        expect(mockRunCommandReturn).toHaveBeenCalledWith('a/command --test-project "projectFile.Test.csproj"');
       });
       it('should execute a Stryker command to run over all the workspace', () => {
         // Act (WHEN)

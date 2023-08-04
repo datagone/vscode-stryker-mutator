@@ -9,24 +9,30 @@ import {
   window,
 } from '../__mocks__/vscode';
 import {
-  mutateFileCommand,
-  mutateSelectionCommand,
   createBoilerplateStrykerConfigurationFileCommand,
   installStrykerDotnetToolCommand,
   uninstallStrykerDotnetToolCommand,
   mutateWorkspaceCommand,
+  mutateSolutionCommand,
+  mutateProjectCommand,
+  mutateFileCommand,
+  mutateSelectionCommand,
 } from './commands';
 import { DotnetType } from './dotnet';
 import { mockConsoleLog } from './test-helpers';
 import { isTestFile, showInvalidFileMessage } from './valid-files';
 import { commandRunner } from './stryker';
 import { OpenDialogOptions } from 'vscode';
+import { selectAFileToMutateFrom } from './fileSelector';
+import PathToMutate from './pathToMutate';
 
 jest.mock('./valid-files');
 jest.mock('./stryker.ts');
+jest.mock('./fileSelector');
+jest.mock('./pathToMutate');
 
-const mockIsTestFile = isTestFile as jest.MockedFn<typeof isTestFile>;
-const mockCommandRunner = commandRunner as jest.MockedFn<typeof commandRunner>;
+let mockIsTestFile: jest.MockedFn<typeof isTestFile>;
+let mockCommandRunner: jest.MockedFn<typeof commandRunner>;
 
 let mockDotnet: DotnetType;
 
@@ -35,8 +41,12 @@ describe('Commands', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    jest.resetAllMocks();
 
-    // Arrange (GIVEN)
+    mockIsTestFile = isTestFile as jest.MockedFn<typeof isTestFile>;
+    mockCommandRunner = commandRunner as jest.MockedFn<typeof commandRunner>;
+
+    // Arrange
     mockDotnet = {
       isSdkInstalled: jest.fn(),
       isStrykerToolInstalled: jest.fn(),
@@ -104,146 +114,150 @@ describe('Commands', () => {
     });
   });
 
-  describe('Run stryker to mutate a file', () => {
-    it('should return a function', () => {
-      expect(mutateFileCommand(jest.fn())).toEqual(expect.any(Function));
-    });
-    it('should do nothing if no URI is passed as an argument', async () => {
-      const run = jest.fn();
+  describe('WHEN command to mutate a solution', () => {
+    const mockSelectAFileToMutateFrom = selectAFileToMutateFrom as jest.MockedFn<typeof selectAFileToMutateFrom>;
 
-      await mutateFileCommand(run)();
+    describe('GIVEN there is no solution path to mutate', () => {
+      it('THEN should call to select a file to mutate from', async () => {
+        await mutateSolutionCommand(mockCommandRunner)();
 
-      expect(run).not.toHaveBeenCalled();
-      expect(isTestFile).not.toHaveBeenCalled();
-      expect(showInvalidFileMessage).not.toHaveBeenCalled();
-    });
-    it('should show an error message if the file is a test file', async () => {
-      const run = jest.fn();
-      const uriPath: string = 'x.test.cs';
-      mockAsRelativePath.mockReturnValue(uriPath);
-      mockIsTestFile.mockReturnValue(true);
+        expect(mockSelectAFileToMutateFrom).toHaveBeenCalledTimes(1);
+        expect(mockCommandRunner).not.toHaveBeenCalled();
+      });
 
-      await mutateFileCommand(run)(new Uri({ path: uriPath }));
+      describe('AND GIVEN the selection does not return the Uri', () => {
+        it('THEN should show an error without executing the commandRunner', async () => {
+          const expectedRejectionMessage: string = 'err';
+          mockSelectAFileToMutateFrom.mockRejectedValue(expectedRejectionMessage);
 
-      console.log((isTestFile as jest.Mock).mock.calls);
+          await mutateSolutionCommand(mockCommandRunner)();
 
-      expect(run).not.toHaveBeenCalled();
-      expect(isTestFile).toHaveBeenCalledWith(expect.stringContaining(uriPath));
-      expect(showInvalidFileMessage).toHaveBeenCalledWith();
-    });
-    it('should run a command if the file is not a test file', async () => {
-      const run = jest.fn();
-      const uriPath: string = 'x.cs';
-      const uriUseToCall: Uri = new Uri({ path: uriPath });
-      const expectedUri: unknown = { path: uriPath };
-      mockAsRelativePath.mockReturnValue(uriPath);
-      mockIsTestFile.mockReturnValue(false);
+          expect(mockSelectAFileToMutateFrom).toHaveBeenCalledTimes(1);
+          expect(mockShowErrorMessage).toHaveBeenCalledTimes(1);
+          expect(mockShowErrorMessage).toHaveBeenCalledWith(expect.stringContaining(expectedRejectionMessage));
+          expect(mockCommandRunner).not.toHaveBeenCalled();
+        });
+      });
 
-      await mutateFileCommand(run)(uriUseToCall);
+      describe('AND GIVEN the selection returns a valid file to mutate', () => {
+        it('THEN should execute the commandRunner', async () => {
+          const aValidSolutionToMutate: Uri = Uri.file('./aFileToMutate.cs');
+          mockSelectAFileToMutateFrom.mockResolvedValue(aValidSolutionToMutate);
+          mockAsRelativePath.mockReturnValue(aValidSolutionToMutate.fsPath);
+          mockIsTestFile.mockReturnValue(false);
 
-      expect(run).toHaveBeenCalledWith({ file: expect.objectContaining(expectedUri) });
-      expect(isTestFile).toHaveBeenCalledWith(expect.stringContaining(uriPath));
-      expect(showInvalidFileMessage).not.toHaveBeenCalledWith();
-    });
+          const mockPathToMutate = PathToMutate as jest.MockedClass<typeof PathToMutate>;
+          mockPathToMutate.prototype.pathToMutateValidation.mockResolvedValue();
 
-    it('should show run a command if the active document ia a .cs file', async () => {
-      const run = jest.fn();
-      const uriPath: string = 'x.cs';
-      const mockDocument = { fileName: uriPath, uri: new Uri({ path: uriPath }) };
-      mockAsRelativePath.mockReturnValue(uriPath);
-      mockIsTestFile.mockReturnValue(false);
-      window.activeTextEditor = {
-        document: mockDocument,
-      };
+          await mutateSolutionCommand(mockCommandRunner)();
 
-      await mutateFileCommand(run)({ path: '' });
-
-      const expectedUri: unknown = { path: uriPath };
-
-      expect(run).toHaveBeenCalledTimes(1);
-      expect(run).toHaveBeenCalledWith({ file: expect.objectContaining(expectedUri) });
-      expect(isTestFile).toHaveBeenCalledWith(expect.stringContaining(uriPath));
-      expect(showInvalidFileMessage).not.toHaveBeenCalledWith();
-      expect(mockShowErrorMessage).not.toHaveBeenCalled();
-    });
-
-    it('should show OpenDialog if the active document is not a .cs file', async () => {
-      const run = jest.fn();
-      const uriPath: string = 'x.md';
-      const mockDocument = { fileName: uriPath, uri: new Uri({ path: uriPath }) };
-      window.activeTextEditor = {
-        document: mockDocument,
-      };
-      const expectChosenFileOrFolderMissing = 'Stryker.NET: You must select a file or folder';
-
-      await mutateFileCommand(run)({ path: '' });
-
-      expect(mockShowOpenDialog).toHaveBeenCalledTimes(1);
-      expect(mockShowErrorMessage).toHaveBeenCalledWith(expectChosenFileOrFolderMissing);
-      expect(isTestFile).not.toHaveBeenCalledWith();
-      expect(run).not.toHaveBeenCalled();
-    });
-
-    it('should show select missing file message if cancel the opendialog', async () => {
-      const run = jest.fn();
-      mockIsTestFile.mockReturnValue(false);
-      window.activeTextEditor = {
-        document: undefined,
-      };
-      when(mockShowOpenDialog).calledWith(expect.anything()).mockResolvedValue(undefined);
-      const expectChosenFileOrFolderMissing = 'Stryker.NET: You must select a file or folder';
-
-      await mutateFileCommand(run)({ path: '' });
-
-      expect(run).not.toHaveBeenCalled();
-      expect(mockShowErrorMessage).toHaveBeenCalledWith(expectChosenFileOrFolderMissing);
-      expect(isTestFile).not.toHaveBeenCalledWith();
-    });
-
-    it('should show select missing file message if no file or folder is chosen in the opendialog', async () => {
-      const run = jest.fn();
-      mockIsTestFile.mockReturnValue(false);
-      window.activeTextEditor = {
-        document: undefined,
-      };
-      const expectChosenFileOrFolderMissing = 'Stryker.NET: You must select a file or folder';
-      when(mockShowOpenDialog).calledWith(expect.anything()).mockResolvedValue([]);
-
-      await mutateFileCommand(run)({ path: '' });
-
-      expect(run).not.toHaveBeenCalled();
-      expect(mockShowErrorMessage).toHaveBeenCalledWith(expectChosenFileOrFolderMissing);
-      expect(isTestFile).not.toHaveBeenCalledWith();
-    });
-
-    it('should show  run a command if a file or folder is chosen in the opendialog', async () => {
-      const run = jest.fn();
-      const fileOrFolderFullPath: Uri = Uri.file('./tempo/tryout/x.cs');
-      const fileOrFolderPath: string = 'x.cs';
-      const expectedUri: unknown = { path: fileOrFolderFullPath.fsPath };
-      window.activeTextEditor = {
-        document: undefined,
-      };
-      mockIsTestFile.mockReturnValue(false);
-      const stubFilters: Record<string, string[]> = {
-        'C# Files': ['cs'],
-        'All Files': ['*'],
-      };
-      const dialogOptions: OpenDialogOptions = {
-        canSelectMany: false,
-        filters: stubFilters,
-      };
-      when(mockShowOpenDialog).calledWith(dialogOptions).mockResolvedValue([fileOrFolderFullPath]);
-
-      await mutateFileCommand(run)({ path: '' });
-
-      expect(run).toHaveBeenCalledTimes(1);
-      expect(run).toHaveBeenCalledWith({ file: expect.objectContaining(expectedUri) });
-      expect(isTestFile).toHaveBeenCalledWith(expect.stringContaining(fileOrFolderPath));
-      expect(showInvalidFileMessage).not.toHaveBeenCalledWith();
-      expect(mockShowErrorMessage).not.toHaveBeenCalled();
+          expect(mockSelectAFileToMutateFrom).toHaveBeenCalledTimes(1);
+          expect(mockShowErrorMessage).toHaveBeenCalledTimes(0);
+          expect(mockPathToMutate).toHaveBeenCalled();
+          expect(mockPathToMutate.prototype.pathToMutateValidation).toHaveBeenCalledTimes(1);
+          expect(mockCommandRunner).toHaveBeenCalledTimes(1);
+          expect(mockCommandRunner).toHaveBeenCalledWith({ file: expect.any(PathToMutate) });
+        });
+      });
     });
   });
+
+  describe('WHEN command to mutate a project', () => {
+    const mockSelectAFileToMutateFrom = selectAFileToMutateFrom as jest.MockedFn<typeof selectAFileToMutateFrom>;
+
+    describe('GIVEN there is no project path to mutate', () => {
+      it('THEN should call to select a file to mutate from', async () => {
+        await mutateProjectCommand(mockCommandRunner)();
+
+        expect(mockSelectAFileToMutateFrom).toHaveBeenCalledTimes(1);
+        expect(mockCommandRunner).not.toHaveBeenCalled();
+      });
+
+      describe('AND GIVEN the selection does not return the Uri', () => {
+        it('THEN should show an error without executing the commandRunner', async () => {
+          const expectedRejectionMessage: string = 'err';
+          mockSelectAFileToMutateFrom.mockRejectedValue(expectedRejectionMessage);
+
+          await mutateProjectCommand(mockCommandRunner)();
+
+          expect(mockSelectAFileToMutateFrom).toHaveBeenCalledTimes(1);
+          expect(mockShowErrorMessage).toHaveBeenCalledTimes(1);
+          expect(mockShowErrorMessage).toHaveBeenCalledWith(expect.stringContaining(expectedRejectionMessage));
+          expect(mockCommandRunner).not.toHaveBeenCalled();
+        });
+      });
+
+      describe('AND GIVEN the selection returns a valid file to mutate', () => {
+        it('THEN should execute the commandRunner', async () => {
+          const aValidProjectToMutate: Uri = Uri.file('./aProjectToMutate.csproj');
+          mockSelectAFileToMutateFrom.mockResolvedValue(aValidProjectToMutate);
+          mockAsRelativePath.mockReturnValue(aValidProjectToMutate.fsPath);
+          mockIsTestFile.mockReturnValue(false);
+
+          const mockPathToMutate = PathToMutate as jest.MockedClass<typeof PathToMutate>;
+          mockPathToMutate.prototype.pathToMutateValidation.mockResolvedValue();
+
+          await mutateProjectCommand(mockCommandRunner)();
+
+          expect(mockSelectAFileToMutateFrom).toHaveBeenCalledTimes(1);
+          expect(mockShowErrorMessage).toHaveBeenCalledTimes(0);
+          expect(mockPathToMutate).toHaveBeenCalled();
+          expect(mockPathToMutate.prototype.pathToMutateValidation).toHaveBeenCalledTimes(1);
+          expect(mockCommandRunner).toHaveBeenCalledTimes(1);
+          expect(mockCommandRunner).toHaveBeenCalledWith({ file: expect.any(PathToMutate) });
+        });
+      });
+    });
+  });
+
+  describe('WHEN command to mutate a file', () => {
+    const mockSelectAFileToMutateFrom = selectAFileToMutateFrom as jest.MockedFn<typeof selectAFileToMutateFrom>;
+
+    describe('GIVEN there is no file path to mutate', () => {
+      it('THEN should call to select a file to mutate from', async () => {
+        await mutateFileCommand(mockCommandRunner)();
+
+        expect(mockSelectAFileToMutateFrom).toHaveBeenCalledTimes(1);
+        expect(mockCommandRunner).not.toHaveBeenCalled();
+      });
+
+      describe('AND GIVEN the selection does not return the Uri', () => {
+        it('THEN should show an error without executing the commandRunner', async () => {
+          const expectedRejectionMessage: string = 'err';
+          mockSelectAFileToMutateFrom.mockRejectedValue(expectedRejectionMessage);
+
+          await mutateFileCommand(mockCommandRunner)();
+
+          expect(mockSelectAFileToMutateFrom).toHaveBeenCalledTimes(1);
+          expect(mockShowErrorMessage).toHaveBeenCalledTimes(1);
+          expect(mockShowErrorMessage).toHaveBeenCalledWith(expect.stringContaining(expectedRejectionMessage));
+          expect(mockCommandRunner).not.toHaveBeenCalled();
+        });
+      });
+
+      describe('AND GIVEN the selection returns a valid file to mutate', () => {
+        it('THEN should execute the commandRunner', async () => {
+          const aValidFileToMutate: Uri = Uri.file('./aFileToMutate.cs');
+          mockSelectAFileToMutateFrom.mockResolvedValue(aValidFileToMutate);
+          mockAsRelativePath.mockReturnValue(aValidFileToMutate.fsPath);
+          mockIsTestFile.mockReturnValue(false);
+
+          const mockPathToMutate = PathToMutate as jest.MockedClass<typeof PathToMutate>;
+          mockPathToMutate.prototype.pathToMutateValidation.mockResolvedValue();
+
+          await mutateFileCommand(mockCommandRunner)();
+
+          expect(mockSelectAFileToMutateFrom).toHaveBeenCalledTimes(1);
+          expect(mockShowErrorMessage).toHaveBeenCalledTimes(0);
+          expect(mockPathToMutate).toHaveBeenCalled();
+          expect(mockPathToMutate.prototype.pathToMutateValidation).toHaveBeenCalledTimes(1);
+          expect(mockCommandRunner).toHaveBeenCalledTimes(1);
+          expect(mockCommandRunner).toHaveBeenCalledWith({ file: expect.any(PathToMutate) });
+        });
+      });
+    });
+  });
+
   describe('Run stryker to mutate a selection', () => {
     it('should return a function', () => {
       expect(mutateSelectionCommand(jest.fn())).toEqual(expect.any(Function));

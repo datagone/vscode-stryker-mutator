@@ -2,21 +2,33 @@ import vscode from 'vscode';
 import { strykerCommand, strykerConfigFilePath, strykerOptionalParameters } from './config';
 import { makeReusableTerminal, runCommand } from './terminal';
 import path from 'path';
+import IPathToMutate from './pathToMutate.interface';
 
-export type CommandRunner = (args: { file?: vscode.Uri; range?: string }) => void;
+export type CommandRunner = (args: { file?: vscode.Uri | IPathToMutate; range?: string }) => void;
 
-const makeCommand = (file?: vscode.Uri, range?: string) => {
+const makeCommand = (file?: vscode.Uri | IPathToMutate, range?: string) => {
   const strykerBin = strykerCommand();
   return `${strykerBin}${withMutateParam(file, range)}${withConfigFileParams()}${withOptionalParams()}`;
 };
 
-const withMutateParam = (file?: vscode.Uri, range?: string): string => {
+const withMutateParam = (file?: vscode.Uri | IPathToMutate, range?: string): string => {
   if (!file) {
     return '';
   }
 
   let mutantToTarget: string = path.basename(file.fsPath);
-  if (!mutantToTarget.endsWith('.cs')) {
+
+  // HACK: TOBE CHANGED
+  if (mutantToTarget.toLowerCase().endsWith('.sln')) {
+    return ` --solution "${mutantToTarget}"`;
+  } else if (
+    mutantToTarget.toLowerCase().endsWith('.tests.csproj') ||
+    mutantToTarget.toLowerCase().endsWith('.test.csproj')
+  ) {
+    return ` --test-project "${mutantToTarget}"`;
+  } else if (mutantToTarget.toLowerCase().endsWith('.csproj')) {
+    return ` --project "${mutantToTarget}"`;
+  } else if (!mutantToTarget.endsWith('.cs')) {
     mutantToTarget = `**\\${mutantToTarget}\\*`;
   }
 
@@ -37,7 +49,7 @@ const withOptionalParams = (): string => {
 export const commandRunner = () => {
   const terminal = makeReusableTerminal({ name: 'Stryker' });
 
-  return ({ file, range }: { file?: vscode.Uri; range?: string }) => {
+  return ({ file, range }: { file?: vscode.Uri | IPathToMutate; range?: string }) => {
     const command = makeCommand(file, range);
 
     runCommand(terminal())(command);

@@ -73,8 +73,14 @@
         "enablement": "true"
       },
       {
-        "command": "vscode-stryker-mutator.mutate-folder",
-        "title": "Trigger mutation tests on folder",
+        "command": "vscode-stryker-mutator.mutate-solution",
+        "title": "Trigger mutation tests on solution",
+        "category": "Stryker.NET",
+        "enablement": "true"
+      },
+      {
+        "command": "vscode-stryker-mutator.mutate-project",
+        "title": "Trigger mutation tests on project",
         "category": "Stryker.NET",
         "enablement": "true"
       },
@@ -104,6 +110,16 @@
           "group": "7_stryker"
         },
         {
+          "command": "vscode-stryker-mutator.mutate-project",
+          "when": "resourceFilename =~ /[\\w-.\\/]*\\.(csproj)$/i",
+          "group": "7_stryker"
+        },
+        {
+          "command": "vscode-stryker-mutator.mutate-solution",
+          "when": "resourceFilename =~ /[\\w-.\\/]*\\.(sln)$/i",
+          "group": "7_stryker"
+        },
+        {
           "command": "vscode-stryker-mutator.mutate-workspace",
           "group": "7_stryker"
         }
@@ -117,6 +133,16 @@
         {
           "command": "vscode-stryker-mutator.mutate-file",
           "when": "editorLangId == 'csharp' && !(resourceFilename =~ /tests?[\\w-.\\/]*\\.(cs)$/i)",
+          "group": "1_stryker"
+        },
+        {
+          "command": "vscode-stryker-mutator.mutate-project",
+          "when": "editorLangId == 'csharp' && resourceFilename =~ /[\\w-.\\/]*\\.(csproj)$/i",
+          "group": "1_stryker"
+        },
+        {
+          "command": "vscode-stryker-mutator.mutate-solution",
+          "when": "editorLangId == 'csharp' && resourceFilename =~ /[\\w-.\\/]*\\.(sln)$/i",
           "group": "1_stryker"
         }
       ]
@@ -159,6 +185,7 @@
     "lint:lastcommit": "npx commitlint --from HEAD~1 --to HEAD --verbose",
     "test": "node ./out/test/runTest.js",
     "test:unit": "jest \"(?<=.unit).test.ts$\" --coverage",
+    "test:unit:file": "jest --coverage --testPathPattern",
     "test:mutation": "stryker run --incremental",
     "test:mutation:full": "stryker run",
     "ci:dryrun": "semantic-release --extends ./release.package.config.js --dry-run",
