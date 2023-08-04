@@ -1,3 +1,4 @@
+import { isDirectoryPath } from './fs-helpers';
 import IPathToMutate from './pathToMutate.interface';
 import { fileCanBeMutated, showInvalidFileMessage } from './valid-files';
 import { Uri, workspace } from 'vscode';
@@ -21,9 +22,13 @@ class PathToMutate implements IPathToMutate {
     return workspace.asRelativePath(path);
   }
 
+  private isFolderPath(path: Uri): boolean {
+    return isDirectoryPath(path.fsPath);
+  }
+
   private async validatePathToMutate(path: Uri): Promise<void> {
     const relativePath: string = this.getRelativePath(path);
-    if (!fileCanBeMutated(relativePath)) {
+    if (!this.isFolderPath(path) && !fileCanBeMutated(relativePath)) {
       await showInvalidFileMessage();
       return Promise.reject('Invalid path to mutate');
     }

@@ -73,6 +73,12 @@
         "enablement": "true"
       },
       {
+        "command": "vscode-stryker-mutator.mutate-folder",
+        "title": "Trigger mutation tests on folder",
+        "category": "Stryker.NET",
+        "enablement": "true"
+      },
+      {
         "command": "vscode-stryker-mutator.mutate-solution",
         "title": "Trigger mutation tests on solution",
         "category": "Stryker.NET",

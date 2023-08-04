@@ -1,6 +1,6 @@
 import { Uri, window } from 'vscode';
 import { fileCanBeMutated } from './valid-files';
-import { chooseAFileToMutate } from './fileChooser';
+import { chooseAFileToMutate, chooseAFolderToMutate } from './fileChooser';
 
 export const selectAFileToMutateFrom = async (filePath: Uri | undefined): Promise<Uri> => {
   if (!filePath || !fileCanBeMutated(filePath.fsPath)) {
@@ -10,6 +10,13 @@ export const selectAFileToMutateFrom = async (filePath: Uri | undefined): Promis
     } else {
       filePath = await chooseAFileToMutate();
     }
+  }
+  return filePath;
+};
+
+export const selectAFolderToMutateFrom = async (filePath: Uri | undefined): Promise<Uri> => {
+  if (!filePath) {
+    filePath = await chooseAFolderToMutate();
   }
   return filePath;
 };

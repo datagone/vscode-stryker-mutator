@@ -75,6 +75,9 @@ Here is the list of all available (✔️) and upcoming (❌) features that will
 - `Stryker.NET: Trigger mutation tests on project`: Will run Stryker to mutate files within the project. Available, with a disclaimer (❌), in the:
   - Context Menu (✔️)
   - Command Pallette (✔️)
+- `Stryker.NET: Trigger mutation tests on folder`: Will run Stryker to mutate files under one specific folder. Available, with a disclaimer (❌), in the:
+  - Context Menu (✔️)
+  - Command Pallette (✔️)
 - `Stryker.NET: Trigger mutation tests on workspace`: Will run Stryker to mutate all files. Available, with a disclaimer (✔️), from the:
   - Context Menu (✔️)
   - Command Pallette (✔️)

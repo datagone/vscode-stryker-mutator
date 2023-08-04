@@ -4,6 +4,7 @@ import {
   installStrykerDotnetToolCommand,
   uninstallStrykerDotnetToolCommand,
   mutateWorkspaceCommand,
+  mutateFolderCommand,
   mutateSolutionCommand,
   mutateProjectCommand,
   mutateFileCommand,
@@ -41,6 +42,8 @@ export function activate(context: vscode.ExtensionContext) {
     mutateWorkspaceCommand(run),
   );
 
+  let mutateFolder = vscode.commands.registerCommand('vscode-stryker-mutator.mutate-folder', mutateFolderCommand(run));
+
   let mutateSolution = vscode.commands.registerCommand(
     'vscode-stryker-mutator.mutate-solution',
     mutateSolutionCommand(run),
@@ -65,6 +68,7 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(mutateSolution);
   context.subscriptions.push(mutateProject);
   context.subscriptions.push(mutateFile);
+  context.subscriptions.push(mutateFolder);
   context.subscriptions.push(mutateSelection);
 }
 

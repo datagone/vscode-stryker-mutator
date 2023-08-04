@@ -4,6 +4,7 @@ import {
   installStrykerDotnetToolCommand,
   uninstallStrykerDotnetToolCommand,
   mutateWorkspaceCommand,
+  mutateFolderCommand,
   mutateSolutionCommand,
   mutateProjectCommand,
   mutateFileCommand,
@@ -29,12 +30,13 @@ const mockUninstallStrykerDotnetToolCommand = uninstallStrykerDotnetToolCommand 
   typeof uninstallStrykerDotnetToolCommand
 >;
 const mockMutateWorkspaceCommand = mutateWorkspaceCommand as jest.MockedFn<typeof mutateWorkspaceCommand>;
+const mockMutateFolderCommand = mutateFolderCommand as jest.MockedFn<typeof mutateFolderCommand>;
 const mockMutateSolutionCommand = mutateSolutionCommand as jest.MockedFn<typeof mutateSolutionCommand>;
 const mockMutateProjectCommand = mutateProjectCommand as jest.MockedFn<typeof mutateProjectCommand>;
 const mockMutateFileCommand = mutateFileCommand as jest.MockedFn<typeof mutateFileCommand>;
 const mockMutateSelectionCommand = mutateSelectionCommand as jest.MockedFn<typeof mutateSelectionCommand>;
 
-const EXPECTED_NBR_CALLS_FOR_REGISTERCOMMAND: number = 8;
+const EXPECTED_NBR_CALLS_FOR_REGISTERCOMMAND: number = 9;
 
 describe('Extension', () => {
   beforeEach(() => {
@@ -49,11 +51,13 @@ describe('Extension', () => {
 
       mockMutateWorkspaceCommand.mockReturnValueOnce('mutate the workspace' as any);
 
+      mockMutateFolderCommand.mockReturnValueOnce('mutate a folder' as any);
       mockMutateSolutionCommand.mockReturnValueOnce('mutate a solution' as any);
       mockMutateProjectCommand.mockReturnValueOnce('mutate a project' as any);
       mockMutateFileCommand.mockReturnValueOnce('mutate a file' as any);
       mockMutateSelectionCommand.mockReturnValueOnce('mutate a selection' as any);
 
+      mockRegisterCommand.mockReturnValueOnce('on folder command registered' as any);
       mockRegisterCommand.mockReturnValueOnce('on solution command registered' as any);
       mockRegisterCommand.mockReturnValueOnce('on project command registered' as any);
       mockRegisterCommand.mockReturnValueOnce('on file command registered' as any);
@@ -77,6 +81,9 @@ describe('Extension', () => {
 
       expect(mockMutateWorkspaceCommand).toHaveBeenCalledTimes(1);
       expect(mockMutateWorkspaceCommand).toHaveBeenCalledWith('command runner');
+
+      expect(mockMutateFolderCommand).toHaveBeenCalledTimes(1);
+      expect(mockMutateFolderCommand).toHaveBeenCalledWith('command runner');
 
       expect(mockMutateSolutionCommand).toHaveBeenCalledTimes(1);
       expect(mockMutateSolutionCommand).toHaveBeenCalledWith('command runner');
@@ -112,6 +119,8 @@ describe('Extension', () => {
         'mutate the workspace',
       );
 
+      expect(commands.registerCommand).toHaveBeenCalledWith('vscode-stryker-mutator.mutate-folder', 'mutate a folder');
+
       expect(commands.registerCommand).toHaveBeenCalledWith(
         'vscode-stryker-mutator.mutate-solution',
         'mutate a solution',
@@ -130,6 +139,7 @@ describe('Extension', () => {
       );
 
       expect(context.subscriptions.push).toHaveBeenCalledTimes(EXPECTED_NBR_CALLS_FOR_REGISTERCOMMAND);
+      expect(context.subscriptions.push).toHaveBeenCalledWith('on folder command registered');
       expect(context.subscriptions.push).toHaveBeenCalledWith('on solution command registered');
       expect(context.subscriptions.push).toHaveBeenCalledWith('on project command registered');
       expect(context.subscriptions.push).toHaveBeenCalledWith('on file command registered');

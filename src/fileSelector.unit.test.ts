@@ -1,7 +1,7 @@
-import { selectAFileToMutateFrom } from './fileSelector';
+import { selectAFileToMutateFrom, selectAFolderToMutateFrom } from './fileSelector';
 import { Uri, window } from '../__mocks__/vscode';
 import { fileCanBeMutated } from './valid-files';
-import { chooseAFileToMutate } from './fileChooser';
+import { chooseAFileToMutate, chooseAFolderToMutate } from './fileChooser';
 import { when } from 'jest-when';
 
 jest.mock('./valid-files');
@@ -102,6 +102,39 @@ describe('USING the File Selector', () => {
         expect(mockChooseAFileToMutate).not.toHaveBeenCalled();
         expect(mockFileCanBeMutated).toHaveBeenCalledTimes(1);
         expect(result).toBe(aMutableFilePath);
+      });
+    });
+  });
+
+  describe('WHEN selecting a folder to mutate from a parameter', () => {
+    const mockChooseAFolderToMutate = chooseAFolderToMutate as jest.MockedFn<typeof chooseAFolderToMutate>;
+
+    beforeEach(() => {
+      jest.clearAllMocks();
+      jest.resetAllMocks();
+    });
+
+    describe('GIVEN an undefined file path from the parameter', () => {
+      describe('AND GIVEN a non mutable document is in the active editor', () => {
+        it('THEN chooseAFileToMutate should have been called', async () => {
+          // Arrange (GIVEN)
+          // Act (WHEN)
+          await selectAFolderToMutateFrom(undefined);
+          // Assert (THEN)
+          expect(mockChooseAFolderToMutate).toHaveBeenCalledTimes(1);
+        });
+      });
+    });
+
+    describe('GIVEN the folder path from the parameter is mutable', () => {
+      it('THEN should return the document Uri without calling chooseAFileToMutate should not have been called', async () => {
+        // Arrange (GIVEN)
+        const aMutableFolderPath: Uri = Uri.file('./a/mutable/folder/');
+        // Act (WHEN)
+        const result: Uri = await selectAFolderToMutateFrom(aMutableFolderPath);
+        // Assert (THEN)
+        expect(mockChooseAFolderToMutate).not.toHaveBeenCalled();
+        expect(result).toBe(aMutableFolderPath);
       });
     });
   });

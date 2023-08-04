@@ -1,6 +1,7 @@
 import { OpenDialogOptions, Uri, window } from 'vscode';
 
 const ERROR_MESSAGE_MUST_SELECT_FILE_OR_FOLDER: string = 'You must select a file or folder';
+const ERROR_MESSAGE_MUST_SELECT_FOLDER: string = 'You must select a folder';
 
 export const chooseAFileToMutate = async (): Promise<Uri> => {
   let file: Uri;
@@ -21,6 +22,25 @@ export const chooseAFileToMutate = async (): Promise<Uri> => {
     file = folderUri[0];
   } else {
     return Promise.reject(ERROR_MESSAGE_MUST_SELECT_FILE_OR_FOLDER);
+  }
+  return file;
+};
+
+export const chooseAFolderToMutate = async (): Promise<Uri> => {
+  let file: Uri;
+
+  const options: OpenDialogOptions = {
+    canSelectMany: false,
+    canSelectFolders: true,
+    canSelectFiles: false,
+  };
+
+  const folderUri = await window.showOpenDialog(options);
+
+  if (folderUri && folderUri.length === 1) {
+    file = folderUri[0];
+  } else {
+    return Promise.reject(ERROR_MESSAGE_MUST_SELECT_FOLDER);
   }
   return file;
 };

@@ -4,7 +4,6 @@ import {
   mockAsRelativePath,
   mockShowErrorMessage,
   mockShowInformationMessage,
-  mockShowOpenDialog,
   mockShowWarningMessage,
   window,
 } from '../__mocks__/vscode';
@@ -13,6 +12,7 @@ import {
   installStrykerDotnetToolCommand,
   uninstallStrykerDotnetToolCommand,
   mutateWorkspaceCommand,
+  mutateFolderCommand,
   mutateSolutionCommand,
   mutateProjectCommand,
   mutateFileCommand,
@@ -22,8 +22,7 @@ import { DotnetType } from './dotnet';
 import { mockConsoleLog } from './test-helpers';
 import { isTestFile, showInvalidFileMessage } from './valid-files';
 import { commandRunner } from './stryker';
-import { OpenDialogOptions } from 'vscode';
-import { selectAFileToMutateFrom } from './fileSelector';
+import { selectAFileToMutateFrom, selectAFolderToMutateFrom } from './fileSelector';
 import PathToMutate from './pathToMutate';
 
 jest.mock('./valid-files');
@@ -109,6 +108,54 @@ describe('Commands', () => {
           expect(run).not.toHaveBeenCalled();
           expect(mockShowInformationMessage).toHaveBeenCalledTimes(1);
           expect(mockShowInformationMessage).toHaveBeenCalledWith(expect.stringContaining('😇'));
+        });
+      });
+    });
+  });
+
+  describe('WHEN command to mutate a folder', () => {
+    const mockSelectAFolderToMutateFrom = selectAFolderToMutateFrom as jest.MockedFn<typeof selectAFolderToMutateFrom>;
+
+    describe('GIVEN there is no folder path to mutate', () => {
+      it('THEN should call to select a folder to mutate from', async () => {
+        await mutateFolderCommand(mockCommandRunner)();
+
+        expect(mockSelectAFolderToMutateFrom).toHaveBeenCalledTimes(1);
+        expect(mockCommandRunner).not.toHaveBeenCalled();
+      });
+
+      describe('AND GIVEN the selection does not return the Uri', () => {
+        it('THEN should show an error without executing the commandRunner', async () => {
+          const expectedRejectionMessage: string = 'err';
+          mockSelectAFolderToMutateFrom.mockRejectedValue(expectedRejectionMessage);
+
+          await mutateFolderCommand(mockCommandRunner)();
+
+          expect(mockSelectAFolderToMutateFrom).toHaveBeenCalledTimes(1);
+          expect(mockShowErrorMessage).toHaveBeenCalledTimes(1);
+          expect(mockShowErrorMessage).toHaveBeenCalledWith(expect.stringContaining(expectedRejectionMessage));
+          expect(mockCommandRunner).not.toHaveBeenCalled();
+        });
+      });
+
+      describe('AND GIVEN the selection returns a valid path to mutate', () => {
+        it('THEN should execute the commandRunner', async () => {
+          const aValidFolderToMutate: Uri = Uri.file('./this/is/a/folder');
+          mockSelectAFolderToMutateFrom.mockResolvedValue(aValidFolderToMutate);
+          mockAsRelativePath.mockReturnValue(aValidFolderToMutate.fsPath);
+          mockIsTestFile.mockReturnValue(false);
+
+          const mockPathToMutate = PathToMutate as jest.MockedClass<typeof PathToMutate>;
+          mockPathToMutate.prototype.pathToMutateValidation.mockResolvedValue();
+
+          await mutateFolderCommand(mockCommandRunner)();
+
+          expect(mockSelectAFolderToMutateFrom).toHaveBeenCalledTimes(1);
+          expect(mockShowErrorMessage).toHaveBeenCalledTimes(0);
+          expect(mockPathToMutate).toHaveBeenCalled();
+          expect(mockPathToMutate.prototype.pathToMutateValidation).toHaveBeenCalledTimes(1);
+          expect(mockCommandRunner).toHaveBeenCalledTimes(1);
+          expect(mockCommandRunner).toHaveBeenCalledWith({ file: expect.any(PathToMutate) });
         });
       });
     });

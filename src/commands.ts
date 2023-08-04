@@ -1,10 +1,10 @@
 import * as vscode from 'vscode';
 import { DotnetType } from './dotnet';
 import { CommandRunner } from './stryker';
-import { fileCanBeMutated, isTestFile, showInvalidFileMessage } from './valid-files';
+import { isTestFile, showInvalidFileMessage } from './valid-files';
 import IPathToMutate from './pathToMutate.interface';
 import PathToMutate from './pathToMutate';
-import { selectAFileToMutateFrom } from './fileSelector';
+import { selectAFileToMutateFrom, selectAFolderToMutateFrom } from './fileSelector';
 
 const tool = 'dotnet-stryker';
 
@@ -51,6 +51,25 @@ export const mutateWorkspaceCommand = (run: CommandRunner) => async () => {
     vscode.window.showInformationMessage(`Stryker.NET: Your computer thanks you! 😇`);
   }
 };
+
+export const mutateFolderCommand =
+  (run: CommandRunner) =>
+  async (...args: unknown[]) => {
+    let filePath: vscode.Uri | undefined;
+    try {
+      filePath = await selectAFolderToMutateFrom(args[0] as vscode.Uri);
+    } catch (error) {
+      const errMessage: string = `Stryker.NET: ${error}`;
+      vscode.window.showErrorMessage(errMessage);
+    }
+
+    if (filePath !== undefined) {
+      const fileToMutate: IPathToMutate = new PathToMutate(filePath);
+      await fileToMutate.pathToMutateValidation();
+
+      await launchCommandWithFile(run, fileToMutate);
+    }
+  };
 
 export const mutateSolutionCommand =
   (run: CommandRunner) =>
