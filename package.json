@@ -107,17 +107,17 @@
       "explorer/context": [
         {
           "command": "vscode-stryker-mutator.mutate-file",
-          "when": "resourceLangId == 'csharp' && !(resourceFilename =~ /tests?[\\w-.\\/]*\\.(cs)$/i)",
+          "when": "!explorerResourceIsFolder && resourceLangId == 'csharp' && !(resourceFilename =~ /tests?[\\w-.\\/]*\\.(cs)$/i)",
           "group": "7_stryker"
         },
         {
           "command": "vscode-stryker-mutator.mutate-project",
-          "when": "resourceFilename =~ /[\\w-.\\/]*\\.(csproj)$/i",
+          "when": "!explorerResourceIsFolder && resourceFilename =~ /[\\w-.\\/]*\\.(csproj)$/i",
           "group": "7_stryker"
         },
         {
           "command": "vscode-stryker-mutator.mutate-solution",
-          "when": "resourceFilename =~ /[\\w-.\\/]*\\.(sln)$/i",
+          "when": "!explorerResourceIsFolder && resourceFilename =~ /[\\w-.\\/]*\\.(sln)$/i",
           "group": "7_stryker"
         }
       ],
