@@ -1,5 +1,12 @@
 # CHANGELOG
 
+# [0.3.0](https://github.com/datagone/vscode-stryker-mutator/compare/v0.2.0...v0.3.0) (2023-08-06)
+
+
+### Features
+
+* **commands:** use a warning message when mutate workspace, folder, solution or project ([0f673a6](https://github.com/datagone/vscode-stryker-mutator/commit/0f673a69315dc1021a32b938dfc69378231ed3ae))
+
 # [0.2.0](https://github.com/datagone/vscode-stryker-mutator/compare/v0.1.2...v0.2.0) (2023-08-04)
 
 
