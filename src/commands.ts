@@ -63,12 +63,7 @@ export const mutateFolderCommand =
       vscode.window.showErrorMessage(errMessage);
     }
 
-    if (filePath !== undefined) {
-      const fileToMutate: IPathToMutate = new PathToMutate(filePath);
-      await fileToMutate.pathToMutateValidation();
-
-      await launchCommandWithFile(run, fileToMutate);
-    }
+    await launchCommandWithFile(run, filePath);
   };
 
 export const mutateSolutionCommand =
@@ -82,12 +77,7 @@ export const mutateSolutionCommand =
       vscode.window.showErrorMessage(errMessage);
     }
 
-    if (filePath !== undefined) {
-      const fileToMutate: IPathToMutate = new PathToMutate(filePath);
-      await fileToMutate.pathToMutateValidation();
-
-      await launchCommandWithFile(run, fileToMutate);
-    }
+    await launchCommandWithFile(run, filePath);
   };
 
 export const mutateProjectCommand =
@@ -101,12 +91,7 @@ export const mutateProjectCommand =
       vscode.window.showErrorMessage(errMessage);
     }
 
-    if (filePath !== undefined) {
-      const fileToMutate: IPathToMutate = new PathToMutate(filePath);
-      await fileToMutate.pathToMutateValidation();
-
-      await launchCommandWithFile(run, fileToMutate);
-    }
+    await launchCommandWithFile(run, filePath);
   };
 
 export const mutateFileCommand =
@@ -120,16 +105,16 @@ export const mutateFileCommand =
       vscode.window.showErrorMessage(errMessage);
     }
 
-    if (filePath !== undefined) {
-      const fileToMutate: IPathToMutate = new PathToMutate(filePath);
-      await fileToMutate.pathToMutateValidation();
-
-      await launchCommandWithFile(run, fileToMutate);
-    }
+    await launchCommandWithFile(run, filePath);
   };
 
-const launchCommandWithFile = async (run: CommandRunner, fileToMutate: IPathToMutate) => {
-  run({ file: fileToMutate });
+const launchCommandWithFile = async (run: CommandRunner, filePath: vscode.Uri | undefined) => {
+  if (filePath !== undefined) {
+    const fileToMutate: IPathToMutate = new PathToMutate(filePath);
+    await fileToMutate.pathToMutateValidation();
+
+    run({ file: fileToMutate });
+  }
 };
 
 export const mutateSelectionCommand =
