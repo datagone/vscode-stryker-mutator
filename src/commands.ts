@@ -5,6 +5,7 @@ import { isTestFile, showInvalidFileMessage } from './valid-files';
 import IPathToMutate from './pathToMutate.interface';
 import PathToMutate from './pathToMutate';
 import { selectAFileToMutateFrom, selectAFolderToMutateFrom } from './fileSelector';
+import { chooseToRunFullMutationTest } from './warningMessenger';
 
 const tool = 'dotnet-stryker';
 
@@ -40,58 +41,57 @@ export const createBoilerplateStrykerConfigurationFileCommand = (dotnet: DotnetT
 };
 
 export const mutateWorkspaceCommand = (run: CommandRunner) => async () => {
-  const selection = await vscode.window.showWarningMessage(
-    '🧟‍♀️🧟‍♂️ Unleashing 🧟‍♂️🧟‍♀️ too much 🧟‍♀️🧟‍♂️ mutants 🧟‍♂️🧟‍♀️ into the wild (aka running stryker on a project or a solution) can be time and resources consuming. Are you sure you want to do this?',
-    'Yes',
-    'No',
-  );
-  if (selection === 'Yes') {
+  if (await chooseToRunFullMutationTest()) {
     run({});
-  } else {
-    vscode.window.showInformationMessage(`Stryker.NET: Your computer thanks you! 😇`);
   }
 };
 
 export const mutateFolderCommand =
   (run: CommandRunner) =>
   async (...args: unknown[]) => {
-    let filePath: vscode.Uri | undefined;
-    try {
-      filePath = await selectAFolderToMutateFrom(args[0] as vscode.Uri);
-    } catch (error) {
-      const errMessage: string = `Stryker.NET: ${error}`;
-      vscode.window.showErrorMessage(errMessage);
-    }
+    if (await chooseToRunFullMutationTest()) {
+      let filePath: vscode.Uri | undefined;
+      try {
+        filePath = await selectAFolderToMutateFrom(args[0] as vscode.Uri);
+      } catch (error) {
+        const errMessage: string = `Stryker.NET: ${error}`;
+        vscode.window.showErrorMessage(errMessage);
+      }
 
-    await launchCommandWithFile(run, filePath);
+      await launchCommandWithFile(run, filePath);
+    }
   };
 
 export const mutateSolutionCommand =
   (run: CommandRunner) =>
   async (...args: unknown[]) => {
-    let filePath: vscode.Uri | undefined;
-    try {
-      filePath = await selectAFileToMutateFrom(args[0] as vscode.Uri);
-    } catch (error) {
-      const errMessage: string = `Stryker.NET: ${error}`;
-      vscode.window.showErrorMessage(errMessage);
-    }
+    if (await chooseToRunFullMutationTest()) {
+      let filePath: vscode.Uri | undefined;
+      try {
+        filePath = await selectAFileToMutateFrom(args[0] as vscode.Uri);
+      } catch (error) {
+        const errMessage: string = `Stryker.NET: ${error}`;
+        vscode.window.showErrorMessage(errMessage);
+      }
 
-    await launchCommandWithFile(run, filePath);
+      await launchCommandWithFile(run, filePath);
+    }
   };
 
 export const mutateProjectCommand =
   (run: CommandRunner) =>
   async (...args: unknown[]) => {
-    let filePath: vscode.Uri | undefined;
-    try {
-      filePath = await selectAFileToMutateFrom(args[0] as vscode.Uri);
-    } catch (error) {
-      const errMessage: string = `Stryker.NET: ${error}`;
-      vscode.window.showErrorMessage(errMessage);
-    }
+    if (await chooseToRunFullMutationTest()) {
+      let filePath: vscode.Uri | undefined;
+      try {
+        filePath = await selectAFileToMutateFrom(args[0] as vscode.Uri);
+      } catch (error) {
+        const errMessage: string = `Stryker.NET: ${error}`;
+        vscode.window.showErrorMessage(errMessage);
+      }
 
-    await launchCommandWithFile(run, filePath);
+      await launchCommandWithFile(run, filePath);
+    }
   };
 
 export const mutateFileCommand =
