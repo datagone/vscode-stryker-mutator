@@ -13,7 +13,7 @@ module.exports = {
       statements: 100,
     },
   },
-  testPathIgnorePatterns: ['/node_modules/', 'src/test/*'],
+  testPathIgnorePatterns: ['node_modules/', 'src/test/*', '.stryker-tmp/*', 'dist/', 'reports/'],
   reporters: ['default'],
   clearMocks: true,
 };

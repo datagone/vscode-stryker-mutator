@@ -1,0 +1,73 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/typescript-node
+{
+  "name": "Node.js & TypeScript",
+  // Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
+  "image": "mcr.microsoft.com/devcontainers/typescript-node:1-20-bookworm",
+  // Features to add to the dev container. More info: https://containers.dev/features.
+  "features": {
+    "ghcr.io/devcontainers/features/dotnet:1": {
+      "installUsingApt": true,
+      "version": "7"
+    },
+    "ghcr.io/jsburckhardt/devcontainer-features/gitleaks:1": {},
+    "ghcr.io/wxw-matt/devcontainer-features/command_runner:0": {}
+  },
+
+  // Use 'forwardPorts' to make a list of ports inside the container available locally.
+  // "forwardPorts": [],
+
+  // Use 'postCreateCommand' to run commands after the container is created.
+  "postCreateCommand": "git config --global http.sslBackend openssl; git config --global http.sslCAInfo /etc/ssl/certs/ca-certificates.crt; yarn install",
+
+  // Configure tool-specific properties.
+  "customizations": {
+    // Configure properties specific to VS Code.
+    "vscode": {
+      // Add the IDs of extensions you want installed when the container is created.
+      "extensions": [
+        "dbaeumer.vscode-eslint",
+        "amodio.tsl-problem-matcher",
+        "orta.vscode-jest",
+        "hbenl.vscode-test-explorer",
+        "ryanluker.vscode-coverage-gutters",
+        "esbenp.prettier-vscode",
+        "shardulm94.trailing-spaces",
+        "zainchen.json",
+        "redhat.vscode-yaml",
+        "ban.spellright",
+        "yzhang.markdown-all-in-one",
+        "davidanson.vscode-markdownlint",
+        "mushan.vscode-paste-image",
+        "bierner.markdown-emoji",
+        "bierner.markdown-mermaid",
+        "bpruitt-goddard.mermaid-markdown-syntax-highlighting",
+        "fcrespo82.markdown-table-formatter",
+        "christian-kohler.npm-intellisense",
+        "christian-kohler.path-intellisense",
+        "sz-p.dependencygraph",
+        "mhutchie.git-graph",
+        "gruntfuggly.todo-tree",
+        "coddx.coddx-alpha",
+        "pflannery.vscode-versionlens",
+        "kisstkondoros.vscode-codemetrics",
+        "visualstudioexptteam.vscodeintellicode",
+        "johnpapa.vscode-peacock",
+        "vscode-icons-team.vscode-icons",
+        "pixabelle.stryker-runner",
+        "ms-vscode.live-server",
+        "bierner.markdown-checkbox",
+        "tldraw-org.tldraw-vscode",
+        "quicktype.quicktype",
+        "ms-vsliveshare.vsliveshare",
+        "lostintangent.vsls-whiteboard",
+        "github.vscode-github-actions",
+        "github.vscode-pull-request-github",
+        "eamodio.gitlens"
+      ]
+    }
+  }
+
+  // Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
+  // "remoteUser": "root"
+}

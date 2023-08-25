@@ -32,6 +32,13 @@
     "vscode-icons-team.vscode-icons",
     "pixabelle.stryker-runner",
     "ms-vscode.live-server",
-    "bierner.markdown-checkbox"
+    "bierner.markdown-checkbox",
+    "tldraw-org.tldraw-vscode",
+    "quicktype.quicktype",
+    "ms-vsliveshare.vsliveshare",
+    "lostintangent.vsls-whiteboard",
+    "github.vscode-github-actions",
+    "github.vscode-pull-request-github",
+    "eamodio.gitlens"
   ]
 }
