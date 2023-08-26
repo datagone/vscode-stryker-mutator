@@ -1,8 +1,9 @@
 import { Uri } from '../__mocks__/vscode';
 import { executeCommandWithArguments, isValidToRegex } from './cli-exec';
-import { Dotnet, DotnetType } from './dotnet';
-import { ILogger } from './logger';
-import { StrykerConfigurationType } from './stryker-configuration';
+import Dotnet from './dotnet';
+import IDotnet from './dotnet.interface';
+import ILogger from './logger.interface';
+import IStrykerConfiguration from './stryker-configuration.interface';
 import { mockConsoleLog } from './test-helpers';
 import { when } from 'jest-when';
 
@@ -13,9 +14,9 @@ jest.mock('./stryker-configuration');
 mockConsoleLog();
 
 describe('WHEN executing the dotnet command', () => {
-  let dotnetClass: DotnetType;
+  let dotnetClass: IDotnet;
   let spyLogger: ILogger;
-  let strykerConfig: StrykerConfigurationType;
+  let strykerConfig: IStrykerConfiguration;
   let mockExecuteCommand: jest.MockedFn<typeof executeCommandWithArguments>;
   let mockIsValidToRegex: jest.MockedFn<typeof isValidToRegex>;
 
@@ -361,9 +362,9 @@ describe('WHEN executing the dotnet command', () => {
 
 // TODO : It may not be in the right class... ?!?!?
 describe('WHEN initializing the stryker configuration', () => {
-  let dotnetClass: DotnetType;
+  let dotnetClass: IDotnet;
   let spyLogger: ILogger;
-  let strykerConfig: StrykerConfigurationType;
+  let strykerConfig: IStrykerConfiguration;
 
   beforeEach(() => {
     // Arrange (GIVEN)

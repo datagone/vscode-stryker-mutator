@@ -1,14 +1,6 @@
-// Todo : split
-export interface ILogger {
-  log(message: string): void;
-  debug(message: string): void;
-  trace(message: string): void;
-  info(message: string): void;
-  warning(message: string): void;
-  error(message: string): void;
-}
+import ILogger from './logger.interface';
 
-export class Logger implements ILogger {
+class Logger implements ILogger {
   public log(message: string) {
     console.log(message);
   }
@@ -33,3 +25,5 @@ export class Logger implements ILogger {
     console.error(message);
   }
 }
+
+export default Logger;

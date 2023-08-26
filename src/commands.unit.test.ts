@@ -1,4 +1,3 @@
-import { when } from 'jest-when';
 import { Uri, mockAsRelativePath, mockShowErrorMessage, window } from '../__mocks__/vscode';
 import {
   createBoilerplateStrykerConfigurationFileCommand,
@@ -11,13 +10,15 @@ import {
   mutateFileCommand,
   mutateSelectionCommand,
 } from './commands';
-import { DotnetType } from './dotnet';
+import IDotnet from './dotnet.interface';
 import { mockConsoleLog } from './test-helpers';
 import { isTestFile, showInvalidFileMessage } from './valid-files';
 import { commandRunner } from './stryker';
 import { selectAFileToMutateFrom, selectAFolderToMutateFrom } from './fileSelector';
 import PathToMutate from './pathToMutate';
 import { chooseToRunFullMutationTest } from './warningMessenger';
+import * as mockito from 'ts-mockito';
+import { TextDocument } from 'vscode';
 
 jest.mock('./valid-files');
 jest.mock('./stryker.ts');
@@ -29,7 +30,8 @@ let mockIsTestFile: jest.MockedFn<typeof isTestFile>;
 let mockCommandRunner: jest.MockedFn<typeof commandRunner>;
 let mockChooseToRunFullMutationTest: jest.MockedFn<typeof chooseToRunFullMutationTest>;
 
-let mockDotnet: DotnetType;
+let mockDotnetInterface: IDotnet;
+let mockDotnetInstance: IDotnet;
 
 describe('USING Commands', () => {
   mockConsoleLog();
@@ -42,16 +44,8 @@ describe('USING Commands', () => {
     mockCommandRunner = commandRunner as jest.MockedFn<typeof commandRunner>;
     mockChooseToRunFullMutationTest = chooseToRunFullMutationTest as jest.MockedFn<typeof chooseToRunFullMutationTest>;
 
-    // Arrange
-    mockDotnet = {
-      isSdkInstalled: jest.fn(),
-      isStrykerToolInstalled: jest.fn(),
-
-      installStrykerTool: jest.fn(),
-      uninstallStrykerTool: jest.fn(),
-
-      initializeStrykerConfiguration: jest.fn(),
-    };
+    mockDotnetInterface = mockito.mock<IDotnet>();
+    mockDotnetInstance = mockito.instance(mockDotnetInterface);
   });
 
   describe('WHEN command to mutate the workspace', () => {
@@ -348,78 +342,83 @@ describe('USING Commands', () => {
       expect(mutateSelectionCommand(jest.fn())).toEqual(expect.any(Function));
     });
     it('should do nothing if no URI is passed as an argument', async () => {
-      const run = jest.fn();
+      await mutateSelectionCommand(mockCommandRunner)();
 
-      await mutateSelectionCommand(run)();
-
-      expect(run).not.toHaveBeenCalled();
+      expect(mockCommandRunner).not.toHaveBeenCalled();
       expect(isTestFile).not.toHaveBeenCalled();
       expect(showInvalidFileMessage).not.toHaveBeenCalled();
     });
     it('should show an error message if the file is a test file', async () => {
-      const run = jest.fn();
       const uriPath: string = 'x.test.cs';
       mockAsRelativePath.mockReturnValue(uriPath);
       mockIsTestFile.mockReturnValue(true);
 
-      await mutateSelectionCommand(run)(new Uri({ path: uriPath }));
+      await mutateSelectionCommand(mockCommandRunner)(new Uri({ path: uriPath }));
 
-      expect(run).not.toHaveBeenCalled();
+      expect(mockCommandRunner).not.toHaveBeenCalled();
       expect(isTestFile).toHaveBeenCalledWith(expect.stringContaining(uriPath));
       expect(showInvalidFileMessage).toHaveBeenCalledWith();
     });
     it('should do nothing if there is no active editor', async () => {
-      const run = jest.fn();
       const uriPath: string = 'x.cs';
       mockAsRelativePath.mockReturnValue(uriPath);
       mockIsTestFile.mockReturnValue(false);
       window.activeTextEditor = null as any;
 
-      await mutateSelectionCommand(run)(new Uri({ path: uriPath }));
+      await mutateSelectionCommand(mockCommandRunner)(new Uri({ path: uriPath }));
 
-      expect(run).not.toHaveBeenCalled();
+      expect(mockCommandRunner).not.toHaveBeenCalled();
       expect(isTestFile).toHaveBeenCalledWith(expect.stringContaining(uriPath));
       expect(showInvalidFileMessage).not.toHaveBeenCalled();
       expect(console.log).toHaveBeenCalledWith('Stryker.NET: No action, no active editor');
     });
     it('should do nothing when the selection is empty', async () => {
-      const run = jest.fn();
       const uriPath: string = 'x.cs';
       mockAsRelativePath.mockReturnValue(uriPath);
       mockIsTestFile.mockReturnValue(false);
       window.activeTextEditor = { selection: { isEmpty: true } };
 
-      await mutateSelectionCommand(run)(new Uri({ path: uriPath }));
+      await mutateSelectionCommand(mockCommandRunner)(new Uri({ path: uriPath }));
 
-      expect(run).not.toHaveBeenCalled();
+      expect(mockCommandRunner).not.toHaveBeenCalled();
       expect(isTestFile).toHaveBeenCalledWith(expect.stringContaining(uriPath));
       expect(showInvalidFileMessage).not.toHaveBeenCalled();
       expect(console.log).toHaveBeenCalledWith('Stryker.NET: No action, selection is single character');
     });
     it('should show run a command if the file is not a test file', async () => {
-      const run = jest.fn();
       const uriPath: string = 'x.cs';
-      const mockDocument = { offsetAt: jest.fn(), positionAt: jest.fn() };
+      const mockDocument: TextDocument = mockito.mock<TextDocument>();
+      const mockDocumentInstance: TextDocument = mockito.instance(mockDocument);
       const expectedStaringPosition = { line: 4, character: 5 };
       const expectedEndingPosition = { line: 6, character: 7 };
       const expectedStartingCharacter = 45;
       const expectedEndingCharacter = 123;
       const stubSelection = { start: expectedStaringPosition, end: expectedEndingPosition };
-      mockAsRelativePath.mockReturnValue(uriPath);
-      mockIsTestFile.mockReturnValue(false);
+
       window.activeTextEditor = {
         selection: stubSelection,
-        document: mockDocument,
+        document: mockDocumentInstance,
       };
-      when(mockDocument.offsetAt)
-        .calledWith(expectedStaringPosition)
-        .mockReturnValueOnce(expectedStartingCharacter)
-        .calledWith(expectedEndingPosition)
-        .mockReturnValueOnce(expectedEndingCharacter);
 
-      await mutateSelectionCommand(run)(new Uri({ path: uriPath }));
+      jest.spyOn(mockDocumentInstance, 'offsetAt').mockImplementation((position: any): number => {
+        if (
+          position.line === expectedStaringPosition.line &&
+          position.character === expectedStaringPosition.character
+        ) {
+          return expectedStartingCharacter;
+        }
+        if (position.line === expectedEndingPosition.line && position.character === expectedEndingPosition.character) {
+          return expectedEndingCharacter;
+        }
+        throw new Error('Unexpected position for the test'); // this should never happen!
+      });
 
-      expect(run).toHaveBeenCalledWith({
+      mockAsRelativePath.mockReturnValue(uriPath);
+      mockIsTestFile.mockReturnValue(false);
+
+      await mutateSelectionCommand(mockCommandRunner)(new Uri({ path: uriPath }));
+
+      expect(mockCommandRunner).toHaveBeenCalledWith({
         file: expect.objectContaining({ path: uriPath }),
         range: `${expectedStartingCharacter}..${expectedEndingCharacter}`,
       });
@@ -432,16 +431,12 @@ describe('USING Commands', () => {
     describe('GIVEN the dotnet-stryker tool install is successful', () => {
       const expectedSucessfulInstallationMessage = 'Stryker.NET: dotnet-stryker tool has been installed';
 
-      beforeEach(() => {
-        // Arrange (GIVEN)
-        when(mockDotnet.installStrykerTool).mockResolvedValue(true);
-      });
-
       it('THEN should show the VSCode information message that the installation was successful', async () => {
         // Arrange (GIVEN)
+        mockito.when(mockDotnetInterface.installStrykerTool).thenReturn(() => Promise.resolve(true));
 
         // Act (WHEN)
-        await installStrykerDotnetToolCommand(mockDotnet)();
+        await installStrykerDotnetToolCommand(mockDotnetInstance)();
 
         // Assert (THEN)
         expect(window.showInformationMessage).toHaveBeenCalledTimes(1);
@@ -452,16 +447,12 @@ describe('USING Commands', () => {
     describe('GIVEN the dotnet-stryker tool installation fails', () => {
       const expectedFailedInstallationMessage = 'Stryker.NET: dotnet-stryker tool is not installed';
 
-      beforeEach(() => {
-        // Arrange (GIVEN)
-        when(mockDotnet.installStrykerTool).mockResolvedValue(false);
-      });
-
       it('THEN should show the VSCode warning message that the installation failed', async () => {
         // Arrange (GIVEN)
+        mockito.when(mockDotnetInterface.installStrykerTool).thenReturn(() => Promise.resolve(false));
 
         // Act (WHEN)
-        await installStrykerDotnetToolCommand(mockDotnet)();
+        await installStrykerDotnetToolCommand(mockDotnetInstance)();
 
         // Assert (THEN)
         expect(window.showWarningMessage).toHaveBeenCalledTimes(1);
@@ -474,16 +465,12 @@ describe('USING Commands', () => {
     describe('GIVEN the dotnet-stryker tool is uninstalled is successful', () => {
       const expectedSucessfulUninstallationMessage = 'Stryker.NET: dotnet-stryker tool has been uninstalled';
 
-      beforeEach(() => {
-        // Arrange (GIVEN)
-        when(mockDotnet.uninstallStrykerTool).mockResolvedValue(true);
-      });
-
       it('THEN should show the VSCode information message that the uninstallation was successful', async () => {
         // Arrange (GIVEN)
+        mockito.when(mockDotnetInterface.uninstallStrykerTool).thenReturn(() => Promise.resolve(true));
 
         // Act (WHEN)
-        await uninstallStrykerDotnetToolCommand(mockDotnet)();
+        await uninstallStrykerDotnetToolCommand(mockDotnetInstance)();
 
         // Assert (THEN)
         expect(window.showInformationMessage).toHaveBeenCalledTimes(1);
@@ -494,16 +481,12 @@ describe('USING Commands', () => {
     describe('GIVEN the dotnet-stryker tool uninstallation fails', () => {
       const expectedFailedUninstallationMessage = 'Stryker.NET: dotnet-stryker tool uninstallation failed';
 
-      beforeEach(() => {
-        // Arrange (GIVEN)
-        when(mockDotnet.uninstallStrykerTool).mockResolvedValue(false);
-      });
-
       it('THEN should show the VSCode warning message that the uninstallation failed', async () => {
         // Arrange (GIVEN)
+        mockito.when(mockDotnetInterface.uninstallStrykerTool).thenReturn(() => Promise.resolve(false));
 
         // Act (WHEN)
-        await uninstallStrykerDotnetToolCommand(mockDotnet)();
+        await uninstallStrykerDotnetToolCommand(mockDotnetInstance)();
 
         // Assert (THEN)
         expect(window.showWarningMessage).toHaveBeenCalledTimes(1);
@@ -519,12 +502,12 @@ describe('USING Commands', () => {
       it('THEN should show the vscode information message windows with the returned configuration file', async () => {
         // Arrange (GIVEN)
         const expectedConfigurationFileOutput: string = `Stryker.NET: ${testFolder}/stryker-config.json`;
-        when(mockDotnet.initializeStrykerConfiguration)
-          .calledWith(expect.any(String))
-          .mockResolvedValue(expectedConfigurationFileOutput);
+        mockito
+          .when(mockDotnetInterface.initializeStrykerConfiguration)
+          .thenReturn(() => Promise.resolve(expectedConfigurationFileOutput));
 
         // Act (WHEN)
-        await createBoilerplateStrykerConfigurationFileCommand(mockDotnet)(testFolder);
+        await createBoilerplateStrykerConfigurationFileCommand(mockDotnetInstance)(testFolder);
 
         // Assert (THEN)
         expect(window.showInformationMessage).toHaveBeenCalledTimes(1);
@@ -536,12 +519,12 @@ describe('USING Commands', () => {
         // Arrange (GIVEN)
         const expectedErrorMessage: string =
           'Expected Error When calling dotnet.InitializeStrykerConfiguration during the test';
-        when(mockDotnet.initializeStrykerConfiguration)
-          .calledWith(expect.any(String))
-          .mockRejectedValue(expectedErrorMessage);
+        mockito
+          .when(mockDotnetInterface.initializeStrykerConfiguration)
+          .thenReturn(() => Promise.reject(expectedErrorMessage));
 
         // Act (WHEN)
-        await createBoilerplateStrykerConfigurationFileCommand(mockDotnet)(testFolder);
+        await createBoilerplateStrykerConfigurationFileCommand(mockDotnetInstance)(testFolder);
 
         // Assert (THEN)
         expect(window.showErrorMessage).toHaveBeenCalledTimes(1);

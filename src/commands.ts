@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { DotnetType } from './dotnet';
+import IDotnet from './dotnet.interface';
 import { CommandRunner } from './stryker';
 import { isTestFile, showInvalidFileMessage } from './valid-files';
 import IPathToMutate from './pathToMutate.interface';
@@ -9,7 +9,7 @@ import { chooseToRunFullMutationTest } from './warningMessenger';
 
 const tool = 'dotnet-stryker';
 
-export const installStrykerDotnetToolCommand = (dotnet: DotnetType) => async () => {
+export const installStrykerDotnetToolCommand = (dotnet: IDotnet) => async () => {
   await dotnet.installStrykerTool().then((toolInstalled: boolean) => {
     if (toolInstalled === true) {
       vscode.window.showInformationMessage(`Stryker.NET: ${tool} tool has been installed`);
@@ -19,7 +19,7 @@ export const installStrykerDotnetToolCommand = (dotnet: DotnetType) => async () 
   });
 };
 
-export const uninstallStrykerDotnetToolCommand = (dotnet: DotnetType) => async () => {
+export const uninstallStrykerDotnetToolCommand = (dotnet: IDotnet) => async () => {
   dotnet.uninstallStrykerTool().then((toolIsUninstalled: boolean) => {
     if (toolIsUninstalled === true) {
       vscode.window.showInformationMessage(`Stryker.NET: ${tool} tool has been uninstalled`);
@@ -29,7 +29,7 @@ export const uninstallStrykerDotnetToolCommand = (dotnet: DotnetType) => async (
   });
 };
 
-export const createBoilerplateStrykerConfigurationFileCommand = (dotnet: DotnetType) => async (arg: string) => {
+export const createBoilerplateStrykerConfigurationFileCommand = (dotnet: IDotnet) => async (arg: string) => {
   await dotnet
     .initializeStrykerConfiguration(arg)
     .then((configFileCreationResult: string) => {

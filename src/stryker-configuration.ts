@@ -1,32 +1,28 @@
-import { ILogger } from './logger';
+import ILogger from './logger.interface';
 import * as fs from 'fs';
 import path from 'path';
-import * as vscode from 'vscode';
-
-export type StrykerConfigurationType = {
-  initializeBasicConfiguration(folderUri: vscode.Uri): Promise<string>;
-  createStrykerConfigurationFile(folderUri: vscode.Uri): Promise<string>;
-};
+import { Uri, window, workspace } from 'vscode';
+import IStrykerConfiguration from './stryker-configuration.interface';
 
 const solutionNameExtension: string = '.sln';
 
-export class StrykerConfiguration implements StrykerConfigurationType {
-  readonly strykerConfigurationFileAlreadyExistsMessage: string =
+class StrykerConfiguration implements IStrykerConfiguration {
+  private readonly strykerConfigurationFileAlreadyExistsMessage: string =
     'The stryker configuration file already exists. It will not be overwritten.';
-  readonly strykerConfigurationFileCreationSuccess: string = 'The stryker configuration file has been created:';
+  private readonly strykerConfigurationFileCreationSuccess: string = 'The stryker configuration file has been created:';
 
-  readonly strykerConfigFilename: string = 'stryker-config.json';
+  private readonly strykerConfigFilename: string = 'stryker-config.json';
 
-  private _iLogger: ILogger;
+  private _logger: ILogger;
 
   constructor(logger: ILogger) {
-    this._iLogger = logger;
+    this._logger = logger;
   }
 
-  public async initializeBasicConfiguration(folderUri: vscode.Uri): Promise<string> {
-    let strykerConfigPath: vscode.Uri | undefined = vscode.workspace.getWorkspaceFolder(folderUri)?.uri;
+  public async initializeBasicConfiguration(folderUri: Uri): Promise<string> {
+    let strykerConfigPath: Uri | undefined = workspace.getWorkspaceFolder(folderUri)?.uri;
     if (!strykerConfigPath) {
-      const folderUri = await vscode.window.showOpenDialog({
+      const folderUri = await window.showOpenDialog({
         canSelectFiles: false,
         canSelectFolders: true,
         canSelectMany: false,
@@ -38,18 +34,18 @@ export class StrykerConfiguration implements StrykerConfigurationType {
       }
     }
 
-    this._iLogger.info(`Creating the stryker configuration file into: ${path.join(strykerConfigPath!.fsPath)}`);
+    this._logger.info(`Creating the stryker configuration file into: ${path.join(strykerConfigPath!.fsPath)}`);
 
     return this.createStrykerConfigurationFile(strykerConfigPath!);
   }
 
   private async isFileExists(filePath: string): Promise<string> {
     if (fs.existsSync(filePath) && fs.lstatSync(filePath).isFile()) {
-      this._iLogger.warning(this.strykerConfigurationFileAlreadyExistsMessage);
+      this._logger.warning(this.strykerConfigurationFileAlreadyExistsMessage);
       return Promise.reject(this.strykerConfigurationFileAlreadyExistsMessage);
     }
     const fileExistMsg = `${filePath} does not exist, at the moment.`;
-    this._iLogger.log(fileExistMsg);
+    this._logger.log(fileExistMsg);
     return Promise.resolve(fileExistMsg);
   }
 
@@ -66,7 +62,7 @@ export class StrykerConfiguration implements StrykerConfigurationType {
   }
 
   private async findDotnetSolutionFile(): Promise<string> {
-    const files: vscode.Uri[] = await vscode.workspace.findFiles(`**/*${solutionNameExtension}`);
+    const files: Uri[] = await workspace.findFiles(`**/*${solutionNameExtension}`);
     const solutionFile: string = files[0].fsPath;
     const solutionName: string = path.basename(solutionFile);
     return Promise.resolve(solutionName);
@@ -82,7 +78,7 @@ export class StrykerConfiguration implements StrykerConfigurationType {
     return Promise.resolve(jsonFile);
   }
 
-  public async createStrykerConfigurationFile(folderUri: vscode.Uri): Promise<string> {
+  public async createStrykerConfigurationFile(folderUri: Uri): Promise<string> {
     const filePath: string = path.join(folderUri.fsPath, this.strykerConfigFilename);
     const creationSuccessMessage: string = `${this.strykerConfigurationFileCreationSuccess} ${filePath}`;
     let error: Error | undefined;
@@ -94,10 +90,10 @@ export class StrykerConfiguration implements StrykerConfigurationType {
     // Write the JSON string to the file
     fs.writeFile(filePath, jsonString, (err) => {
       if (err) {
-        this._iLogger.error(err.message);
+        this._logger.error(err.message);
         error = err;
       } else {
-        this._iLogger.log(creationSuccessMessage);
+        this._logger.log(creationSuccessMessage);
       }
     });
 
@@ -108,3 +104,5 @@ export class StrykerConfiguration implements StrykerConfigurationType {
     return Promise.resolve(creationSuccessMessage);
   }
 }
+
+export default StrykerConfiguration;

@@ -10,17 +10,19 @@ import {
   mutateFileCommand,
   mutateSelectionCommand,
 } from './commands';
-import { DotnetType, Dotnet } from './dotnet';
-import { Logger } from './logger';
+import Dotnet from './dotnet';
+import IDotnet from './dotnet.interface';
+import Logger from './logger';
 import { commandRunner } from './stryker';
-import { StrykerConfiguration } from './stryker-configuration';
+import IStrykerConfiguration from './stryker-configuration.interface';
+import StrykerConfiguration from './stryker-configuration';
 
 export function activate(context: vscode.ExtensionContext) {
   const run = commandRunner();
   const logger = new Logger();
-  const strykerConfiguration = new StrykerConfiguration(logger);
+  const strykerConfiguration: IStrykerConfiguration = new StrykerConfiguration(logger);
   // TODO : strykerConfiguration may not be in the right class... ?!?!?
-  const dotnetExec: DotnetType = new Dotnet(strykerConfiguration, logger);
+  const dotnetExec: IDotnet = new Dotnet(strykerConfiguration, logger);
 
   let createStrykerConfigurationFile = vscode.commands.registerCommand(
     'vscode-stryker-mutator.create-stryker-config-file',

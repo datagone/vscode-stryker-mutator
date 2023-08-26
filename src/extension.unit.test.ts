@@ -13,7 +13,6 @@ import {
 import { activate, deactivate } from './extension';
 import { commandRunner } from './stryker';
 
-jest.mock('./dotnet');
 jest.mock('./stryker');
 jest.mock('./commands');
 

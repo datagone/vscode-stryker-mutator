@@ -1,5 +1,3 @@
-import { Uri } from 'vscode';
-
 interface IPathToMutate {
   fsPath: string;
 

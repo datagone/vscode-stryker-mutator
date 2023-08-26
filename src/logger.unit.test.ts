@@ -1,4 +1,5 @@
-import { ILogger, Logger } from './logger';
+import Logger from './logger';
+import ILogger from './logger.interface';
 import { mockConsoleLog } from './test-helpers';
 
 mockConsoleLog();

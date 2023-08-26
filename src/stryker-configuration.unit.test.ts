@@ -1,5 +1,6 @@
-import { ILogger } from './logger';
-import { StrykerConfigurationType, StrykerConfiguration } from './stryker-configuration';
+import ILogger from './logger.interface';
+import IStrykerConfiguration from './stryker-configuration.interface';
+import StrykerConfiguration from './stryker-configuration';
 import { mockFindFiles, mockGetWorkspaceFolder, mockShowOpenDialog, Uri } from '../__mocks__/vscode';
 import fs from 'fs';
 import path from 'path';
@@ -10,7 +11,7 @@ import { OpenDialogOptions } from 'vscode';
 jest.mock('fs');
 
 let stubLogger: ILogger;
-let configuration: StrykerConfigurationType;
+let configuration: IStrykerConfiguration;
 
 const configFileExistsMessage: string = 'The stryker configuration file already exists. It will not be overwritten.';
 const strykerConfigurationFileCreationSuccess: string = 'The stryker configuration file has been created:';
@@ -54,7 +55,7 @@ describe('WHEN Initializing the configuration file', () => {
         const expectedSolutionTestsFolder: Uri = Uri.file(path.join(aTestProjectFolder));
         const expectedSolutionFileName: Uri = Uri.file(path.join(aTestProjectFolder, 'test.sln'));
         const expectedConfigurationFilePath: Uri = Uri.file(
-          path.join(expectedSolutionTestsFolder.fsPath, 'stryker-config.json')
+          path.join(expectedSolutionTestsFolder.fsPath, 'stryker-config.json'),
         );
         const expectMessageToBeLogged = `Creating the stryker configuration file into: ${expectedSolutionTestsFolder.path}`;
         const expectedDefaultJsonStrykerConfigFile: any = {
@@ -86,7 +87,7 @@ describe('WHEN Initializing the configuration file', () => {
         expect(writeFileSpy).toHaveBeenCalledWith(
           expectedConfigurationFilePath.path,
           expectedJsonStringForTheConfigurationFile,
-          expect.anything()
+          expect.anything(),
         );
       });
     });
