@@ -183,7 +183,7 @@
     "test": "node ./out/test/runTest.js",
     "test:unit": "jest \"(?<=.unit).test.ts$\" --coverage",
     "test:unit:file": "jest --coverage --testPathPattern",
-    "test:mutation": "stryker run --incremental",
+    "test:mutation": "yarn test:mutation:full --incremental",
     "test:mutation:full": "stryker run",
     "ci:dryrun": "semantic-release --extends ./release.package.config.js --dry-run",
     "ci": "semantic-release --extends ./release.package.config.js",

@@ -4,7 +4,7 @@ import { commandBuilder } from './cli-builder';
 
 jest.mock('./config');
 
-describe('WHEN Building the a cli Command', () => {
+describe('WHEN Building a cli Command', () => {
   let mockDotnetCommand: jest.MockedFn<typeof dotnetCommand>;
 
   const A_CLI_NAME: string = 'a-cli-name';

@@ -5,7 +5,7 @@ import shellEscape from 'shell-escape';
 
 const allowedCommand: string[] = ['stryker', 'tool', '--version'];
 
-export const commandBuilder = (args: string[]) => {
+export const commandBuilder = (args: string[]): string => {
   if (args.length === 0) {
     throw new MissingArgumentsException('No arguments provided.');
   }
