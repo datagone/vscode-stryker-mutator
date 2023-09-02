@@ -110,7 +110,7 @@ describe('WHEN executing the dotnet command', () => {
 
     afterEach(() => {
       // Assert (THEN)
-      expect(spyLogger.log).toHaveBeenCalledWith('Task : Install the dotnet-stryker tool');
+      expect(spyLogger.log).toHaveBeenCalledWith('Task: Install the dotnet-stryker tool');
     });
 
     describe('AND GIVEN the installation is already done', () => {
@@ -119,9 +119,11 @@ describe('WHEN executing the dotnet command', () => {
         mockExecuteCommand.mockImplementation((val: string[]) => {
           if (val.includes('--version')) {
             return Promise.resolve('1.2.3');
-          } else if (val.includes('list')) {
+          }
+          if (val.includes('list')) {
             return Promise.resolve('dotnet-stryker    1.2.3    dotnet-stryker');
-          } else if (val.includes('install')) {
+          }
+          if (val.includes('install')) {
             return Promise.resolve("Tool 'dotnet-stryker' (version '1.2.3') was successfully installed");
           }
           return Promise.reject('error in ExecuteCommand');
@@ -131,7 +133,8 @@ describe('WHEN executing the dotnet command', () => {
           value = value.trim();
           if (pattern.includes('dotnet-stryker(\\s*)((\\d+\\.)*\\d+)(\\s*)dotnet-stryker')) {
             return Promise.resolve(true);
-          } else if (pattern === '^(\\d+\\.)*\\d+$') {
+          }
+          if (pattern === '^(\\d+\\.)*\\d+$') {
             return Promise.resolve(true);
           }
           return Promise.reject('error in IsValidToRegex');
@@ -153,9 +156,11 @@ describe('WHEN executing the dotnet command', () => {
         mockExecuteCommand.mockImplementation((val: string[]) => {
           if (val.includes('--version')) {
             return Promise.resolve('1.2.3');
-          } else if (val.includes('list')) {
+          }
+          if (val.includes('list')) {
             return Promise.resolve(' ');
-          } else if (val.includes('install')) {
+          }
+          if (val.includes('install')) {
             return Promise.resolve("Tool 'dotnet-stryker' (version '1.2.3') was successfully installed");
           }
           return Promise.reject('error in ExecuteCommand');
@@ -163,13 +168,15 @@ describe('WHEN executing the dotnet command', () => {
         mockIsValidToRegex.mockImplementation((value: string, pattern: string): Promise<boolean> => {
           if (value === ' ' && pattern.includes('dotnet-stryker')) {
             return Promise.resolve(false);
-          } else if (
+          }
+          if (
             value.includes('dotnet-stryker') &&
             pattern.includes('dotnet-stryker') &&
             pattern.includes('successfully installed')
           ) {
             return Promise.resolve(true);
-          } else if (pattern === '^(\\d+\\.)*\\d+$') {
+          }
+          if (pattern === '^(\\d+\\.)*\\d+$') {
             return Promise.resolve(true);
           }
           return Promise.reject('error in IsValidToRegex');
@@ -181,8 +188,7 @@ describe('WHEN executing the dotnet command', () => {
         expect(executeCommandWithArguments).toHaveBeenCalledTimes(3);
         expect(executeCommandWithArguments).toHaveBeenCalledWith(requiredArguments);
         expect(isValidToRegex).toHaveBeenCalledTimes(3);
-        expect(spyLogger.log).toHaveBeenCalledTimes(3);
-        expect(spyLogger.log).toHaveBeenCalledWith('dotnet-stryker tool is not already installed');
+        expect(spyLogger.log).toHaveBeenCalledTimes(2);
         expect(spyLogger.log).toHaveBeenCalledWith('Installing dotnet-stryker tool');
       });
     });
@@ -194,9 +200,11 @@ describe('WHEN executing the dotnet command', () => {
         mockExecuteCommand.mockImplementation((val: string[]) => {
           if (val.includes('--version')) {
             return Promise.resolve('1.2.3');
-          } else if (val.includes('list')) {
+          }
+          if (val.includes('list')) {
             return Promise.resolve(' ');
-          } else if (val.includes('install')) {
+          }
+          if (val.includes('install')) {
             return Promise.reject(expectedErrorMessage);
           }
           return Promise.reject('error in ExecuteCommand');
@@ -207,13 +215,15 @@ describe('WHEN executing the dotnet command', () => {
           }
           if (value === ' ' && pattern.includes('dotnet-stryker')) {
             return Promise.resolve(false);
-          } else if (
+          }
+          if (
             value.includes('dotnet-stryker') &&
             pattern.includes('dotnet-stryker') &&
             pattern.includes('successfully installed')
           ) {
             return Promise.resolve(true);
-          } else if (pattern === '^(\\d+\\.)*\\d+$') {
+          }
+          if (pattern === '^(\\d+\\.)*\\d+$') {
             return Promise.resolve(true);
           }
           return Promise.reject('error in IsValidToRegex');
@@ -225,9 +235,229 @@ describe('WHEN executing the dotnet command', () => {
         expect(executeCommandWithArguments).toHaveBeenCalledTimes(3);
         expect(executeCommandWithArguments).toHaveBeenCalledWith(requiredArguments);
         expect(isValidToRegex).toHaveBeenCalledTimes(2);
-        expect(spyLogger.log).toHaveBeenCalledTimes(3);
-        expect(spyLogger.log).toHaveBeenCalledWith('dotnet-stryker tool is not already installed');
+        expect(spyLogger.log).toHaveBeenCalledTimes(2);
         expect(spyLogger.log).toHaveBeenCalledWith('Installing dotnet-stryker tool');
+      });
+    });
+  });
+
+  describe('GIVEN the update of the dotnet stryker', () => {
+    const requiredUpdateArguments: string[] = ['tool', 'update', '--global', 'dotnet-stryker'];
+    const requiredInstallArguments: string[] = ['tool', 'install', '--global', 'dotnet-stryker'];
+
+    beforeEach(() => {
+      mockExecuteCommand.mockImplementation((val: string[]) => {
+        if (val.includes('--version')) {
+          return Promise.resolve('1.2.3');
+        }
+        if (val.includes('list')) {
+          return Promise.resolve('dotnet-stryker    1.2.3    dotnet-stryker');
+        }
+        if (val.includes('install')) {
+          return Promise.resolve("Tool 'dotnet-stryker' (version '1.2.3') was successfully installed");
+        }
+        if (val.includes('update')) {
+          return Promise.resolve(
+            "Tool 'dotnet-stryker' was successfully updated from version '1.2.3' to version '2.3.4'",
+          );
+        }
+        return Promise.reject('error in ExecuteCommand');
+      });
+    });
+
+    afterEach(() => {
+      // Assert (THEN)
+      expect(spyLogger.log).toHaveBeenCalledWith('Task: Update the dotnet-stryker tool');
+    });
+
+    describe('AND GIVEN the tool is not up to date', () => {
+      it('THEN it should update it', async () => {
+        // Arrange (GIVEN)
+        mockExecuteCommand.mockImplementation((val: string[]) => {
+          if (val.includes('--version')) {
+            return Promise.resolve('1.2.3');
+          }
+          if (val.includes('list')) {
+            return Promise.resolve('dotnet-stryker    1.2.3    dotnet-stryker');
+          }
+          if (val.includes('update')) {
+            return Promise.resolve(
+              "Tool 'dotnet-stryker' was successfully updated from version '1.2.3' to version '2.3.4'",
+            );
+          }
+          return Promise.reject('error in ExecuteCommand');
+        });
+
+        mockIsValidToRegex.mockImplementation((value: string, pattern: string): Promise<boolean> => {
+          value = value.trim();
+          if (pattern === '^(\\d+\\.)*\\d+$') {
+            // --version
+            return Promise.resolve(true);
+          }
+          if (pattern.includes('dotnet-stryker(\\s*)((\\d+\\.)*\\d+)(\\s*)dotnet-stryker')) {
+            // tool list --global
+            return Promise.resolve(true);
+          }
+          if (
+            value.includes('dotnet-stryker') &&
+            pattern.includes('dotnet-stryker') &&
+            pattern.includes('successfully updated')
+          ) {
+            return Promise.resolve(true);
+          }
+          return Promise.reject('error in IsValidToRegex');
+        });
+        // Act (WHEN)
+        const result: Promise<boolean> = dotnetClass.updateStrykerTool();
+        // Assert (THEN)
+        await expect(result).resolves.toBe(true);
+        expect(executeCommandWithArguments).toHaveBeenCalledTimes(3);
+        expect(executeCommandWithArguments).not.toHaveBeenCalledWith(requiredInstallArguments);
+        expect(executeCommandWithArguments).toHaveBeenCalledWith(requiredUpdateArguments);
+        expect(isValidToRegex).toHaveBeenCalledTimes(3);
+        expect(spyLogger.log).toHaveBeenCalledTimes(1);
+        expect(spyLogger.log).toHaveBeenCalledWith('Task: Update the dotnet-stryker tool');
+      });
+    });
+
+    describe('AND GIVEN the update is already done', () => {
+      it('THEN it should reinstall it', async () => {
+        // Arrange (GIVEN)
+        mockExecuteCommand.mockImplementation((val: string[]) => {
+          if (val.includes('--version')) {
+            return Promise.resolve('1.2.3');
+          }
+          if (val.includes('list')) {
+            return Promise.resolve('dotnet-stryker    1.2.3    dotnet-stryker');
+          }
+          if (val.includes('update')) {
+            return Promise.resolve(
+              "Tool 'dotnet-stryker' was reinstalled with the latest stable version (version '1.2.3')",
+            );
+          }
+          return Promise.reject('error in ExecuteCommand');
+        });
+
+        mockIsValidToRegex.mockImplementation((value: string, pattern: string): Promise<boolean> => {
+          value = value.trim();
+          if (pattern === '^(\\d+\\.)*\\d+$') {
+            // --version
+            return Promise.resolve(true);
+          }
+          if (pattern.includes('dotnet-stryker(\\s*)((\\d+\\.)*\\d+)(\\s*)dotnet-stryker')) {
+            // tool list --global
+            return Promise.resolve(true);
+          }
+          if (
+            value.includes('dotnet-stryker') &&
+            pattern.includes('dotnet-stryker') &&
+            pattern.includes('reinstalled')
+          ) {
+            return Promise.resolve(true);
+          }
+          return Promise.reject('error in IsValidToRegex');
+        });
+        // Act (WHEN)
+        const result: Promise<boolean> = dotnetClass.updateStrykerTool();
+        // Assert (THEN)
+        await expect(result).resolves.toBe(true);
+        expect(executeCommandWithArguments).toHaveBeenCalledTimes(3);
+        expect(executeCommandWithArguments).not.toHaveBeenCalledWith(requiredInstallArguments);
+        expect(executeCommandWithArguments).toHaveBeenCalledWith(requiredUpdateArguments);
+        expect(isValidToRegex).toHaveBeenCalledTimes(3);
+        expect(spyLogger.log).toHaveBeenCalledTimes(1);
+        expect(spyLogger.log).toHaveBeenCalledWith('Task: Update the dotnet-stryker tool');
+      });
+    });
+
+    describe('AND GIVEN the installation was not done', () => {
+      it('THEN it should reject the update', async () => {
+        // Arrange (GIVEN)
+        mockExecuteCommand.mockImplementation((val: string[]) => {
+          if (val.includes('--version')) {
+            return Promise.resolve('1.2.3');
+          }
+          if (val.includes('list')) {
+            return Promise.resolve(' ');
+          }
+          if (val.includes('install')) {
+            return Promise.resolve("Tool 'dotnet-stryker' (version '1.2.3') was successfully installed");
+          }
+          return Promise.reject('error in ExecuteCommand');
+        });
+        mockIsValidToRegex.mockImplementation((value: string, pattern: string): Promise<boolean> => {
+          if (value === ' ' && pattern.includes('dotnet-stryker')) {
+            return Promise.resolve(false);
+          }
+          if (
+            value.includes('dotnet-stryker') &&
+            pattern.includes('dotnet-stryker') &&
+            pattern.includes('successfully installed')
+          ) {
+            return Promise.resolve(true);
+          }
+          if (pattern === '^(\\d+\\.)*\\d+$') {
+            return Promise.resolve(true);
+          }
+          return Promise.reject('error in IsValidToRegex');
+        });
+        // Act (WHEN)
+        const result: Promise<boolean> = dotnetClass.updateStrykerTool();
+        // Assert (THEN)
+        await expect(result).rejects.toBe('dotnet-stryker tool is not already installed');
+        expect(executeCommandWithArguments).toHaveBeenCalledTimes(2);
+        expect(isValidToRegex).toHaveBeenCalledTimes(2);
+        expect(spyLogger.log).toHaveBeenCalledTimes(1);
+        expect(spyLogger.log).toHaveBeenCalledWith('Task: Update the dotnet-stryker tool');
+      });
+    });
+
+    describe('AND GIVEN the update failed', () => {
+      it('THEN it should reject AND NOT call The validationRegex after that', async () => {
+        // Arrange (GIVEN)
+        const expectedErrorMessage: string = 'Failed Update';
+        mockExecuteCommand.mockImplementation((val: string[]) => {
+          if (val.includes('--version')) {
+            return Promise.resolve('1.2.3');
+          }
+          if (val.includes('list')) {
+            return Promise.resolve('dotnet-stryker    1.2.3    dotnet-stryker');
+          }
+          if (val.includes('update')) {
+            return Promise.reject(expectedErrorMessage);
+          }
+          return Promise.reject('error in ExecuteCommand');
+        });
+        mockIsValidToRegex.mockImplementation((value: string, pattern: string): Promise<boolean> => {
+          if (value === expectedErrorMessage) {
+            return Promise.resolve(false);
+          }
+          if (value === ' ' && pattern.includes('dotnet-stryker')) {
+            return Promise.resolve(false);
+          }
+          if (
+            value.includes('dotnet-stryker') &&
+            pattern.includes('dotnet-stryker') &&
+            pattern.includes('successfully updated')
+          ) {
+            return Promise.resolve(true);
+          }
+          if (pattern === '^(\\d+\\.)*\\d+$') {
+            return Promise.resolve(true);
+          }
+          if (pattern === 'dotnet-stryker(\\s*)((\\d+\\.)*\\d+)(\\s*)dotnet-stryker') {
+            return Promise.resolve(true);
+          }
+          return Promise.reject('error in IsValidToRegex');
+        });
+        // Act (WHEN)
+        const result: Promise<boolean> = dotnetClass.updateStrykerTool();
+        // Assert (THEN)
+        await expect(result).rejects.toBe(expectedErrorMessage);
+        expect(executeCommandWithArguments).toHaveBeenCalledTimes(3);
+        expect(executeCommandWithArguments).toHaveBeenCalledWith(requiredUpdateArguments);
+        expect(isValidToRegex).toHaveBeenCalledTimes(2);
+        expect(spyLogger.log).toHaveBeenCalledTimes(1);
       });
     });
   });
@@ -238,7 +468,7 @@ describe('WHEN executing the dotnet command', () => {
     afterEach(() => {
       // Assert (THEN)
       expect(spyLogger.log).toHaveBeenCalledTimes(1);
-      expect(spyLogger.log).toHaveBeenCalledWith('Task : Uninstall the stryker dotnet tool');
+      expect(spyLogger.log).toHaveBeenCalledWith('Task: Uninstall the dotnet-stryker tool');
     });
 
     describe('AND GIVEN the dotnet stryker is installed', () => {
@@ -247,9 +477,11 @@ describe('WHEN executing the dotnet command', () => {
         mockExecuteCommand.mockImplementation((val: string[]) => {
           if (val.includes('--version')) {
             return Promise.resolve('1.2.3');
-          } else if (val.includes('list')) {
+          }
+          if (val.includes('list')) {
             return Promise.resolve('dotnet-stryker    1.2.3    dotnet-stryker');
-          } else if (val.includes('uninstall')) {
+          }
+          if (val.includes('uninstall')) {
             return Promise.resolve("Tool 'dotnet-stryker' (version '1.2.3') was successfully uninstalled");
           }
           return Promise.reject('error in ExecuteCommand');
@@ -259,9 +491,11 @@ describe('WHEN executing the dotnet command', () => {
           value = value.trim();
           if (pattern.includes('dotnet-stryker(\\s*)((\\d+\\.)*\\d+)(\\s*)dotnet-stryker')) {
             return Promise.resolve(true);
-          } else if (pattern.includes('dotnet-stryker') && pattern.includes('successfully uninstalled')) {
+          }
+          if (pattern.includes('dotnet-stryker') && pattern.includes('successfully uninstalled')) {
             return Promise.resolve(true);
-          } else if (pattern === '^(\\d+\\.)*\\d+$') {
+          }
+          if (pattern === '^(\\d+\\.)*\\d+$') {
             return Promise.resolve(true);
           }
           return Promise.reject('error in IsValidToRegex');
@@ -283,9 +517,11 @@ describe('WHEN executing the dotnet command', () => {
         mockExecuteCommand.mockImplementation((val: string[]) => {
           if (val.includes('--version')) {
             return Promise.resolve('1.2.3');
-          } else if (val.includes('list')) {
+          }
+          if (val.includes('list')) {
             return Promise.resolve(' ');
-          } else if (val.includes('uninstall')) {
+          }
+          if (val.includes('uninstall')) {
             return Promise.resolve("Tool 'dotnet-stryker' (version '1.2.3') was successfully uninstalled");
           }
           return Promise.reject('error in ExecuteCommand');
@@ -294,11 +530,14 @@ describe('WHEN executing the dotnet command', () => {
         mockIsValidToRegex.mockImplementation((value: string, pattern: string): Promise<boolean> => {
           if (value === ' ' && pattern.includes('dotnet-stryker')) {
             return Promise.resolve(false);
-          } else if (pattern.includes('dotnet-stryker(\\s*)((\\d+\\.)*\\d+)(\\s*)dotnet-stryker')) {
+          }
+          if (pattern.includes('dotnet-stryker(\\s*)((\\d+\\.)*\\d+)(\\s*)dotnet-stryker')) {
             return Promise.resolve(true);
-          } else if (pattern.includes('dotnet-stryker') && pattern.includes('successfully uninstalled')) {
+          }
+          if (pattern.includes('dotnet-stryker') && pattern.includes('successfully uninstalled')) {
             return Promise.resolve(true);
-          } else if (pattern === '^(\\d+\\.)*\\d+$') {
+          }
+          if (pattern === '^(\\d+\\.)*\\d+$') {
             return Promise.resolve(true);
           }
           return Promise.reject('error in IsValidToRegex');
@@ -321,9 +560,11 @@ describe('WHEN executing the dotnet command', () => {
         mockExecuteCommand.mockImplementation((val: string[]) => {
           if (val.includes('--version')) {
             return Promise.resolve('1.2.3');
-          } else if (val.includes('list')) {
+          }
+          if (val.includes('list')) {
             return Promise.resolve('dotnet-stryker    1.2.3    dotnet-stryker');
-          } else if (val.includes('uninstall')) {
+          }
+          if (val.includes('uninstall')) {
             return Promise.reject(expectedErrorMessage);
           }
           return Promise.reject('error in ExecuteCommand');
@@ -334,15 +575,18 @@ describe('WHEN executing the dotnet command', () => {
           }
           if (value === ' ' && pattern.includes('dotnet-stryker')) {
             return Promise.resolve(false);
-          } else if (pattern.includes('dotnet-stryker(\\s*)((\\d+\\.)*\\d+)(\\s*)dotnet-stryker')) {
+          }
+          if (pattern.includes('dotnet-stryker(\\s*)((\\d+\\.)*\\d+)(\\s*)dotnet-stryker')) {
             return Promise.resolve(true);
-          } else if (
+          }
+          if (
             value.includes('dotnet-stryker') &&
             pattern.includes('dotnet-stryker') &&
             pattern.includes('successfully uninstalled')
           ) {
             return Promise.resolve(true);
-          } else if (pattern === '^(\\d+\\.)*\\d+$') {
+          }
+          if (pattern === '^(\\d+\\.)*\\d+$') {
             return Promise.resolve(true);
           }
           return Promise.reject('error in IsValidToRegex');

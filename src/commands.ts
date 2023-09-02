@@ -18,6 +18,21 @@ export const installStrykerDotnetToolCommand = (dotnet: IDotnet) => async () => 
   });
 };
 
+export const updateStrykerDotnetToolCommand = (dotnet: IDotnet) => async () => {
+  await dotnet
+    .updateStrykerTool()
+    .then((toolIsUpdated: boolean) => {
+      if (toolIsUpdated === true) {
+        vscode.window.showInformationMessage(messageFormaterDotnetTool('tool has been updated'));
+      } else {
+        vscode.window.showWarningMessage(messageFormaterDotnetTool('tool is not updated'));
+      }
+    })
+    .catch((error) => {
+      vscode.window.showErrorMessage(messageFormaterError(`${error}`));
+    });
+};
+
 export const uninstallStrykerDotnetToolCommand = (dotnet: IDotnet) => async () => {
   dotnet.uninstallStrykerTool().then((toolIsUninstalled: boolean) => {
     if (toolIsUninstalled === true) {

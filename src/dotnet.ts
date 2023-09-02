@@ -3,10 +3,9 @@ import { executeCommandWithArguments, isValidToRegex } from './cli-exec';
 import IStrykerConfiguration from './stryker-configuration.interface';
 import IDotnet from './dotnet.interface';
 import ILogger from './logger.interface';
+import Constants from './constants';
 
 class Dotnet implements IDotnet {
-  readonly strykerToolName: string = 'dotnet-stryker';
-
   private _strykerConfiguration: IStrykerConfiguration;
   private _logger: ILogger;
 
@@ -26,7 +25,7 @@ class Dotnet implements IDotnet {
     let strykerToolIsInstalled: boolean;
 
     const toolListArgs: string[] = ['tool', 'list', '--global'];
-    const toolVerificationOutputPattern: string = `${this.strykerToolName}(\\s*)((\\d+\\.)*\\d+)(\\s*)${this.strykerToolName}`;
+    const toolVerificationOutputPattern: string = `${Constants.strykerDotnetToolName}(\\s*)((\\d+\\.)*\\d+)(\\s*)${Constants.strykerDotnetToolName}`;
 
     strykerToolIsInstalled = await this.executeCommandAndVerifyOutput(toolListArgs, toolVerificationOutputPattern);
 
@@ -36,30 +35,48 @@ class Dotnet implements IDotnet {
   public async installStrykerTool(): Promise<boolean> {
     let strykerToolInstalled: boolean;
 
-    const toolListArgs: string[] = ['tool', 'install', '--global', this.strykerToolName];
-    const installVerificationOutputPattern: string = `${this.strykerToolName}.*((\\d+\\.)*\\d+).*successfully installed\\.`;
+    const toolListArgs: string[] = ['tool', 'install', '--global', Constants.strykerDotnetToolName];
+    const installVerificationOutputPattern: string = `${Constants.strykerDotnetToolName}.*((\\d+\\.)*\\d+).*successfully installed\\.`;
 
-    this._logger.log('Task : Install the dotnet-stryker tool');
+    this._logger.log(`Task: Install the ${Constants.strykerDotnetToolName} tool`);
 
     await this.isSdkInstalled();
 
     strykerToolInstalled = await this.isStrykerToolInstalled();
     if (strykerToolInstalled === false) {
-      this._logger.log('dotnet-stryker tool is not already installed');
-      this._logger.log('Installing dotnet-stryker tool');
+      this._logger.log(`Installing ${Constants.strykerDotnetToolName} tool`);
       strykerToolInstalled = await this.executeCommandAndVerifyOutput(toolListArgs, installVerificationOutputPattern);
     }
 
     return Promise.resolve(strykerToolInstalled);
   }
 
+  public async updateStrykerTool(): Promise<boolean> {
+    let strykerToolUpdateResult: boolean;
+
+    const toolListArgs: string[] = ['tool', 'update', '--global', Constants.strykerDotnetToolName];
+    const updateVerificationOutputPattern: string = `${Constants.strykerDotnetToolName}.*(successfully updated|reinstalled).*((\\d+\\.)*\\d+)\\.`;
+
+    this._logger.log(`Task: Update the ${Constants.strykerDotnetToolName} tool`);
+
+    await this.isSdkInstalled();
+
+    if ((await this.isStrykerToolInstalled()) === false) {
+      return Promise.reject(`${Constants.strykerDotnetToolName} tool is not already installed`);
+    }
+
+    strykerToolUpdateResult = await this.executeCommandAndVerifyOutput(toolListArgs, updateVerificationOutputPattern);
+
+    return Promise.resolve(strykerToolUpdateResult);
+  }
+
   public async uninstallStrykerTool(): Promise<boolean> {
     let strykerToolWasUninstall: boolean;
 
-    const toolListArgs: string[] = ['tool', 'uninstall', '--global', this.strykerToolName];
-    const installVerificationOutputPattern: string = `${this.strykerToolName}.*((\\d+\\.)*\\d+).*successfully uninstalled\\.`;
+    const toolListArgs: string[] = ['tool', 'uninstall', '--global', Constants.strykerDotnetToolName];
+    const installVerificationOutputPattern: string = `${Constants.strykerDotnetToolName}.*((\\d+\\.)*\\d+).*successfully uninstalled\\.`;
 
-    this._logger.log('Task : Uninstall the stryker dotnet tool');
+    this._logger.log(`Task: Uninstall the ${Constants.strykerDotnetToolName} tool`);
 
     await this.isSdkInstalled();
 

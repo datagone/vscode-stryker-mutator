@@ -2,6 +2,7 @@ import { commands, mockRegisterCommand } from '../__mocks__/vscode';
 import {
   createBoilerplateStrykerConfigurationFileCommand,
   installStrykerDotnetToolCommand,
+  updateStrykerDotnetToolCommand,
   uninstallStrykerDotnetToolCommand,
   mutateWorkspaceCommand,
   mutateFolderCommand,
@@ -25,6 +26,9 @@ const mockCreateBoilerplateStrykerConfigurationFileCommand =
 const mockInstallStrykerDotnetToolCommand = installStrykerDotnetToolCommand as jest.MockedFn<
   typeof installStrykerDotnetToolCommand
 >;
+const mockUpdateStrykerDotnetToolCommand = updateStrykerDotnetToolCommand as jest.MockedFn<
+  typeof updateStrykerDotnetToolCommand
+>;
 const mockUninstallStrykerDotnetToolCommand = uninstallStrykerDotnetToolCommand as jest.MockedFn<
   typeof uninstallStrykerDotnetToolCommand
 >;
@@ -35,7 +39,7 @@ const mockMutateProjectCommand = mutateProjectCommand as jest.MockedFn<typeof mu
 const mockMutateFileCommand = mutateFileCommand as jest.MockedFn<typeof mutateFileCommand>;
 const mockMutateSelectionCommand = mutateSelectionCommand as jest.MockedFn<typeof mutateSelectionCommand>;
 
-const EXPECTED_NBR_CALLS_FOR_REGISTERCOMMAND: number = 9;
+const EXPECTED_NBR_CALLS_FOR_REGISTERCOMMAND: number = 10;
 
 describe('Extension', () => {
   beforeEach(() => {
@@ -46,6 +50,7 @@ describe('Extension', () => {
       mockCommandRunner.mockReturnValue('command runner' as any);
       mockCreateBoilerplateStrykerConfigurationFileCommand.mockReturnValueOnce('stryker configuration file' as any);
       mockInstallStrykerDotnetToolCommand.mockReturnValueOnce('install stryker tool' as any);
+      mockUpdateStrykerDotnetToolCommand.mockReturnValueOnce('update stryker tool' as any);
       mockUninstallStrykerDotnetToolCommand.mockReturnValueOnce('uninstall stryker tool' as any);
 
       mockMutateWorkspaceCommand.mockReturnValueOnce('mutate the workspace' as any);
@@ -75,6 +80,8 @@ describe('Extension', () => {
       expect(mockCreateBoilerplateStrykerConfigurationFileCommand).toHaveBeenCalledTimes(1);
 
       expect(mockInstallStrykerDotnetToolCommand).toHaveBeenCalledTimes(1);
+
+      expect(mockUpdateStrykerDotnetToolCommand).toHaveBeenCalledTimes(1);
 
       expect(mockUninstallStrykerDotnetToolCommand).toHaveBeenCalledTimes(1);
 
@@ -106,6 +113,11 @@ describe('Extension', () => {
       expect(commands.registerCommand).toHaveBeenCalledWith(
         'vscode-stryker-mutator.install-stryker-dotnet-tool',
         'install stryker tool',
+      );
+
+      expect(commands.registerCommand).toHaveBeenCalledWith(
+        'vscode-stryker-mutator.update-stryker-dotnet-tool',
+        'update stryker tool',
       );
 
       expect(commands.registerCommand).toHaveBeenCalledWith(

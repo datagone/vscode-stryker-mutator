@@ -37,14 +37,7 @@
     "Quality",
     "Tests"
   ],
-  "activationEvents": [
-    "onCommand:vscode-stryker-mutator.create-stryker-config-file",
-    "onCommand:vscode-stryker-mutator.install-stryker-dotnet-tool",
-    "onCommand:vscode-stryker-mutator.uninstall-stryker-dotnet-tool",
-    "onCommand:vscode-stryker-mutator.mutate-workspace",
-    "onCommand:vscode-stryker-mutator.mutate-file",
-    "onCommand:vscode-stryker-mutator.mutate-selection"
-  ],
+  "activationEvents": [],
   "main": "./dist/extension.js",
   "contributes": {
     "commands": [
@@ -57,6 +50,12 @@
       {
         "command": "vscode-stryker-mutator.install-stryker-dotnet-tool",
         "title": "Install Stryker.NET Tool (Global)",
+        "category": "Stryker.NET",
+        "enablement": "true"
+      },
+      {
+        "command": "vscode-stryker-mutator.update-stryker-dotnet-tool",
+        "title": "Update Stryker.NET Tool to latest (Global)",
         "category": "Stryker.NET",
         "enablement": "true"
       },

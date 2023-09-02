@@ -2,6 +2,7 @@ import { Uri, mockAsRelativePath, mockShowErrorMessage, window } from '../__mock
 import {
   createBoilerplateStrykerConfigurationFileCommand,
   installStrykerDotnetToolCommand,
+  updateStrykerDotnetToolCommand,
   uninstallStrykerDotnetToolCommand,
   mutateWorkspaceCommand,
   mutateFolderCommand,
@@ -457,6 +458,57 @@ describe('USING Commands', () => {
         // Assert (THEN)
         expect(window.showWarningMessage).toHaveBeenCalledTimes(1);
         expect(window.showWarningMessage).toHaveBeenCalledWith(expectedFailedInstallationMessage);
+      });
+    });
+  });
+
+  describe('WHEN updating the dotnet-stryker tool', () => {
+    describe('GIVEN the dotnet-stryker tool update is successful', () => {
+      const expectedSucessfulInstallationMessage = 'Stryker.NET: dotnet-stryker tool has been updated';
+
+      it('THEN should show the VSCode information message that the update was successful', async () => {
+        // Arrange (GIVEN)
+        mockito.when(mockDotnetInterface.updateStrykerTool).thenReturn(() => Promise.resolve(true));
+
+        // Act (WHEN)
+        await updateStrykerDotnetToolCommand(mockDotnetInstance)();
+
+        // Assert (THEN)
+        expect(window.showInformationMessage).toHaveBeenCalledTimes(1);
+        expect(window.showInformationMessage).toHaveBeenCalledWith(expectedSucessfulInstallationMessage);
+      });
+    });
+
+    describe('GIVEN the dotnet-stryker tool update fails', () => {
+      const expectedFailedInstallationMessage = 'Stryker.NET: dotnet-stryker tool is not updated';
+
+      it('THEN should show the VSCode warning message that the update failed', async () => {
+        // Arrange (GIVEN)
+        mockito.when(mockDotnetInterface.updateStrykerTool).thenReturn(() => Promise.resolve(false));
+
+        // Act (WHEN)
+        await updateStrykerDotnetToolCommand(mockDotnetInstance)();
+
+        // Assert (THEN)
+        expect(window.showWarningMessage).toHaveBeenCalledTimes(1);
+        expect(window.showWarningMessage).toHaveBeenCalledWith(expectedFailedInstallationMessage);
+      });
+    });
+
+    describe('GIVEN the dotnet-stryker tool was not installed first', () => {
+      const errorMessage: string = 'dotnet-stryker tool is not updated';
+      const expectedErrorMessage: string = `Stryker.NET: ${errorMessage}`;
+
+      it('THEN should show the VSCode error message that the installation is not done', async () => {
+        // Arrange (GIVEN)
+        mockito.when(mockDotnetInterface.updateStrykerTool).thenReturn(() => Promise.reject(errorMessage));
+
+        // Act (WHEN)
+        await updateStrykerDotnetToolCommand(mockDotnetInstance)();
+
+        // Assert (THEN)
+        expect(window.showErrorMessage).toHaveBeenCalledTimes(1);
+        expect(window.showErrorMessage).toHaveBeenCalledWith(expectedErrorMessage);
       });
     });
   });

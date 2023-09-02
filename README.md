@@ -83,6 +83,8 @@ Here is the list of all available (✔️) and upcoming (❌) features that will
   - Command Pallette (✔️)
 - `Stryker.NET: Install Stryker.NET Tool`: Will install the latest version of stryker dotnet tool. It will use the settings to determine the Global or Local Installation (❌). Available from the:
   - Command Pallette (✔️)
+- `Stryker.NET: Update Stryker.NET Tool`: Will update the latest version of stryker dotnet tool. It will use the settings to determine the Global or Local Installation (❌). Available from the:
+  - Command Pallette (✔️)
 - `Stryker.NET: Uninstall Stryker.NET Tool`: Will uninstall the stryker dotnet tool. It will use the settings to determine the Global or Local Installation (❌). Available from the:
   - Command Pallette (✔️)
 - `Stryker.NET: Show the Report`: Will display the latest generated mutation report. Available from the:
