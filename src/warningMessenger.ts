@@ -1,4 +1,5 @@
 import { window } from 'vscode';
+import Constants from './constants';
 
 export const chooseToRunFullMutationTest = async (): Promise<boolean> => {
   let mustRun: boolean = true;
@@ -9,7 +10,7 @@ export const chooseToRunFullMutationTest = async (): Promise<boolean> => {
   );
   if (selection === 'No' || selection === undefined) {
     mustRun = false;
-    window.showInformationMessage(`Stryker.NET: Your computer thanks you! 😇`);
+    window.showInformationMessage(`${Constants.strykerDotnetTitle}: Your computer thanks you! 😇`);
   }
   return mustRun;
 };

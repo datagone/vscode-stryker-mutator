@@ -517,11 +517,10 @@ describe('USING Commands', () => {
     describe('GIVEN the initialization failed', () => {
       it('THEN should show the vscode error message windows with the error received', async () => {
         // Arrange (GIVEN)
-        const expectedErrorMessage: string =
+        const errorMessage: string =
           'Expected Error When calling dotnet.InitializeStrykerConfiguration during the test';
-        mockito
-          .when(mockDotnetInterface.initializeStrykerConfiguration)
-          .thenReturn(() => Promise.reject(expectedErrorMessage));
+        const expectedErrorMessage: string = `Stryker.NET: ${errorMessage}`;
+        mockito.when(mockDotnetInterface.initializeStrykerConfiguration).thenReturn(() => Promise.reject(errorMessage));
 
         // Act (WHEN)
         await createBoilerplateStrykerConfigurationFileCommand(mockDotnetInstance)(testFolder);

@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import Constants from './constants';
 
 const IS_TEST_FILE_REGEX = new RegExp(/tests?[\w\-\.\\\/\s\[\]\(\)]*\.(cs)$/, 'i');
 const FILE_CAN_BE_MUTATED_REGEX = new RegExp(/[\w\s\-\[\]\(\)]\.(cs|sln|csproj)$/, 'i');
@@ -6,6 +7,6 @@ const FILE_CAN_BE_MUTATED_REGEX = new RegExp(/[\w\s\-\[\]\(\)]\.(cs|sln|csproj)$
 export const isTestFile = (file: string) => IS_TEST_FILE_REGEX.test(file);
 
 export const showInvalidFileMessage = async () =>
-  await vscode.window.showErrorMessage('Stryker.NET: Cannot run Stryker to mutate a test files');
+  await vscode.window.showErrorMessage(`${Constants.strykerDotnetTitle}: Cannot run Stryker to mutate a test files`);
 
 export const fileCanBeMutated = (file: string) => !isTestFile(file) && FILE_CAN_BE_MUTATED_REGEX.test(file);

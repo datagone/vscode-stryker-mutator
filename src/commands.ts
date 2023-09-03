@@ -6,15 +6,14 @@ import IPathToMutate from './pathToMutate.interface';
 import PathToMutate from './pathToMutate';
 import { selectAFileToMutateFrom, selectAFolderToMutateFrom } from './fileSelector';
 import { chooseToRunFullMutationTest } from './warningMessenger';
-
-const tool = 'dotnet-stryker';
+import Constants from './constants';
 
 export const installStrykerDotnetToolCommand = (dotnet: IDotnet) => async () => {
   await dotnet.installStrykerTool().then((toolInstalled: boolean) => {
     if (toolInstalled === true) {
-      vscode.window.showInformationMessage(`Stryker.NET: ${tool} tool has been installed`);
+      vscode.window.showInformationMessage(messageFormaterDotnetTool('tool has been installed'));
     } else {
-      vscode.window.showWarningMessage(`Stryker.NET: ${tool} tool is not installed`);
+      vscode.window.showWarningMessage(messageFormaterDotnetTool('tool is not installed'));
     }
   });
 };
@@ -22,9 +21,9 @@ export const installStrykerDotnetToolCommand = (dotnet: IDotnet) => async () => 
 export const uninstallStrykerDotnetToolCommand = (dotnet: IDotnet) => async () => {
   dotnet.uninstallStrykerTool().then((toolIsUninstalled: boolean) => {
     if (toolIsUninstalled === true) {
-      vscode.window.showInformationMessage(`Stryker.NET: ${tool} tool has been uninstalled`);
+      vscode.window.showInformationMessage(messageFormaterDotnetTool('tool has been uninstalled'));
     } else {
-      vscode.window.showWarningMessage(`Stryker.NET: ${tool} tool uninstallation failed`);
+      vscode.window.showWarningMessage(messageFormaterDotnetTool('tool uninstallation failed'));
     }
   });
 };
@@ -35,8 +34,8 @@ export const createBoilerplateStrykerConfigurationFileCommand = (dotnet: IDotnet
     .then((configFileCreationResult: string) => {
       vscode.window.showInformationMessage(configFileCreationResult);
     })
-    .catch((errorMessage) => {
-      vscode.window.showErrorMessage(errorMessage);
+    .catch((error) => {
+      vscode.window.showErrorMessage(messageFormaterError(`${error}`));
     });
 };
 
@@ -54,8 +53,7 @@ export const mutateFolderCommand =
       try {
         filePath = await selectAFolderToMutateFrom(args[0] as vscode.Uri);
       } catch (error) {
-        const errMessage: string = `Stryker.NET: ${error}`;
-        vscode.window.showErrorMessage(errMessage);
+        vscode.window.showErrorMessage(messageFormaterError(`${error}`));
       }
 
       await launchCommandWithFile(run, filePath);
@@ -70,8 +68,7 @@ export const mutateSolutionCommand =
       try {
         filePath = await selectAFileToMutateFrom(args[0] as vscode.Uri);
       } catch (error) {
-        const errMessage: string = `Stryker.NET: ${error}`;
-        vscode.window.showErrorMessage(errMessage);
+        vscode.window.showErrorMessage(messageFormaterError(`${error}`));
       }
 
       await launchCommandWithFile(run, filePath);
@@ -86,8 +83,7 @@ export const mutateProjectCommand =
       try {
         filePath = await selectAFileToMutateFrom(args[0] as vscode.Uri);
       } catch (error) {
-        const errMessage: string = `Stryker.NET: ${error}`;
-        vscode.window.showErrorMessage(errMessage);
+        vscode.window.showErrorMessage(messageFormaterError(`${error}`));
       }
 
       await launchCommandWithFile(run, filePath);
@@ -101,8 +97,7 @@ export const mutateFileCommand =
     try {
       filePath = await selectAFileToMutateFrom(args[0] as vscode.Uri);
     } catch (error) {
-      const errMessage: string = `Stryker.NET: ${error}`;
-      vscode.window.showErrorMessage(errMessage);
+      vscode.window.showErrorMessage(messageFormaterError(`${error}`));
     }
 
     await launchCommandWithFile(run, filePath);
@@ -132,11 +127,11 @@ export const mutateSelectionCommand =
     const editor = vscode.window.activeTextEditor;
 
     if (!editor) {
-      console.log('Stryker.NET: No action, no active editor');
+      console.log(messageFormater('No action, no active editor'));
       return;
     }
     if (editor.selection.isEmpty) {
-      console.log('Stryker.NET: No action, selection is single character');
+      console.log(messageFormater('No action, selection is single character'));
       return;
     }
 
@@ -147,3 +142,13 @@ export const mutateSelectionCommand =
 
     run({ file: file, range: characterRange });
   };
+
+const messageFormaterDotnetTool = (message: string) => {
+  return `${Constants.strykerDotnetTitle}: ${Constants.strykerDotnetToolName} ${message}`;
+};
+const messageFormater = (message: string) => {
+  return `${Constants.strykerDotnetTitle}: ${message}`;
+};
+const messageFormaterError = (errorMessage: any) => {
+  return `${Constants.strykerDotnetTitle}: ${errorMessage}`;
+};
