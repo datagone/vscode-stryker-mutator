@@ -1,5 +1,12 @@
 # CHANGELOG
 
+# [0.4.0](https://github.com/datagone/vscode-stryker-mutator/compare/v0.3.0...v0.4.0) (2023-09-03)
+
+
+### Features
+
+* **dotnet:** add update stryker tool globally ([f16ea41](https://github.com/datagone/vscode-stryker-mutator/commit/f16ea41c9bd5b49e786fa5e75a251953819b112b))
+
 # [0.3.0](https://github.com/datagone/vscode-stryker-mutator/compare/v0.2.0...v0.3.0) (2023-08-06)
 
 
