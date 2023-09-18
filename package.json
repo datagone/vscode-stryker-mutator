@@ -199,7 +199,7 @@
     "@stryker-mutator/typescript-checker": "7.0.0",
     "@types/glob": "8.1.0",
     "@types/jest": "29.5.5",
-    "@types/jest-when": "3.5.2",
+    "@types/jest-when": "3.5.3",
     "@types/node": "20.x",
     "@types/shell-escape": "0.2.1",
     "@types/vscode": "1.75.0",
