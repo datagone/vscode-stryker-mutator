@@ -21,5 +21,5 @@ module.exports = {
       },
     ],
   ],
-  branches: ['main', 'feat/*', 'fix/*', { name: 'alpha', prerelease: true }],
+  branches: ['main'],
 };

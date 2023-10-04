@@ -26,5 +26,5 @@ module.exports = {
     ],
     'semantic-release-stop-before-publish',
   ],
-  branches: ['main', 'feat/*', 'fix/*', { name: 'alpha', prerelease: true }],
+  branches: ['main'],
 };
