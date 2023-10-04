@@ -1,5 +1,6 @@
 .*config
 .*ignore
+.gitattributes
 .adr-dir
 .nvmrc
 .yarnrc
@@ -16,3 +17,4 @@ LICENSE
 /assets
 /dist
 *.vsix
+/tryout

@@ -1,5 +1,6 @@
 __mocks__
 .dependencygraph/**
+.devcontainer/**
 .github/**
 .husky/**
 .vscode/**
@@ -13,6 +14,7 @@ src/**
 .prettierignore
 .yarnrc
 **/.gitignore
+**/.gitattributes
 **/tsconfig.json
 **/.eslintrc.json
 **/*.map
@@ -23,3 +25,4 @@ src/**
 *.lock
 TODO.md
 vsc-extension-quickstart.md
+tryout/**

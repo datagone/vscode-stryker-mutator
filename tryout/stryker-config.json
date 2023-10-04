@@ -1,0 +1,12 @@
+{
+  "stryker-config": {
+    "mutation-level": "Complete",
+    "reporters": ["html", "json", "markdown", "cleartext", "progress"],
+    "report-file-name": "mutation-report",
+    "thresholds": {
+      "high": 100,
+      "low": 100,
+      "break": 100
+    }
+  }
+}
