@@ -52,12 +52,12 @@ Overall, `Stryker Mutator` is a powerful tool for any developer looking to impro
 
 ## ⚙️ Usage
 
-If you didn't have Stryker.Net installed and a configuration file, you should start with these steps while using the command pallette:
+If you didn't have Stryker.Net installed and a configuration file, you should start with these steps while using the command Palette:
 
 1. `Install the Stryker.NET tool`. It may take time to install.
 2. `Create [a basic] Stryker configuration file`
 
-Afterward, right-click on a file, on a folder or over a selection of your best (or worst 😬) code and choose the `Mutate` action that you want to perform.
+Afterward, right-click on a file, on a folder or over a selection of your best (or worst 😬) code and choose the `Trigger mutation tests` action that you want to perform.
 
 ## 🚀 Features
 
@@ -65,42 +65,42 @@ Here is the list of all available (✔️) and upcoming (❌) features that will
 
 - `Stryker.NET: Trigger mutation tests on file`: Will run Stryker to mutate one specific file. Available in the:
   - Context Menu (✔️)
-  - Command Pallette (✔️)
+  - Command Palette (✔️)
 - `Stryker.NET: Trigger mutation tests on selection`: will run Stryker to mutate a selected block of code within the editor. Available in the:
   - Context Menu (✔️)
-  - Command Pallette (✔️)
+  - Command Palette (✔️)
 - `Stryker.NET: Trigger mutation tests on solution`: Will run Stryker to mutate files within the solution. Available, with a disclaimer (✔️), in the:
   - Context Menu (✔️)
-  - Command Pallette (✔️)
+  - Command Palette (✔️)
 - `Stryker.NET: Trigger mutation tests on project`: Will run Stryker to mutate files within the project. Available, with a disclaimer (✔️), in the:
   - Context Menu (✔️)
-  - Command Pallette (✔️)
+  - Command Palette (✔️)
 - `Stryker.NET: Trigger mutation tests on folder`: Will run Stryker to mutate files under one specific folder. Available, with a disclaimer (✔️), in the:
-  - Command Pallette (✔️)
+  - Command Palette (✔️)
 - [♻️ Deprecated, please use `Stryker.NET: Trigger mutation tests on solution` instead]<br><del>`Stryker.NET: Trigger mutation tests on workspace`: Will run Stryker to mutate all files. Available, with a disclaimer (✔️), from the:
-  - Command Pallette (✔️)</del>
+  - Command Palette (✔️)</del>
 - `Stryker.NET: Create Stryker.NET configuration file`: Will create a default stryker configuration file in the chosen folder. Available from the:
-  - Command Pallette (✔️)
-- `Stryker.NET: Install Stryker.NET Tool`: Will install the latest version of stryker dotnet tool. It will use the settings to determine the Global or Local Installation (❌). Available from the:
-  - Command Pallette (✔️)
-- `Stryker.NET: Update Stryker.NET Tool`: Will update the latest version of stryker dotnet tool. It will use the settings to determine the Global or Local Installation (❌). Available from the:
-  - Command Pallette (✔️)
-- `Stryker.NET: Uninstall Stryker.NET Tool`: Will uninstall the stryker dotnet tool. It will use the settings to determine the Global or Local Installation (❌). Available from the:
-  - Command Pallette (✔️)
+  - Command Palette (✔️)
+- `Stryker.NET: Install Stryker.NET Tool`: Will install the latest version of stryker dotnet tool. It will use the settings to determine the Global or Local Installation. Available from the:
+  - Command Palette (✔️)
+- `Stryker.NET: Update Stryker.NET Tool`: Will update the latest version of stryker dotnet tool. It will use the settings to determine the Global or Local Installation. Available from the:
+  - Command Palette (✔️)
+- `Stryker.NET: Uninstall Stryker.NET Tool`: Will uninstall the stryker dotnet tool. It will use the settings to determine the Global or Local Installation. Available from the:
+  - Command Palette (✔️)
 - `Stryker.NET: Show the Report`: Will display the latest generated mutation report. Available from the:
-  - Command Pallette (❌ _Alternatively, you could use `--open-report:html` in the optionalParameters setting_)
+  - Command Palette (❌ _Alternatively, you could use `--open-report:html` in the optionalParameters setting_)
 
 ## 🛠️ Configuration
 
 Even though the extension Stryker Mutator will work without any specific settings, there are some settings that you could take advantage of:
 
-| ✔️Available<br/>❌Upcoming | Settings                                       | Description                                                                                                                                                                                              |
-| -------------------------- | ---------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| ✔️                         | strykerMutatorNet.dotnet.commandPath           | The command/path to invoke `dotnet`, if different than the default path/exe (default:`dotnet`)                                                                                                           |
-| ✔️                         | strykerMutatorNet.stryker.configFile           | Path to a stryker config file, if different than the default name/workspace path                                                                                                                         |
-| ✔️                         | strykerMutatorNet.stryker.optionalParameters   | Optional parameters to add with the command line. See the [Configuration](https://stryker-mutator.io/docs/stryker-net/configuration/) for more details (e.g. `--verbosity info`, `--concurrency 2`, ...) |
-| ❌                         | strykerMutatorNet.show-report                  | Enable/Disable the browser opening the report. It requires the reporter `html` (default: `false`/disable). _Alternatively, you could use `--open-report:html` in the optionalParameters setting_         |
-| ❌                         | strykerMutatorNet.dotnet.tools.installGlobally | Enable/Disable the global installation of the stryker tool (default: `true`/enable)                                                                                                                      |
+| ✔️Available<br/>❌Upcoming | Settings                                     | Description                                                                                                                                                                                              |
+| -------------------------- | -------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ✔️                         | strykerMutatorNet.dotnet.commandPath         | The command/path to invoke `dotnet`, if different than the default path/exe (default:`dotnet`)                                                                                                           |
+| ✔️                         | strykerMutatorNet.stryker.configFile         | Path to a stryker config file, if different than the default name/workspace path                                                                                                                         |
+| ✔️                         | strykerMutatorNet.stryker.optionalParameters | Optional parameters to add with the command line. See the [Configuration](https://stryker-mutator.io/docs/stryker-net/configuration/) for more details (e.g. `--verbosity info`, `--concurrency 2`, ...) |
+| ✔️                         | strykerMutatorNet.tool.installationLocation  | Installation location of the dotnet-stryker tool (default: `global`)                                                                                                                                     |
+| ❌                         | strykerMutatorNet.show-report                | Enable/Disable the browser opening the report. It requires the reporter `html` (default: `false`/disable). _Alternatively, you could use `--open-report:html` in the optionalParameters setting_         |
 
 ## 🤯 Known Issues
 

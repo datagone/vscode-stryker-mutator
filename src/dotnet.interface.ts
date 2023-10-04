@@ -1,6 +1,7 @@
 interface IDotnet {
   isSdkInstalled(): Promise<boolean>;
   isStrykerToolInstalled(): Promise<boolean>;
+  isDotnetManifestExists(): Promise<boolean>;
 
   installStrykerTool(): Promise<boolean>;
   updateStrykerTool(): Promise<boolean>;

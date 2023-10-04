@@ -1,11 +1,13 @@
 import cp from 'child_process';
 import { executeCommandWithArguments, isValidToRegex } from './cli-exec';
 import { commandBuilder } from './cli-builder';
+import { getCurrentWorkspacePath } from './fs-helpers';
 
 jest.mock('child_process');
 
 jest.mock('./config');
 jest.mock('./cli-builder');
+jest.mock('./fs-helpers');
 
 // todo this feels a new file or helper ?!
 describe('WHEN a string is validated against a regex', () => {
@@ -42,22 +44,22 @@ describe('WHEN a string is validated against a regex', () => {
 
 describe('WHEN command will be executed', () => {
   let mockCommandBuilder: jest.MockedFn<typeof commandBuilder>;
+  let mockWorkspaceFolders: jest.MockedFn<typeof getCurrentWorkspacePath>;
 
   beforeEach(() => {
     mockCommandBuilder = commandBuilder as jest.MockedFn<typeof commandBuilder>;
+    mockWorkspaceFolders = getCurrentWorkspacePath as jest.MockedFn<typeof getCurrentWorkspacePath>;
     jest.doMock('child_process');
   });
 
   afterEach(() => {
     jest.clearAllMocks();
     jest.resetAllMocks();
-    jest.restoreAllMocks();
 
     jest.dontMock('child_process');
 
     mockCommandBuilder.mockClear();
     mockCommandBuilder.mockReset();
-    mockCommandBuilder.mockRestore();
   });
 
   describe('GIVEN invalid arguments', () => {
@@ -71,12 +73,12 @@ describe('WHEN command will be executed', () => {
       });
 
       // Act (WHEN)
-      const actualValidationResult = executeCommandWithArguments(invalidArguments);
+      const actualExecuteCommandResult = executeCommandWithArguments(invalidArguments);
 
       // Assert (THEN)
-      expect(commandBuilder).toHaveBeenLastCalledWith(invalidArguments);
+      await expect(actualExecuteCommandResult).rejects.toThrow(expectedError);
+      expect(mockCommandBuilder).toHaveBeenLastCalledWith(invalidArguments);
       expect(cp.exec).not.toHaveBeenCalled();
-      await expect(actualValidationResult).rejects.toThrow(expectedError);
     });
   });
 
@@ -94,16 +96,16 @@ describe('WHEN command will be executed', () => {
         });
 
         mockCommandBuilder.mockReturnValue(aValidExecutableCommand);
-        //when(mockWorkspaceFolders).mockReturnValue(undefined);
 
         // Act (WHEN)
-        const actualValidationResult = executeCommandWithArguments(validArguments);
+        const actualExecuteCommandResult = executeCommandWithArguments(validArguments);
 
         // Assert (THEN)
-        expect(commandBuilder).toHaveBeenCalledTimes(1);
-        expect(commandBuilder).toHaveBeenCalledWith(validArguments);
+        await expect(actualExecuteCommandResult).rejects.toThrow(expectedErrorFromChildProcess);
+        expect(mockWorkspaceFolders).toHaveBeenCalledTimes(1);
+        expect(mockCommandBuilder).toHaveBeenCalledTimes(1);
+        expect(mockCommandBuilder).toHaveBeenCalledWith(validArguments);
         expect(cp.exec).toHaveBeenCalledTimes(1);
-        await expect(actualValidationResult).rejects.toThrow(expectedErrorFromChildProcess);
       });
     });
 
@@ -115,6 +117,7 @@ describe('WHEN command will be executed', () => {
         const expectedResponse: string = validArguments[0];
 
         mockCommandBuilder.mockReturnValue(aValidExecutableCommand);
+        mockWorkspaceFolders.mockReturnValue('.');
 
         jest.dontMock('child_process');
 
@@ -122,9 +125,10 @@ describe('WHEN command will be executed', () => {
         const actualValidationResult = executeCommandWithArguments(validArguments);
 
         // Assert (THEN)
-        expect(commandBuilder).toHaveBeenCalledTimes(1);
-        expect(commandBuilder).toHaveBeenCalledWith(validArguments);
         await expect(actualValidationResult).resolves.toContain(expectedResponse);
+        expect(mockCommandBuilder).toHaveBeenCalledTimes(1);
+        expect(mockCommandBuilder).toHaveBeenCalledWith(validArguments);
+        expect(mockWorkspaceFolders).toHaveBeenCalledTimes(1);
       });
     });
   });

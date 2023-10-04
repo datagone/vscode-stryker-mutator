@@ -46,6 +46,8 @@ export const workspace = {
   })),
   findFiles: mockFindFiles,
   asRelativePath: mockAsRelativePath,
+  workspaceFolders: [],
+  name: 'my-workspace',
 };
 
 export const window = {

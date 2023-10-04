@@ -1,4 +1,10 @@
-import { dotnetCommand, strykerCommand, strykerConfigFilePath, strykerOptionalParameters } from './config';
+import {
+  dotnetCommand,
+  strykerCommand,
+  strykerConfigFilePath,
+  strykerDotnetToolInstallationLocation,
+  strykerOptionalParameters,
+} from './config';
 import { workspace, mockGet } from '../__mocks__/vscode';
 
 jest.mock('./fs-helpers');
@@ -131,6 +137,43 @@ describe('Config', () => {
 
         // Act (WHEN)
         const res = dotnetCommand();
+
+        // Assert (THEN)
+        expect(res).toEqual(expectedCommand);
+      });
+    });
+  });
+
+  describe('WHEN obtaining the Stryker installation location', () => {
+    // Arrange (GIVEN)
+    const INSTALLATION_LOCATION_CONFIG_VARIABLE_NAME = 'strykerMutatorNet.tool.installationLocation';
+
+    afterEach(() => {
+      // Assert (THEN)
+      expect(workspace.getConfiguration).toHaveBeenCalledWith();
+      expect(mockGet).toHaveBeenCalledWith(INSTALLATION_LOCATION_CONFIG_VARIABLE_NAME);
+    });
+
+    describe('GIVEN nothing is set in the dotnet-stryker tool installation location config section', () => {
+      it('THEN should return the default dotnet-stryker tool installation location', () => {
+        // Arrange (GIVEN)
+        const defaultInstallLocation = 'global';
+
+        // Act (WHEN)
+        const res = strykerDotnetToolInstallationLocation();
+
+        // Assert (THEN)
+        expect(res).toEqual(defaultInstallLocation);
+      });
+    });
+    describe('GIVEN a config is set in the dotnet-stryker tool installation location section', () => {
+      it('should return value from config when command is set', () => {
+        // Arrange (GIVEN)
+        const expectedCommand = 'custom command';
+        mockConfig(INSTALLATION_LOCATION_CONFIG_VARIABLE_NAME, expectedCommand);
+
+        // Act (WHEN)
+        const res = strykerDotnetToolInstallationLocation();
 
         // Assert (THEN)
         expect(res).toEqual(expectedCommand);

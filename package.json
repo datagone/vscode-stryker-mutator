@@ -49,19 +49,19 @@
       },
       {
         "command": "vscode-stryker-mutator.install-stryker-dotnet-tool",
-        "title": "Install Stryker.NET Tool (Global)",
+        "title": "Install Stryker.NET Tool",
         "category": "Stryker.NET",
         "enablement": "true"
       },
       {
         "command": "vscode-stryker-mutator.update-stryker-dotnet-tool",
-        "title": "Update Stryker.NET Tool to latest (Global)",
+        "title": "Update Stryker.NET Tool to latest",
         "category": "Stryker.NET",
         "enablement": "true"
       },
       {
         "command": "vscode-stryker-mutator.uninstall-stryker-dotnet-tool",
-        "title": "Uninstall Stryker.NET Tool (Global)",
+        "title": "Uninstall Stryker.NET Tool",
         "category": "Stryker.NET",
         "enablement": "true"
       },
@@ -152,6 +152,19 @@
           "default": null,
           "markdownDescription": "The command/path to invoke `dotnet`, if different than the default path/exe (default:`dotnet`)"
         },
+        "strykerMutatorNet.tool.installationLocation": {
+          "type": "string",
+          "default": "global",
+          "enum": [
+            "global",
+            "local"
+          ],
+          "enumDescriptions": [
+            "Install the tool globally on your system.",
+            "[Experimental] Install the tool locally in the root solution folder."
+          ],
+          "markdownDescription": "Select where you want to install the dotnet-stryker tool."
+        },
         "strykerMutatorNet.stryker.configFile": {
           "type": "string",
           "default": null,
@@ -166,7 +179,7 @@
     }
   },
   "scripts": {
-    "vscode:package": "npx vsce package",
+    "vscode:package": "npx --no-install vsce package",
     "vscode:prepublish": "npm run package",
     "compile": "webpack",
     "watch": "webpack --watch",
@@ -184,6 +197,7 @@
     "test:unit:file": "jest --coverage --testPathPattern",
     "test:mutation": "npm run test:mutation:full --incremental",
     "test:mutation:full": "stryker run",
+    "clean:test:full": "npx --no-install rimraf .\\.stryker-tmp\\ && npx --no-install rimraf .\\node_modules\\ && npm ci && npm run lint && npm run lint:lastcommit && npm run test:unit && npm run test:mutation:full",
     "release:package:dryrun": "semantic-release --extends ./release.package.config.js --dry-run",
     "release:package": "semantic-release --extends ./release.package.config.js",
     "release:publish:dryrun": "semantic-release --extends ./release.publish.config.js --dry-run",

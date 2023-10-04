@@ -1,13 +1,18 @@
+import path from 'path';
 import { Uri } from '../__mocks__/vscode';
+import { argsInstallationLocation } from './cli-builder';
 import { executeCommandWithArguments, isValidToRegex } from './cli-exec';
 import Dotnet from './dotnet';
 import IDotnet from './dotnet.interface';
+import { getCurrentWorkspacePath, isFileExists } from './fs-helpers';
 import ILogger from './logger.interface';
 import IStrykerConfiguration from './stryker-configuration.interface';
 import { mockConsoleLog } from './test-helpers';
 import { when } from 'jest-when';
 
+jest.mock('./cli-builder');
 jest.mock('./cli-exec');
+jest.mock('./fs-helpers');
 jest.mock('./logger');
 jest.mock('./stryker-configuration');
 
@@ -17,15 +22,17 @@ describe('WHEN executing the dotnet command', () => {
   let dotnetClass: IDotnet;
   let spyLogger: ILogger;
   let strykerConfig: IStrykerConfiguration;
+
   let mockExecuteCommand: jest.MockedFn<typeof executeCommandWithArguments>;
   let mockIsValidToRegex: jest.MockedFn<typeof isValidToRegex>;
+  let mockIsFileExists: jest.MockedFn<typeof isFileExists>;
+  let mockGetCurrentWorkspacePath: jest.MockedFn<typeof getCurrentWorkspacePath>;
+  let mockStrykerInstallationLocation: jest.MockedFn<typeof argsInstallationLocation>;
 
   const stdoutExecuteCommandResult: string = 'This is the default output';
 
   beforeEach(() => {
     // Arrange (GIVEN)
-    jest.clearAllMocks();
-
     spyLogger = {
       log: jest.fn(),
       debug: jest.fn(),
@@ -42,6 +49,9 @@ describe('WHEN executing the dotnet command', () => {
 
     mockExecuteCommand = executeCommandWithArguments as jest.MockedFn<typeof executeCommandWithArguments>;
     mockIsValidToRegex = isValidToRegex as jest.MockedFn<typeof isValidToRegex>;
+    mockIsFileExists = isFileExists as jest.MockedFn<typeof isFileExists>;
+    mockGetCurrentWorkspacePath = getCurrentWorkspacePath as jest.MockedFn<typeof getCurrentWorkspacePath>;
+    mockStrykerInstallationLocation = argsInstallationLocation as jest.MockedFn<typeof argsInstallationLocation>;
 
     dotnetClass = new Dotnet(strykerConfig, spyLogger);
 
@@ -50,13 +60,8 @@ describe('WHEN executing the dotnet command', () => {
   });
 
   afterEach(() => {
-    // Assert (WHEN)
-    expect(executeCommandWithArguments).toHaveBeenCalled();
-    expect(isValidToRegex).toHaveBeenCalled();
-
-    // Cleanup
-    mockExecuteCommand.mockRestore();
-    mockIsValidToRegex.mockRestore();
+    jest.clearAllMocks();
+    jest.resetAllMocks();
   });
 
   describe('GIVEN dotnet sdk is present', () => {
@@ -68,29 +73,72 @@ describe('WHEN executing the dotnet command', () => {
       const result: Promise<boolean> = (dotnetClass as Dotnet).isSdkInstalled();
       // Assert (THEN)
       await expect(result).resolves.toBe(true);
-      expect(executeCommandWithArguments).toHaveBeenCalledTimes(1);
-      expect(executeCommandWithArguments).toHaveBeenCalledWith(requiredArguments);
-      expect(isValidToRegex).toHaveBeenCalledTimes(1);
+      expect(mockExecuteCommand).toHaveBeenCalledTimes(1);
+      expect(mockExecuteCommand).toHaveBeenCalledWith(requiredArguments);
+      expect(mockIsValidToRegex).toHaveBeenCalledTimes(1);
+      expect(mockExecuteCommand).toHaveBeenCalled();
+      expect(mockIsValidToRegex).toHaveBeenCalled();
     });
   });
 
   describe('GIVEN dotnet stryker tool is present', () => {
     it('THEN it should resolves with the underlying executeCommand called with the required arguments', async () => {
       // Arrange (GIVEN)
-      const requiredArguments: string[] = ['tool', 'list', '--global'];
+      const requiredArguments: string[] = ['tool', 'list'];
 
       // Act (WHEN)
       const result: Promise<boolean> = dotnetClass.isStrykerToolInstalled();
       // Assert (THEN)
       await expect(result).resolves.toBe(true);
-      expect(executeCommandWithArguments).toHaveBeenCalledWith(requiredArguments);
+      expect(mockExecuteCommand).toHaveBeenCalledWith(requiredArguments);
+      expect(mockExecuteCommand).toHaveBeenCalled();
+      expect(mockIsValidToRegex).toHaveBeenCalled();
+    });
+  });
+
+  describe('GIVEN verifying the presence of the dotnet tool manifest', () => {
+    const CURRENT_WORKSPACE_PATH: string = '/current/workspace/path/';
+    const EXPECTED_TOOLMANIFEST_PARTIAL_FILEPATH: string = path.join(
+      CURRENT_WORKSPACE_PATH,
+      `.config/dotnet-tools.json`,
+    );
+    const VALUE_FOR_TOOLMANIFEST_ABSENT: boolean = false;
+    const VALUE_FOR_TOOLMANIFEST_EXISTS: boolean = true;
+
+    beforeEach(() => {
+      mockGetCurrentWorkspacePath.mockReturnValue(CURRENT_WORKSPACE_PATH);
+    });
+
+    afterEach(() => {
+      // TODO : Verify that getCurrentWorkspacePath has been called
+      expect(mockGetCurrentWorkspacePath).toHaveBeenCalledTimes(1);
+      // TODO: Verify that fs-helpers.isFileExists has been called with the getCurrentWorkspacePath followed with the Toolmanifest file path
+      expect(mockIsFileExists).toHaveBeenCalledTimes(1);
+      expect(mockIsFileExists).toHaveBeenCalledWith(EXPECTED_TOOLMANIFEST_PARTIAL_FILEPATH);
+    });
+
+    describe('AND GIVEN the file is missing', () => {
+      it('THEN should resolved as absent', async () => {
+        mockIsFileExists.mockReturnValue(VALUE_FOR_TOOLMANIFEST_ABSENT);
+        var actualResult: boolean = await dotnetClass.isDotnetManifestExists();
+        expect(actualResult).toBe(VALUE_FOR_TOOLMANIFEST_ABSENT);
+      });
+    });
+    describe('AND GIVEN the file is present', () => {
+      it('THEN should resolved as absent', async () => {
+        mockIsFileExists.mockReturnValue(VALUE_FOR_TOOLMANIFEST_EXISTS);
+        var actualResult: boolean = await dotnetClass.isDotnetManifestExists();
+        expect(actualResult).toBe(VALUE_FOR_TOOLMANIFEST_EXISTS);
+      });
     });
   });
 
   describe('GIVEN the installation of the dotnet stryker', () => {
-    const requiredArguments: string[] = ['tool', 'install', '--global', 'dotnet-stryker'];
+    const requiredArguments: string[] = ['tool', 'install', 'dotnet-stryker'];
 
     beforeEach(() => {
+      jest.clearAllMocks();
+      jest.resetAllMocks();
       mockExecuteCommand.mockImplementation((val: string[]) => {
         if (val.includes('--version')) {
           return Promise.resolve('1.2.3');
@@ -104,6 +152,9 @@ describe('WHEN executing the dotnet command', () => {
         if (val.includes('uninstall')) {
           return Promise.resolve("Tool 'dotnet-stryker' (version '1.2.3') was successfully uninstalled.");
         }
+        if (val.includes('new') && val.includes('tool-manifest')) {
+          return Promise.resolve('tool-manifest installed');
+        }
         return Promise.reject('error in ExecuteCommand');
       });
     });
@@ -111,6 +162,66 @@ describe('WHEN executing the dotnet command', () => {
     afterEach(() => {
       // Assert (THEN)
       expect(spyLogger.log).toHaveBeenCalledWith('Task: Install the dotnet-stryker tool');
+      expect(mockExecuteCommand).toHaveBeenCalled();
+      expect(mockIsValidToRegex).toHaveBeenCalled();
+      // TWEAK : to ensure dotnettoolmanifest is called
+      expect(mockStrykerInstallationLocation).toHaveBeenCalledTimes(1);
+    });
+
+    describe('AND GIVEN the installation location is local', () => {
+      beforeEach(() => {
+        // Arrange (GIVEN)
+        mockStrykerInstallationLocation.mockReturnValue('--local');
+        mockGetCurrentWorkspacePath.mockReturnValue('/my/current/workspace');
+      });
+
+      afterEach(() => {
+        // TWEAK: to verify that isDotnetManifestExists has been called
+        expect(mockGetCurrentWorkspacePath).toHaveBeenCalled();
+        expect(mockIsFileExists).toHaveBeenCalledTimes(1);
+        expect(mockIsFileExists).toHaveBeenCalledWith(expect.stringContaining('dotnet-tools.json'));
+      });
+
+      describe('AND GIVEN the tool-manifest is absent', () => {
+        it('THEN should create the tool manifest', async () => {
+          // Arrange (GIVEN)
+          mockIsFileExists.mockReturnValue(false);
+          // Act (WHEN)
+          await dotnetClass.installStrykerTool();
+          // Assert (THEN)
+          expect(mockExecuteCommand).toHaveBeenCalledTimes(3);
+          expect(mockExecuteCommand).toHaveBeenCalledWith(['new', 'tool-manifest']);
+          expect(mockIsValidToRegex).toHaveBeenCalledTimes(3);
+          expect(mockIsValidToRegex).toHaveBeenCalledWith('tool-manifest installed', 'tool');
+        });
+      });
+
+      describe('AND GIVEN the tool-manifest exists', () => {
+        it('THEN should not create the tool manifest', async () => {
+          // Arrange (GIVEN)
+          mockIsFileExists.mockReturnValue(true);
+          // Act (WHEN)
+          await dotnetClass.installStrykerTool();
+          // Assert (THEN)
+          expect(mockExecuteCommand).toHaveBeenCalledTimes(2);
+          expect(mockExecuteCommand).not.toHaveBeenCalledWith(['new', 'tool-manifest']);
+        });
+      });
+    });
+
+    describe('AND GIVEN the installation location is global', () => {
+      it('THEN should not try to create the tool-manifest', async () => {
+        // Arrange (GIVEN)
+        mockStrykerInstallationLocation.mockReturnValue('--global');
+        // Act (WHEN)
+        await dotnetClass.installStrykerTool();
+        // Assert (THEN)
+        expect(mockExecuteCommand).toHaveBeenCalledTimes(2);
+        expect(mockExecuteCommand).not.toHaveBeenCalledWith(['new', 'tool-manifest']);
+        // TWEAK: to verify that isDotnetManifestExists not has been called
+        expect(mockGetCurrentWorkspacePath).not.toHaveBeenCalled();
+        expect(mockIsFileExists).not.toHaveBeenCalled();
+      });
     });
 
     describe('AND GIVEN the installation is already done', () => {
@@ -126,6 +237,9 @@ describe('WHEN executing the dotnet command', () => {
           if (val.includes('install')) {
             return Promise.resolve("Tool 'dotnet-stryker' (version '1.2.3') was successfully installed");
           }
+          if (val.includes('new') && val.includes('tool-manifest')) {
+            return Promise.resolve('tool-manifest installed');
+          }
           return Promise.reject('error in ExecuteCommand');
         });
 
@@ -135,6 +249,9 @@ describe('WHEN executing the dotnet command', () => {
             return Promise.resolve(true);
           }
           if (pattern === '^(\\d+\\.)*\\d+$') {
+            return Promise.resolve(true);
+          }
+          if (pattern === 'tool') {
             return Promise.resolve(true);
           }
           return Promise.reject('error in IsValidToRegex');
@@ -163,6 +280,9 @@ describe('WHEN executing the dotnet command', () => {
           if (val.includes('install')) {
             return Promise.resolve("Tool 'dotnet-stryker' (version '1.2.3') was successfully installed");
           }
+          if (val.includes('new') && val.includes('tool-manifest')) {
+            return Promise.resolve('tool-manifest installed');
+          }
           return Promise.reject('error in ExecuteCommand');
         });
         mockIsValidToRegex.mockImplementation((value: string, pattern: string): Promise<boolean> => {
@@ -177,6 +297,9 @@ describe('WHEN executing the dotnet command', () => {
             return Promise.resolve(true);
           }
           if (pattern === '^(\\d+\\.)*\\d+$') {
+            return Promise.resolve(true);
+          }
+          if (pattern === 'tool') {
             return Promise.resolve(true);
           }
           return Promise.reject('error in IsValidToRegex');
@@ -207,6 +330,9 @@ describe('WHEN executing the dotnet command', () => {
           if (val.includes('install')) {
             return Promise.reject(expectedErrorMessage);
           }
+          if (val.includes('new') && val.includes('tool-manifest')) {
+            return Promise.resolve('tool-manifest installed');
+          }
           return Promise.reject('error in ExecuteCommand');
         });
         mockIsValidToRegex.mockImplementation((value: string, pattern: string): Promise<boolean> => {
@@ -226,6 +352,9 @@ describe('WHEN executing the dotnet command', () => {
           if (pattern === '^(\\d+\\.)*\\d+$') {
             return Promise.resolve(true);
           }
+          if (pattern === 'tool') {
+            return Promise.resolve(true);
+          }
           return Promise.reject('error in IsValidToRegex');
         });
         // Act (WHEN)
@@ -242,8 +371,8 @@ describe('WHEN executing the dotnet command', () => {
   });
 
   describe('GIVEN the update of the dotnet stryker', () => {
-    const requiredUpdateArguments: string[] = ['tool', 'update', '--global', 'dotnet-stryker'];
-    const requiredInstallArguments: string[] = ['tool', 'install', '--global', 'dotnet-stryker'];
+    const requiredUpdateArguments: string[] = ['tool', 'update', 'dotnet-stryker'];
+    const requiredInstallArguments: string[] = ['tool', 'install', 'dotnet-stryker'];
 
     beforeEach(() => {
       mockExecuteCommand.mockImplementation((val: string[]) => {
@@ -268,6 +397,8 @@ describe('WHEN executing the dotnet command', () => {
     afterEach(() => {
       // Assert (THEN)
       expect(spyLogger.log).toHaveBeenCalledWith('Task: Update the dotnet-stryker tool');
+      expect(mockExecuteCommand).toHaveBeenCalled();
+      expect(mockIsValidToRegex).toHaveBeenCalled();
     });
 
     describe('AND GIVEN the tool is not up to date', () => {
@@ -295,7 +426,7 @@ describe('WHEN executing the dotnet command', () => {
             return Promise.resolve(true);
           }
           if (pattern.includes('dotnet-stryker(\\s*)((\\d+\\.)*\\d+)(\\s*)dotnet-stryker')) {
-            // tool list --global
+            // tool list [--global|--local]
             return Promise.resolve(true);
           }
           if (
@@ -345,7 +476,7 @@ describe('WHEN executing the dotnet command', () => {
             return Promise.resolve(true);
           }
           if (pattern.includes('dotnet-stryker(\\s*)((\\d+\\.)*\\d+)(\\s*)dotnet-stryker')) {
-            // tool list --global
+            // tool list [--global|--local]
             return Promise.resolve(true);
           }
           if (
@@ -463,12 +594,14 @@ describe('WHEN executing the dotnet command', () => {
   });
 
   describe('GIVEN the uninstallation of the dotnet stryker', () => {
-    const requiredArguments: string[] = ['tool', 'uninstall', '--global', 'dotnet-stryker'];
+    const requiredArguments: string[] = ['tool', 'uninstall', 'dotnet-stryker'];
 
     afterEach(() => {
       // Assert (THEN)
       expect(spyLogger.log).toHaveBeenCalledTimes(1);
       expect(spyLogger.log).toHaveBeenCalledWith('Task: Uninstall the dotnet-stryker tool');
+      expect(mockExecuteCommand).toHaveBeenCalled();
+      expect(mockIsValidToRegex).toHaveBeenCalled();
     });
 
     describe('AND GIVEN the dotnet stryker is installed', () => {
