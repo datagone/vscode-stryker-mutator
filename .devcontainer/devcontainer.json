@@ -18,7 +18,7 @@
   // "forwardPorts": [],
 
   // Use 'postCreateCommand' to run commands after the container is created.
-  "postCreateCommand": "git config --global http.sslBackend openssl; git config --global http.sslCAInfo /etc/ssl/certs/ca-certificates.crt; yarn install",
+  "postCreateCommand": "git config --global http.sslBackend openssl; git config --global http.sslCAInfo /etc/ssl/certs/ca-certificates.crt; npm ci",
 
   // Configure tool-specific properties.
   "customizations": {

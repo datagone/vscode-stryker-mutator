@@ -5,7 +5,7 @@ module.exports = {
   ignorePatterns: ['**/*', '!*.{ts,js}', '!*.json', '!__mocks__/**/*', '!src/**/*'],
   mutate: ['{src,lib}/**/*.{ts,js}', '!{src,lib}/**/?(*.)+(spec|test|interface).{ts,js}', '!src/test-helpers.ts'],
   testRunner: 'jest',
-  packageManager: 'yarn',
+  packageManager: 'npm',
   checkers: ['typescript'],
   reporters: ['html', 'clear-text', 'progress'],
   tsconfigFile: 'tsconfig.json',

@@ -184,10 +184,10 @@
     "test:unit:file": "jest --coverage --testPathPattern",
     "test:mutation": "npm run test:mutation:full --incremental",
     "test:mutation:full": "stryker run",
-    "ci:dryrun": "semantic-release --extends ./release.package.config.js --dry-run",
-    "ci": "semantic-release --extends ./release.package.config.js",
-    "cd:dryrun": "semantic-release --extends ./release.publish.config.js --dry-run",
-    "cd": "semantic-release --extends ./release.publish.config.js"
+    "release:package:dryrun": "semantic-release --extends ./release.package.config.js --dry-run",
+    "release:package": "semantic-release --extends ./release.package.config.js",
+    "release:publish:dryrun": "semantic-release --extends ./release.publish.config.js --dry-run",
+    "release:publish": "semantic-release --extends ./release.publish.config.js"
   },
   "devDependencies": {
     "@commitlint/cli": "17.7.2",

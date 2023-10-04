@@ -52,26 +52,26 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 20
-          cache: yarn
+          cache: npm
 
       - name: Install packages
-        run: yarn install --frozen-lockfile
+        run: npm ci
 
       - name: Lint
-        run: yarn lint
+        run: npm run lint
 
       # - name: Prettier
-      #   run: yarn prettier:check
+      #   run: npm run prettier:check
 
       - name: Unit tests
-        run: yarn test:unit
+        run: npm run test:unit
 
       - name: Package the extension with webpack
-        run: yarn package
+        run: npm run package
 
       - name: Prepare the release version and product
         id: prepare
-        run: yarn ci
+        run: npm run release:package
         env:
           VSCE_TARGET: universal
           # All tokens are required since semantic-release needs to validate them
@@ -98,14 +98,14 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 20
-          cache: yarn
+          cache: npm
 
       - name: Install packages
-        run: yarn install --frozen-lockfile
+        run: npm ci
 
       - uses: actions/download-artifact@v3
 
-      - run: yarn cd
+      - run: npm run release:publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VSCE_PAT: ${{ secrets.VSCE_PAT }}

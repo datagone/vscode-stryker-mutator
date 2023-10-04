@@ -31,16 +31,16 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 20
-          cache: yarn
+          cache: npm
 
       - name: Install packages
-        run: yarn install --frozen-lockfile
+        run: npm ci
 
       - name: Lint
-        run: yarn lint
+        run: npm run lint
 
       # - name: Prettier
-      #   run: yarn prettier:check
+      #   run: npm run prettier:check
 
   build:
     name: Build
@@ -54,13 +54,13 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 20
-          cache: yarn
+          cache: npm
 
       - name: Install packages
-        run: yarn install --frozen-lockfile
+        run: npm ci
 
       - name: Compile
-        run: yarn compile
+        run: npm run compile
 
   unit-tests:
     name: Unit tests
@@ -74,13 +74,13 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 20
-          cache: yarn
+          cache: npm
 
       - name: Install packages
-        run: yarn install --frozen-lockfile
+        run: npm ci
 
       - name: Unit tests
-        run: yarn test:unit
+        run: npm run test:unit
 
   # FIXME: There is an issue on the pipeline but works fine on windows :/
   # mutation-tests:
@@ -93,7 +93,7 @@ jobs:
   #     - uses: actions/setup-node@v3
   #       with:
   #         node-version: 20
-  #         cache: yarn
+  #         cache: npm
 
   #     # - name: Get branch name
   #     #   id: branch-name
@@ -111,10 +111,10 @@ jobs:
   #     #       ${{ env.cache-name }}-${{ steps.branch-name.outputs.current_branch }}-
 
   #     - name: Install packages
-  #       run: yarn install --frozen-lockfile
+  #       run: npm ci
 
   #     # - name: Mutation tests
-  #     #   run: yarn test:mutation
+  #     #   run: npm run test:mutation
 
   #     - name: Mutation tests
-  #       run: yarn test:mutation:full --ignoreStatic
+  #       run: npm run test:mutation:full --ignoreStatic

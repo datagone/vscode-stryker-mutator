@@ -2,5 +2,5 @@
 . "$(dirname "$0")/_/husky.sh"
 . "$(dirname "$0")/common.sh"
 
-yarn test:unit
-yarn test:mutation
+npm run test:unit
+npm run test:mutation
