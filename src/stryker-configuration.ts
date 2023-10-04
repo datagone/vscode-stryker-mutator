@@ -3,8 +3,7 @@ import * as fs from 'fs';
 import path from 'path';
 import { Uri, window, workspace } from 'vscode';
 import IStrykerConfiguration from './stryker-configuration.interface';
-
-const solutionNameExtension: string = '.sln';
+import { isFileExists } from './fs-helpers';
 
 class StrykerConfiguration implements IStrykerConfiguration {
   private readonly strykerConfigurationFileAlreadyExistsMessage: string =
@@ -39,8 +38,8 @@ class StrykerConfiguration implements IStrykerConfiguration {
     return this.createStrykerConfigurationFile(strykerConfigPath!);
   }
 
-  private async isFileExists(filePath: string): Promise<string> {
-    if (fs.existsSync(filePath) && fs.lstatSync(filePath).isFile()) {
+  private async doExists(filePath: string): Promise<string> {
+    if (isFileExists(filePath)) {
       this._logger.warning(this.strykerConfigurationFileAlreadyExistsMessage);
       return Promise.reject(this.strykerConfigurationFileAlreadyExistsMessage);
     }
@@ -49,30 +48,19 @@ class StrykerConfiguration implements IStrykerConfiguration {
     return Promise.resolve(fileExistMsg);
   }
 
-  private defaultJsonStrykerConfigFile(solutionName: string): any {
+  private defaultJsonStrykerConfigFile(): any {
     return {
       'stryker-config': {
-        solution: `./${solutionName}`,
         'mutation-level': 'Complete',
-        reporters: ['html', 'json', 'progress'],
+        reporters: ['html', 'json', 'markdown', 'cleartext', 'progress'],
         'report-file-name': 'mutation-report',
         thresholds: { high: 100, low: 100, break: 100 },
       },
     };
   }
 
-  private async findDotnetSolutionFile(): Promise<string> {
-    const files: Uri[] = await workspace.findFiles(`**/*${solutionNameExtension}`);
-    const solutionFile: string = files[0].fsPath;
-    const solutionName: string = path.basename(solutionFile);
-    return Promise.resolve(solutionName);
-  }
-
-  private async buildStrykerConfigBaseFile(solutionName: string): Promise<string> {
-    if (!solutionName.endsWith(solutionNameExtension)) {
-      return Promise.reject(`Solution file must be a ${solutionNameExtension} file`);
-    }
-    const JsonStrykerConfigFile = this.defaultJsonStrykerConfigFile(solutionName);
+  private async buildStrykerConfigBaseFile(): Promise<string> {
+    const JsonStrykerConfigFile = this.defaultJsonStrykerConfigFile();
 
     const jsonFile: string = JSON.stringify(JsonStrykerConfigFile, null, 2);
     return Promise.resolve(jsonFile);
@@ -83,9 +71,9 @@ class StrykerConfiguration implements IStrykerConfiguration {
     const creationSuccessMessage: string = `${this.strykerConfigurationFileCreationSuccess} ${filePath}`;
     let error: Error | undefined;
 
-    await this.isFileExists(filePath);
+    await this.doExists(filePath);
 
-    const jsonString: string = await this.buildStrykerConfigBaseFile(await this.findDotnetSolutionFile());
+    const jsonString: string = await this.buildStrykerConfigBaseFile();
 
     // Write the JSON string to the file
     fs.writeFile(filePath, jsonString, (err) => {

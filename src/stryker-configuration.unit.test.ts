@@ -47,78 +47,44 @@ describe('WHEN Creating a new instance of StrykerConfiguration', () => {
 });
 
 describe('WHEN Initializing the configuration file', () => {
-  describe('GIVEN a test project folder is ending with Tests', () => {
-    describe('AND GIVEN a dotnet solution file is present in the folder', () => {
-      it('THEN it should create a the default configuration file', async () => {
-        // Arrange (GIVEN)
-        const aTestProjectFolder = './ASolutionFolder';
-        const expectedSolutionTestsFolder: Uri = Uri.file(path.join(aTestProjectFolder));
-        const expectedSolutionFileName: Uri = Uri.file(path.join(aTestProjectFolder, 'test.sln'));
-        const expectedConfigurationFilePath: Uri = Uri.file(
-          path.join(expectedSolutionTestsFolder.fsPath, 'stryker-config.json'),
-        );
-        const expectMessageToBeLogged = `Creating the stryker configuration file into: ${expectedSolutionTestsFolder.path}`;
-        const expectedDefaultJsonStrykerConfigFile: any = {
-          'stryker-config': {
-            solution: './test.sln',
-            'mutation-level': 'Complete',
-            reporters: ['html', 'json', 'progress'],
-            'report-file-name': 'mutation-report',
-            thresholds: { high: 100, low: 100, break: 100 },
-          },
-        };
-        const expectedJsonStringForTheConfigurationFile = JSON.stringify(expectedDefaultJsonStrykerConfigFile, null, 2);
-        mockGetWorkspaceFolder.mockReturnValue({
-          uri: {
-            path: expectedSolutionTestsFolder.path,
-            fsPath: expectedSolutionTestsFolder.path,
-          },
-        });
-        mockFindFiles.mockReturnValue([expectedSolutionFileName]);
-        const writeFileSpy = jest.spyOn(fs, 'writeFile');
-        // Act (WHEN)
-        const result = configuration.initializeBasicConfiguration(expectedSolutionTestsFolder);
-        // Assert (THEN)
-        await expect(result).resolves.toContain(expectedSolutionTestsFolder.path);
-        expect(mockGetWorkspaceFolder).toHaveBeenCalled();
-        expect(stubLogger.info).toHaveBeenCalledTimes(1);
-        expect(stubLogger.info).toHaveBeenCalledWith(expectMessageToBeLogged);
-        expect(writeFileSpy).toHaveBeenCalledTimes(1);
-        expect(writeFileSpy).toHaveBeenCalledWith(
-          expectedConfigurationFilePath.path,
-          expectedJsonStringForTheConfigurationFile,
-          expect.anything(),
-        );
+  describe('GIVEN a folder uri is provided', () => {
+    it('THEN it should create a the default configuration file in that folder', async () => {
+      // Arrange (GIVEN)
+      const aProvidedFolderUri = './AProvidedFolder';
+      const expectedSolutionTestsFolder: Uri = Uri.file(path.join(aProvidedFolderUri));
+      const expectedConfigurationFilePath: Uri = Uri.file(
+        path.join(expectedSolutionTestsFolder.fsPath, 'stryker-config.json'),
+      );
+      const expectMessageToBeLogged = `Creating the stryker configuration file into: ${expectedSolutionTestsFolder.path}`;
+      const expectedDefaultJsonStrykerConfigFile: any = {
+        'stryker-config': {
+          'mutation-level': 'Complete',
+          reporters: ['html', 'json', 'markdown', 'cleartext', 'progress'],
+          'report-file-name': 'mutation-report',
+          thresholds: { high: 100, low: 100, break: 100 },
+        },
+      };
+      const expectedJsonStringForTheConfigurationFile = JSON.stringify(expectedDefaultJsonStrykerConfigFile, null, 2);
+      mockGetWorkspaceFolder.mockReturnValue({
+        uri: {
+          path: expectedSolutionTestsFolder.path,
+          fsPath: expectedSolutionTestsFolder.path,
+        },
       });
-    });
-
-    describe('AND GIVEN the solution file has not the right extension', () => {
-      it('THEN it should create a the default configuration file', async () => {
-        // Arrange (GIVEN)
-        const aTestProjectFolder = './ASolutionFolder';
-        const expectedSolutionTestsFolder: Uri = Uri.file(path.join(aTestProjectFolder));
-        const expectedSolutionFileName: Uri = Uri.file(path.join(aTestProjectFolder, 'test.xxx'));
-
-        const expectMessageToBeLogged = `Creating the stryker configuration file into: ${expectedSolutionTestsFolder.path}`;
-
-        const expectedRejectMessage = 'Solution file must be a .sln file';
-        mockGetWorkspaceFolder.mockReturnValue({
-          uri: {
-            path: expectedSolutionTestsFolder.path,
-            fsPath: expectedSolutionTestsFolder.path,
-          },
-        });
-        mockFindFiles.mockReturnValue([expectedSolutionFileName]);
-        const writeFileSpy = jest.spyOn(fs, 'writeFile');
-        // Act (WHEN)
-        const result = configuration.initializeBasicConfiguration(expectedSolutionTestsFolder);
-        // Assert (THEN)
-        await expect(result).rejects.toStrictEqual(expectedRejectMessage);
-        expect(mockGetWorkspaceFolder).toHaveBeenCalled();
-        expect(stubLogger.info).toHaveBeenCalledTimes(1);
-        expect(stubLogger.info).toHaveBeenCalledWith(expectMessageToBeLogged);
-        expect(writeFileSpy).not.toHaveBeenCalled();
-      });
+      const writeFileSpy = jest.spyOn(fs, 'writeFile');
+      // Act (WHEN)
+      const result = configuration.initializeBasicConfiguration(expectedSolutionTestsFolder);
+      // Assert (THEN)
+      await expect(result).resolves.toContain(expectedSolutionTestsFolder.path);
+      expect(mockGetWorkspaceFolder).toHaveBeenCalled();
+      expect(stubLogger.info).toHaveBeenCalledTimes(1);
+      expect(stubLogger.info).toHaveBeenCalledWith(expectMessageToBeLogged);
+      expect(writeFileSpy).toHaveBeenCalledTimes(1);
+      expect(writeFileSpy).toHaveBeenCalledWith(
+        expectedConfigurationFilePath.path,
+        expectedJsonStringForTheConfigurationFile,
+        expect.anything(),
+      );
     });
   });
 
