@@ -1929,10 +1929,10 @@
     "@typescript-eslint/types" "5.62.0"
     eslint-visitor-keys "^3.3.0"
 
-"@vscode/test-electron@2.3.4":
-  version "2.3.4"
-  resolved "https://registry.npmjs.org/@vscode/test-electron/-/test-electron-2.3.4.tgz"
-  integrity sha512-eWzIqXMhvlcoXfEFNWrVu/yYT5w6De+WZXR/bafUQhAp8+8GkQo95Oe14phwiRUPv8L+geAKl/QM2+PoT3YW3g==
+"@vscode/test-electron@2.3.5":
+  version "2.3.5"
+  resolved "https://registry.yarnpkg.com/@vscode/test-electron/-/test-electron-2.3.5.tgz#c472c5bdce1329aeb4762b8aa7a2cbe7aa783aac"
+  integrity sha512-lAW7nQ0HuPqJnGJrtCzEKZCICtRizeP6qNanyCrjmdCOAAWjX3ixiG8RVPwqsYPQBWLPgYuE12qQlwXsOR/2fQ==
   dependencies:
     http-proxy-agent "^4.0.1"
     https-proxy-agent "^5.0.0"
@@ -4210,15 +4210,7 @@ https-proxy-agent@^5.0.0:
     agent-base "6"
     debug "4"
 
-https-proxy-agent@^7.0.0:
-  version "7.0.0"
-  resolved "https://registry.npmjs.org/https-proxy-agent/-/https-proxy-agent-7.0.0.tgz"
-  integrity sha512-0euwPCRyAPSgGdzD1IVN9nJYHtBhJwb6XPfbpQcYbPCwrBidX6GzxmchnaF4sfF/jPb74Ojx5g4yTg3sixlyPw==
-  dependencies:
-    agent-base "^7.0.2"
-    debug "4"
-
-https-proxy-agent@^7.0.1:
+https-proxy-agent@^7.0.0, https-proxy-agent@^7.0.1:
   version "7.0.2"
   resolved "https://registry.yarnpkg.com/https-proxy-agent/-/https-proxy-agent-7.0.2.tgz#e2645b846b90e96c6e6f347fb5b2e41f1590b09b"
   integrity sha512-NmLNjm6ucYwtcUmL7JQC1ZQ57LmHP4lT15FQ8D61nak1rO6DH+fz5qNK2Ap5UN4ZapYICE3/0KodcLYSPsPbaA==
