@@ -1,5 +1,17 @@
 # CHANGELOG
 
+# [0.5.0](https://github.com/datagone/vscode-stryker-mutator/compare/v0.4.0...v0.5.0) (2023-10-05)
+
+
+### Bug Fixes
+
+* **stryker-config:** update the basic stryker-config file ([ad9cb8d](https://github.com/datagone/vscode-stryker-mutator/commit/ad9cb8db921e76526b5d0eb943afa08751aaccd2))
+
+
+### Features
+
+* add the possibility to install stryker locally ([b230e5a](https://github.com/datagone/vscode-stryker-mutator/commit/b230e5a79b9acfab7a9e241e6b5aabcadaea4f3b))
+
 # [0.4.0](https://github.com/datagone/vscode-stryker-mutator/compare/v0.3.0...v0.4.0) (2023-09-03)
 
 
