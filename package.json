@@ -214,7 +214,7 @@
     "@types/glob": "8.1.0",
     "@types/jest": "29.5.7",
     "@types/jest-when": "3.5.4",
-    "@types/node": "20.8.9",
+    "@types/node": "20.8.10",
     "@types/shell-escape": "0.2.2",
     "@types/vscode": "1.75.0",
     "@typescript-eslint/eslint-plugin": "6.9.1",
