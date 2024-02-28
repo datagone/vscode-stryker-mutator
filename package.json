@@ -218,7 +218,7 @@
     "@types/shell-escape": "0.2.3",
     "@types/vscode": "1.75.0",
     "@typescript-eslint/eslint-plugin": "7.0.0",
-    "@typescript-eslint/parser": "6.21.0",
+    "@typescript-eslint/parser": "7.1.0",
     "@vscode/test-electron": "2.3.9",
     "eslint": "8.57.0",
     "glob": "10.3.10",
