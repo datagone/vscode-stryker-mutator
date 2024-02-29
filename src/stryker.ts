@@ -28,7 +28,10 @@ const withMutateParam = (file?: vscode.Uri | IPathToMutate, range?: string): str
     return ` --test-project "${mutantToTarget}"`;
   } else if (mutantToTarget.toLowerCase().endsWith('.csproj')) {
     return ` --project "${mutantToTarget}"`;
-  } else if (!mutantToTarget.endsWith('.cs')) {
+  } else if (path.extname(file.fsPath) === '.cs') {
+    mutantToTarget = `**\\${mutantToTarget}`;
+  } else {
+    // It assume that it is a folder
     mutantToTarget = `**\\${mutantToTarget}\\*`;
   }
 

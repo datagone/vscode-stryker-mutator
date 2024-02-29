@@ -31,6 +31,8 @@ describe('Stryker', () => {
       const commandCalledWithinTerminal = 'a terminal';
       const commandFileParameter = { file: new Uri({ path: '/path/to/file.cs' }) };
       const commandFileAndRangeParameters = { file: new Uri({ path: '/path/to/file.cs' }), range: '1..10' };
+      const expectedMutateFileParameter = '**\\file.cs';
+      const expectedMutateFileSelectionRangeParameter = '{1..10}';
 
       beforeEach(() => {
         // Arrange (GIVEN)
@@ -54,7 +56,7 @@ describe('Stryker', () => {
         commandRunner()(commandFileParameter);
         // Assert (THEN)
         expect(mockRunCommandReturn).toHaveBeenCalledWith(
-          'a/command --mutate "file.cs" --config-file a/config/file/path.json',
+          `a/command --mutate "${expectedMutateFileParameter}" --config-file a/config/file/path.json`,
         );
       });
       it('should execute a Stryker command with optional parameters', () => {
@@ -64,19 +66,23 @@ describe('Stryker', () => {
         // Act (WHEN)
         commandRunner()(commandFileParameter);
         // Assert (THEN)
-        expect(mockRunCommandReturn).toHaveBeenCalledWith(`a/command --mutate "file.cs" ${expectedParameters}`);
+        expect(mockRunCommandReturn).toHaveBeenCalledWith(
+          `a/command --mutate "${expectedMutateFileParameter}" ${expectedParameters}`,
+        );
       });
       it('should execute a Stryker command without a custom config file path', () => {
         // Act (WHEN)
         commandRunner()(commandFileAndRangeParameters);
         // Assert (THEN)
-        expect(mockRunCommandReturn).toHaveBeenCalledWith('a/command --mutate "file.cs{1..10}"');
+        expect(mockRunCommandReturn).toHaveBeenCalledWith(
+          `a/command --mutate "${expectedMutateFileParameter}${expectedMutateFileSelectionRangeParameter}"`,
+        );
       });
       it('should execute a Stryker command without a line range', () => {
         // Act (WHEN)
         commandRunner()(commandFileParameter);
         // Assert (THEN)
-        expect(mockRunCommandReturn).toHaveBeenCalledWith('a/command --mutate "file.cs"');
+        expect(mockRunCommandReturn).toHaveBeenCalledWith(`a/command --mutate "${expectedMutateFileParameter}"`);
       });
       it('should execute a Stryker command to mutate a folder for underneath .cs files', () => {
         // Act (WHEN)
