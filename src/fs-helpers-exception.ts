@@ -5,3 +5,11 @@ export class InvalidWorkspaceException extends Error {
     super(message);
   }
 }
+
+export class InvalidDotNetSolutionFolderPathException extends Error {
+  name = 'InvalidDotNetSolutionFolderPathException';
+
+  constructor(message: string) {
+    super(message);
+  }
+}

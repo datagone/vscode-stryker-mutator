@@ -165,6 +165,11 @@
           ],
           "markdownDescription": "Select where you want to install the dotnet-stryker tool."
         },
+        "strykerMutatorNet.dotnet.solutionFolder": {
+          "type": "string",
+          "default": null,
+          "markdownDescription": "Folder path to the dotnet solution file, if different than the workspace. The Path must be relative to the actual workspace"
+        },
         "strykerMutatorNet.stryker.configFile": {
           "type": "string",
           "default": null,

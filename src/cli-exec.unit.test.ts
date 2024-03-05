@@ -1,7 +1,7 @@
 import cp from 'child_process';
 import { executeCommandWithArguments, isValidToRegex } from './cli-exec';
 import { commandBuilder } from './cli-builder';
-import { getCurrentWorkspacePath } from './fs-helpers';
+import { getDotNetSolutionFolderPath } from './fs-helpers';
 
 jest.mock('child_process');
 
@@ -44,11 +44,11 @@ describe('WHEN a string is validated against a regex', () => {
 
 describe('WHEN command will be executed', () => {
   let mockCommandBuilder: jest.MockedFn<typeof commandBuilder>;
-  let mockWorkspaceFolders: jest.MockedFn<typeof getCurrentWorkspacePath>;
+  let mockDotNetSolutionFolder: jest.MockedFn<typeof getDotNetSolutionFolderPath>;
 
   beforeEach(() => {
     mockCommandBuilder = commandBuilder as jest.MockedFn<typeof commandBuilder>;
-    mockWorkspaceFolders = getCurrentWorkspacePath as jest.MockedFn<typeof getCurrentWorkspacePath>;
+    mockDotNetSolutionFolder = getDotNetSolutionFolderPath as jest.MockedFn<typeof getDotNetSolutionFolderPath>;
     jest.doMock('child_process');
   });
 
@@ -102,7 +102,7 @@ describe('WHEN command will be executed', () => {
 
         // Assert (THEN)
         await expect(actualExecuteCommandResult).rejects.toThrow(expectedErrorFromChildProcess);
-        expect(mockWorkspaceFolders).toHaveBeenCalledTimes(1);
+        expect(mockDotNetSolutionFolder).toHaveBeenCalledTimes(1);
         expect(mockCommandBuilder).toHaveBeenCalledTimes(1);
         expect(mockCommandBuilder).toHaveBeenCalledWith(validArguments);
         expect(cp.exec).toHaveBeenCalledTimes(1);
@@ -117,7 +117,7 @@ describe('WHEN command will be executed', () => {
         const expectedResponse: string = validArguments[0];
 
         mockCommandBuilder.mockReturnValue(aValidExecutableCommand);
-        mockWorkspaceFolders.mockReturnValue('.');
+        mockDotNetSolutionFolder.mockReturnValue('.');
 
         jest.dontMock('child_process');
 
@@ -128,7 +128,7 @@ describe('WHEN command will be executed', () => {
         await expect(actualValidationResult).resolves.toContain(expectedResponse);
         expect(mockCommandBuilder).toHaveBeenCalledTimes(1);
         expect(mockCommandBuilder).toHaveBeenCalledWith(validArguments);
-        expect(mockWorkspaceFolders).toHaveBeenCalledTimes(1);
+        expect(mockDotNetSolutionFolder).toHaveBeenCalledTimes(1);
       });
     });
   });

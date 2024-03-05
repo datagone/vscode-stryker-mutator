@@ -1,6 +1,6 @@
 import util from 'util';
 import { commandBuilder } from './cli-builder';
-import { getCurrentWorkspacePath } from './fs-helpers';
+import { getDotNetSolutionFolderPath } from './fs-helpers';
 
 // todo this feels a new file or helper ?!
 export const isValidToRegex = async (valueToValidate: string, regexpPattern: string): Promise<boolean> => {
@@ -18,7 +18,7 @@ export const executeCommandWithArguments = async (args: string[]): Promise<strin
 
   let externalStdout: any;
 
-  const { stdout } = await execChildProcess(commandToLaunch, { cwd: getCurrentWorkspacePath() });
+  const { stdout } = await execChildProcess(commandToLaunch, { cwd: getDotNetSolutionFolderPath() });
   externalStdout = stdout;
 
   return Promise.resolve(externalStdout);

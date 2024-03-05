@@ -4,7 +4,7 @@ import { argsInstallationLocation } from './cli-builder';
 import { executeCommandWithArguments, isValidToRegex } from './cli-exec';
 import Dotnet from './dotnet';
 import IDotnet from './dotnet.interface';
-import { getCurrentWorkspacePath, isFileExists } from './fs-helpers';
+import { getDotNetSolutionFolderPath, isFileExists } from './fs-helpers';
 import ILogger from './logger.interface';
 import IStrykerConfiguration from './stryker-configuration.interface';
 import { mockConsoleLog } from './test-helpers';
@@ -26,7 +26,7 @@ describe('WHEN executing the dotnet command', () => {
   let mockExecuteCommand: jest.MockedFn<typeof executeCommandWithArguments>;
   let mockIsValidToRegex: jest.MockedFn<typeof isValidToRegex>;
   let mockIsFileExists: jest.MockedFn<typeof isFileExists>;
-  let mockGetCurrentWorkspacePath: jest.MockedFn<typeof getCurrentWorkspacePath>;
+  let mockDotNetSolutionFolderPath: jest.MockedFn<typeof getDotNetSolutionFolderPath>;
   let mockStrykerInstallationLocation: jest.MockedFn<typeof argsInstallationLocation>;
 
   const stdoutExecuteCommandResult: string = 'This is the default output';
@@ -50,7 +50,7 @@ describe('WHEN executing the dotnet command', () => {
     mockExecuteCommand = executeCommandWithArguments as jest.MockedFn<typeof executeCommandWithArguments>;
     mockIsValidToRegex = isValidToRegex as jest.MockedFn<typeof isValidToRegex>;
     mockIsFileExists = isFileExists as jest.MockedFn<typeof isFileExists>;
-    mockGetCurrentWorkspacePath = getCurrentWorkspacePath as jest.MockedFn<typeof getCurrentWorkspacePath>;
+    mockDotNetSolutionFolderPath = getDotNetSolutionFolderPath as jest.MockedFn<typeof getDotNetSolutionFolderPath>;
     mockStrykerInstallationLocation = argsInstallationLocation as jest.MockedFn<typeof argsInstallationLocation>;
 
     dotnetClass = new Dotnet(strykerConfig, spyLogger);
@@ -106,13 +106,11 @@ describe('WHEN executing the dotnet command', () => {
     const VALUE_FOR_TOOLMANIFEST_EXISTS: boolean = true;
 
     beforeEach(() => {
-      mockGetCurrentWorkspacePath.mockReturnValue(CURRENT_WORKSPACE_PATH);
+      mockDotNetSolutionFolderPath.mockReturnValue(CURRENT_WORKSPACE_PATH);
     });
 
     afterEach(() => {
-      // TODO : Verify that getCurrentWorkspacePath has been called
-      expect(mockGetCurrentWorkspacePath).toHaveBeenCalledTimes(1);
-      // TODO: Verify that fs-helpers.isFileExists has been called with the getCurrentWorkspacePath followed with the Toolmanifest file path
+      expect(mockDotNetSolutionFolderPath).toHaveBeenCalledTimes(1);
       expect(mockIsFileExists).toHaveBeenCalledTimes(1);
       expect(mockIsFileExists).toHaveBeenCalledWith(EXPECTED_TOOLMANIFEST_PARTIAL_FILEPATH);
     });
@@ -172,12 +170,12 @@ describe('WHEN executing the dotnet command', () => {
       beforeEach(() => {
         // Arrange (GIVEN)
         mockStrykerInstallationLocation.mockReturnValue('--local');
-        mockGetCurrentWorkspacePath.mockReturnValue('/my/current/workspace');
+        mockDotNetSolutionFolderPath.mockReturnValue('/my/current/workspace');
       });
 
       afterEach(() => {
         // TWEAK: to verify that isDotnetManifestExists has been called
-        expect(mockGetCurrentWorkspacePath).toHaveBeenCalled();
+        expect(mockDotNetSolutionFolderPath).toHaveBeenCalled();
         expect(mockIsFileExists).toHaveBeenCalledTimes(1);
         expect(mockIsFileExists).toHaveBeenCalledWith(expect.stringContaining('dotnet-tools.json'));
       });
@@ -219,7 +217,7 @@ describe('WHEN executing the dotnet command', () => {
         expect(mockExecuteCommand).toHaveBeenCalledTimes(2);
         expect(mockExecuteCommand).not.toHaveBeenCalledWith(['new', 'tool-manifest']);
         // TWEAK: to verify that isDotnetManifestExists not has been called
-        expect(mockGetCurrentWorkspacePath).not.toHaveBeenCalled();
+        expect(mockDotNetSolutionFolderPath).not.toHaveBeenCalled();
         expect(mockIsFileExists).not.toHaveBeenCalled();
       });
     });

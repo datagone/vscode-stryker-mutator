@@ -1,5 +1,6 @@
 import {
   dotnetCommand,
+  dotnetSolutionFolder,
   strykerCommand,
   strykerConfigFilePath,
   strykerDotnetToolInstallationLocation,
@@ -18,6 +19,7 @@ describe('Config', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
+
   describe('Stryker config file path', () => {
     afterEach(() => {
       // Assert (THEN)
@@ -38,6 +40,34 @@ describe('Config', () => {
       const res = strykerConfigFilePath();
       // Assert (THEN)
       expect(res).toEqual('custom config');
+    });
+  });
+
+  describe('WHEN obtaining the dotnet root solution path', () => {
+    afterEach(() => {
+      // Assert (THEN)
+      expect(workspace.getConfiguration).toHaveBeenCalledWith();
+      expect(mockGet).toHaveBeenCalledWith('strykerMutatorNet.dotnet.solutionFolder');
+    });
+
+    describe('GIVEN nothing is set in the dotnet root solution path config section', () => {
+      it('THEN should return an undefined object', () => {
+        // ACT (WHEN)
+        const res = dotnetSolutionFolder();
+        // Assert (THEN)
+        expect(res).toBeUndefined();
+      });
+    });
+
+    describe('GIVEN a dotnet root solution path is set in the config', () => {
+      it('THEN should return the value from the config', () => {
+        // Arrange (GIVEN)
+        mockConfig('strykerMutatorNet.dotnet.solutionFolder', 'custom solution path');
+        // ACT (WHEN)
+        const res = dotnetSolutionFolder();
+        // Assert (THEN)
+        expect(res).toEqual('custom solution path');
+      });
     });
   });
 
@@ -144,7 +174,7 @@ describe('Config', () => {
     });
   });
 
-  describe('WHEN obtaining the Stryker installation location', () => {
+  describe('WHEN obtaining the dotnet-stryker tool installation location', () => {
     // Arrange (GIVEN)
     const INSTALLATION_LOCATION_CONFIG_VARIABLE_NAME = 'strykerMutatorNet.tool.installationLocation';
 

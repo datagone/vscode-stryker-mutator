@@ -4,7 +4,7 @@ import IDotnet from './dotnet.interface';
 import ILogger from './logger.interface';
 import Constants from './constants';
 import { argsInstallationLocation } from './cli-builder';
-import { getCurrentWorkspacePath, isFileExists } from './fs-helpers';
+import { getDotNetSolutionFolderPath, isFileExists } from './fs-helpers';
 import path from 'path';
 import { Uri } from 'vscode';
 
@@ -37,7 +37,7 @@ class Dotnet implements IDotnet {
 
   public async isDotnetManifestExists(): Promise<boolean> {
     const dotnetToolManifestPath: string = `.config/dotnet-tools.json`;
-    const filePath: string = path.join(getCurrentWorkspacePath(), dotnetToolManifestPath);
+    const filePath: string = path.join(getDotNetSolutionFolderPath(), dotnetToolManifestPath);
     if (isFileExists(filePath)) {
       return Promise.resolve(true);
     }

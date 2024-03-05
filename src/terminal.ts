@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import { getDotNetSolutionFolderPath } from './fs-helpers';
 
 export const makeReusableTerminal = ({ name }: { name: string }) => {
   let terminal: vscode.Terminal | undefined;
@@ -12,7 +13,8 @@ export const makeReusableTerminal = ({ name }: { name: string }) => {
 
   return () => {
     if (!terminal) {
-      terminal = vscode.window.createTerminal(name);
+      const termOptions = { name, cwd: `${getDotNetSolutionFolderPath()}` };
+      terminal = vscode.window.createTerminal(termOptions);
       console.log(`Created a new reusable terminal for Stryker Runner`);
     } else {
       console.log(`Reusing terminal for Stryker Runner`);
