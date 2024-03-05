@@ -1,5 +1,11 @@
 # CHANGELOG
 
+# [0.6.0](https://github.com/datagone/vscode-stryker-mutator/compare/v0.5.1...v0.6.0) (2024-03-05)
+
+### Features
+
+- adding support for .net solution at relative location than at workspace level ([de95892](https://github.com/datagone/vscode-stryker-mutator/commit/de9589244976d7bad234417b186ae2a42ae63eec))
+
 ## [0.5.1](https://github.com/datagone/vscode-stryker-mutator/compare/v0.5.0...v0.5.1) (2024-02-29)
 
 ### Bug Fixes
