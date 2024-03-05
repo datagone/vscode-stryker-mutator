@@ -1,3 +1,5 @@
 {
-  "strykerMutatorNet.tool.installationLocation": "local"
+  "strykerMutatorNet.tool.installationLocation": "local",
+  "strykerMutatorNet.stryker.optionalParameters": "--output .",
+  "strykerMutatorNet.dotnet.solutionFolder": "src/"
 }
