@@ -210,7 +210,7 @@
   },
   "devDependencies": {
     "@commitlint/cli": "19.2.1",
-    "@commitlint/config-conventional": "19.1.0",
+    "@commitlint/config-conventional": "19.2.2",
     "@semantic-release/changelog": "6.0.3",
     "@semantic-release/git": "10.0.1",
     "@stryker-mutator/core": "8.2.6",
