@@ -236,7 +236,7 @@
     "semantic-release-stop-before-publish": "1.0.0",
     "semantic-release-vsce": "5.7.2",
     "shell-escape": "0.2.0",
-    "ts-jest": "29.1.5",
+    "ts-jest": "29.2.0",
     "ts-loader": "9.5.1",
     "ts-mockito": "2.6.1",
     "typescript": "5.5.3",
