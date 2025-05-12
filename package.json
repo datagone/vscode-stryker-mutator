@@ -222,7 +222,7 @@
     "@types/node": "20.14.12",
     "@types/shell-escape": "0.2.3",
     "@types/vscode": "1.75.0",
-    "@typescript-eslint/eslint-plugin": "7.18.0",
+    "@typescript-eslint/eslint-plugin": "8.32.0",
     "@typescript-eslint/parser": "7.18.0",
     "@vscode/test-electron": "2.5.2",
     "eslint": "8.57.1",
