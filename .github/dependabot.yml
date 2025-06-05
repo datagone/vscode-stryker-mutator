@@ -7,5 +7,13 @@ updates:
       interval: daily
     open-pull-requests-limit: 10
     versioning-strategy: increase
+    groups:
+      eslint-typescript:
+        patterns:
+          - '@typescript-eslint/*'
+          - 'eslint'
+      stryker:
+        patterns:
+          - '@stryker-mutator/*'
     ignore:
       - dependency-name: '@types/vscode'
