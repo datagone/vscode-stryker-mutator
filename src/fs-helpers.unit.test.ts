@@ -10,7 +10,7 @@ jest.mock('./config');
 
 const mockExistsSync = existsSync as jest.MockedFn<typeof existsSync>;
 const mockLStatSync = lstatSync as jest.MockedFn<typeof lstatSync>;
-const fakeStats = new Stats();
+const fakeStats = {} as Partial<Stats>;
 
 const mockConfigDotnetSolutionFolder = dotnetSolutionFolder as jest.MockedFn<typeof dotnetSolutionFolder>;
 
