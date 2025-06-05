@@ -3,8 +3,9 @@ import typescriptEslint from '@typescript-eslint/eslint-plugin';
 import tsParser from '@typescript-eslint/parser';
 
 export default defineConfig([
-  globalIgnores(['**/out', '**/dist', '**/*.d.ts']),
+  globalIgnores(['**/out', '**/dist', '**/*.d.ts', '**/report', '**/node_modules', '**/coverage', '**/.stryker-tmp']),
   {
+    files: ['**/*.ts', '**/*.js'],
     plugins: {
       '@typescript-eslint': typescriptEslint,
     },
