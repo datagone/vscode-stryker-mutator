@@ -16,10 +16,9 @@ export default defineConfig([
     },
 
     rules: {
-      '@typescript-eslint/semi': 'warn',
       eqeqeq: 'warn',
       'no-throw-literal': 'warn',
-      semi: 'off',
+      semi: 'warn',
     },
   },
 ]);
