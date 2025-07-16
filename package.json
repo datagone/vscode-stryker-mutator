@@ -216,7 +216,7 @@
     "@stryker-mutator/core": "9.0.1",
     "@stryker-mutator/jest-runner": "9.0.1",
     "@stryker-mutator/typescript-checker": "9.0.1",
-    "@types/glob": "8.1.0",
+    "@types/glob": "9.0.0",
     "@types/jest": "29.5.14",
     "@types/jest-when": "3.5.5",
     "@types/node": "24.0.14",
