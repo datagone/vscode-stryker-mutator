@@ -232,7 +232,7 @@
     "jest-when": "3.7.0",
     "lint-staged": "16.2.5",
     "prettier": "3.6.2",
-    "semantic-release": "25.0.0",
+    "semantic-release": "25.0.1",
     "semantic-release-stop-before-publish": "2.0.0",
     "semantic-release-vsce": "6.0.12",
     "shell-escape": "0.2.0",
